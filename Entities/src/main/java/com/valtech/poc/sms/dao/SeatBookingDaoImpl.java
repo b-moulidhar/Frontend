@@ -180,6 +180,22 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 		}
 	}
 
+	@Override
+	public boolean checkIfEmployeeAlredyBookTheSeat(int eId) {
+		String sql="select e_id from seats_booked where current=true and punch_out>now() and sb_end_date>now() ";
+       
+		try {
+			int empId = jdbcTemplate.queryForObject(sql, Integer.class);
+		
+        if(empId==eId)
+        	return true;
+        return false;
+		}catch (DataAccessException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	
 
 	
