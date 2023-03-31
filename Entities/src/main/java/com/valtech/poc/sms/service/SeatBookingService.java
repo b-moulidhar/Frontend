@@ -40,6 +40,8 @@ public interface SeatBookingService {
 
 	void notifStatus(int sbId);
 
+	boolean checkIftheEmployeeAlreadyBookTheseat(int eId);
+
 	//void updateNotifStatus(int sbId, Connection connection);
 
 //	void bookSeat();

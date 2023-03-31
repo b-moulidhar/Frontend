@@ -19,7 +19,7 @@
  .dashboard_container{
     /* background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
      
-     background-image: url('D:/sms_frontend/sms_frontend/src/assets/valtech.png');
+     /* background-image: url('D:/sms_frontend/sms_frontend/src/assets/valtech.png'); */
      background-position: center ;
      background-repeat: no-repeat;
      /* background-attachment: fixed; */

@@ -13,6 +13,7 @@ import com.valtech.poc.sms.dao.AdminDao;
 import com.valtech.poc.sms.dao.UserDAO;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Food;
+import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.entities.User;
 import com.valtech.poc.sms.repo.AdminRepository;
 import com.valtech.poc.sms.repo.EmployeeRepo;
@@ -40,6 +41,10 @@ public class AdminServiceImpl implements AdminService{
 	ResetPassword resetPassword;
 	
 	@Autowired
+	private EmployeeService employeeService;
+	
+	@Autowired
+	private SeatBookingService seatBookingService;
 	EmployeeRepo employeeRepo;
 	
 	
@@ -114,6 +119,20 @@ public class AdminServiceImpl implements AdminService{
 	}
 	public List<Map<String, Object>> getRegistrationListForApproval() {
 		return adminDao.getRegistrationListForApproval();
+	}
+
+	@Override
+	public boolean verifyQr(int eId, String code) {
+		Employee emp = employeeService.findById(eId);
+		System.out.println(emp.getEmpName());
+		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
+		String key = sb.getCode();
+		System.out.println(key);
+		System.out.println(code);
+		if(key.equals(code)) {
+			return true;
+		}
+		return false;
 	}
 
 }

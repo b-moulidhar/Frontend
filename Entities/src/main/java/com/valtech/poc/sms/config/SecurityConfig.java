@@ -64,7 +64,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/login","/saveuser","/roleNames","/gettingAllManagernames").permitAll()
                 .requestMatchers("/v2/api-docs", "/swagger-resources/configuration/ui", "/swagger-resources/**", "/swagger-resources/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll().requestMatchers("/api/").permitAll()
                 .anyRequest().authenticated().and().formLogin().and().httpBasic();
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         DefaultSecurityFilterChain defaultSecurityFilterChain=http.build();
@@ -76,7 +75,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

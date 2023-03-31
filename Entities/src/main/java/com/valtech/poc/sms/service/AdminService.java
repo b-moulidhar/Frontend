@@ -25,6 +25,8 @@ public interface AdminService {
 
 	List<String> findShiftEndTimings();
 
+	boolean verifyQr(int eId,String code);
+
 
 
 

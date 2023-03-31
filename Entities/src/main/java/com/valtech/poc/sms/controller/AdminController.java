@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -84,6 +85,13 @@ public class AdminController {
 		String code = sb.getCode();
 		System.out.println(code);
 		return code;
+	}
+	
+	@ResponseBody
+	@PostMapping("/qr/verification/{eId}")
+	public boolean verifyQrCode(@PathVariable("eId") int eId, @RequestParam("code") String code) {
+		boolean b = adminService.verifyQr(eId, code);
+		return b;
 	}
 
 	@ResponseBody
@@ -165,6 +173,9 @@ public class AdminController {
 		return adminService.getRegistrationListForApproval();
 	}
 		
- 
+	@GetMapping("/profileDetailsAdmin/{admeId}")
+    public Employee getAdminById(@PathVariable int eId) {
+        return employeeService.getEmployeeByeId(eId);
+    }
 	
 }

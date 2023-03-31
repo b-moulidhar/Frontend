@@ -23,6 +23,7 @@ public class ManagerController {
 	@Autowired
 	EmployeeService employeeService;
 	
+	@ResponseBody
 	@GetMapping("/managerByEmpId/{empId}")
 	public ResponseEntity<Employee> managerProfileInfo(@PathVariable("empId") int empId) throws SQLException {
 		Employee employee=managerService.getManagerByEmpId(empId);
@@ -30,16 +31,17 @@ public class ManagerController {
 	}
 	
 	@ResponseBody
-	@GetMapping
+	@GetMapping("/GetAllManagers")
 	public List<String> ManagerList() {
 		return managerService.getAllManagerNames();
 		
 	}
 	
-//	@GetMapping("/{eId}")
-//    public Employee getEmployeeById(@PathVariable int eId) {
-//        return employeeService.getEmployeeByeId(eId);
-//    }
+	@ResponseBody
+	@GetMapping("/profileDetailsManager/{mgrId}")
+    public Employee getEmployeeById(@PathVariable int eId) {
+        return employeeService.getEmployeeByeId(eId);
+    }
 	
     	
 }

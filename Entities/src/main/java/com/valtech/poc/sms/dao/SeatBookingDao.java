@@ -31,6 +31,8 @@ public interface SeatBookingDao {
 
 	void notifStatus(int sbId);
 
+	boolean checkIfEmployeeAlredyBookTheSeat(int eId);
+
 	//void updateNotifStatus(int sbId, Connection connection);
 
 	
