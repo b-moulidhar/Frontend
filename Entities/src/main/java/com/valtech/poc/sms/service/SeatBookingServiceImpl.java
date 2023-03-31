@@ -104,6 +104,12 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean checkIftheEmployeeAlreadyBookTheseat(int eId) {
+		
+		return seatBookingDao.checkIfEmployeeAlredyBookTheSeat(eId);
+	}
 	
 //	@Override
 //	public void updateNotifStatus(int sbId, Connection connection) {

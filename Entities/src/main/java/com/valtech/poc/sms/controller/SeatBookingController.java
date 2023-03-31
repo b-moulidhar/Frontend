@@ -96,15 +96,21 @@ public class SeatBookingController {
 			@RequestParam("sId") int sId) {
 		Employee emp = employeeRepo.findById(eId).get();
 		Seat seat = seatRepo.findById(sId).get();
+		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId)) {
+			System.out.println("This seat is aldready booked. Please Book another seat");
+			return ResponseEntity.ok("This seat is aldready booked. Please Book another seat " );
+		}
+		else {
 		String code = adminService.generateQrCode(eId);
 //    	SeatsBooked sb = new SeatsBooked(null, null, LocalDateTime.now(), null, true, code, seat, emp,false);
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
-		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
+		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, true, code, seat, emp, false);
 		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
 		return ResponseEntity.ok("Seats booked created successfully with ID: " + savedSeatsBooked.getSbId());
-	}
+		}
+		}
 
 	@PutMapping("/notification/{sbId}")
 	public void notifStatus(@PathVariable int sbId) {

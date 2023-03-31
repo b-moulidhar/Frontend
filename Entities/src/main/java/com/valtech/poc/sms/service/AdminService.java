@@ -7,7 +7,7 @@ public interface AdminService {
 
 	int getFoodCount(String ftDate);
 
-	int getSeatBookedCount(String sbStartDate);
+	int getSeatBookedCount(String sbDate);
 
 	int getCount(String ftDate);
 
