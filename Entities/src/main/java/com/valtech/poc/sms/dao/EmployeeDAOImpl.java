@@ -48,11 +48,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 	
 	@Override
-	public List<Employee> getAllEmployees(int empID) {
-		String sql="select * from employee where m_id=(select m_id from manager where e_id=(select e_id from user where emp_id=?))";
+	public List<Employee> getAllEmployees(int eID) {
+		String sql="select * from employee where m_id=(select m_id from manager where e_id=?)";
 	    @SuppressWarnings("deprecation")
 		List<Employee> employees = jdbcTemplate.query(
-	    		sql,new Object[]{empID},new ResultSetExtractor<List<Employee>>() {
+	    		sql,new Object[]{eID},new ResultSetExtractor<List<Employee>>() {
 	    			public List<Employee> extractData(ResultSet rs) throws SQLException, DataAccessException{
 	    				List<Employee> list= new ArrayList<Employee>();
 	    				while(rs.next()) {
