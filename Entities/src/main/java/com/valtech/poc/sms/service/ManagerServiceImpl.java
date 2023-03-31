@@ -55,5 +55,11 @@ public class ManagerServiceImpl implements ManagerService {
 		return managerRepo.save(manager);
 	}
 
+	@Override
+	public Manager getManagerByEId(Employee eId) {
+		// TODO Auto-generated method stub
+		return managerRepo.getByManagerDetails(eId);
+	}
+
 
 }

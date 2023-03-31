@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
+import com.valtech.poc.sms.dao.ManagerDAO;
+import com.valtech.poc.sms.dao.UserDAO;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.EmployeeDto;
 import com.valtech.poc.sms.entities.Manager;
@@ -55,6 +58,9 @@ public class UserController {
 	@Autowired
 	private JwtUtil jwtUtil;
 	
+	@Autowired
+	private UserDAO userDAO;
+	
 
 	@ResponseBody
 	@GetMapping("/gettingAllManagernames")
@@ -63,22 +69,54 @@ public class UserController {
 	}
 
 
+//	@PostMapping("/api/login")
+//	public ResponseEntity<Map<String,String>> login(@RequestBody Map<String, String> request) {
+//		String empId = request.get("empId");
+//		String pass = request.get("pass");
+//
+//		String token = userService.login(Integer.parseInt(empId), pass);
+//		User user=userService.findByEmpId(Integer.parseInt(empId));
+//		String role = user.getRoles().iterator().next().getRole();
+//		System.out.println(user.getEmpDetails().getMailId());
+//		Map<String, String> response = new HashMap<>();
+//		response.put("token", token);
+//		response.put("EId", String.valueOf(user.getEmpDetails().geteId()));
+//		response.put("role", role);
+//
+//		return ResponseEntity.ok(response);
+//	}
+	
 	@PostMapping("/api/login")
-	public ResponseEntity<Map<String,String>> login(@RequestBody Map<String, String> request) {
-		String empId = request.get("empId");
-		String pass = request.get("pass");
+	public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> request) {
+	    String empId = request.get("empId");
+	    String pass = request.get("pass");
 
-		String token = userService.login(Integer.parseInt(empId), pass);
-		User user=userService.findByEmpId(Integer.parseInt(empId));
-		String role = user.getRoles().iterator().next().getRole();
-		System.out.println(user.getEmpDetails().getMailId());
-		Map<String, String> response = new HashMap<>();
-		response.put("token", token);
-		response.put("EId", String.valueOf(user.getEmpDetails().geteId()));
-		response.put("role", role);
+	    try {
+	        String token = userService.login(Integer.parseInt(empId), pass);
+	        User user = userService.findByEmpId(Integer.parseInt(empId));
+	        String role = user.getRoles().iterator().next().getRole();
+	        System.out.println(user.getEmpDetails().getMailId());
 
-		return ResponseEntity.ok(response);
+	        Map<String, String> response = new HashMap<>();
+	        response.put("token", token);
+	        response.put("EId", String.valueOf(user.getEmpDetails().geteId()));
+	        response.put("role", role);
+
+	        return ResponseEntity.ok(response);
+	    } catch (RuntimeException e) {
+	        Map<String, String> errorResponse = new HashMap<>();
+	        errorResponse.put("error", e.getMessage());
+	        if (e.getMessage().equals("User is not approved")) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+	        } else if (e instanceof IllegalArgumentException) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	        }
+	    }
 	}
+
+
 
 
 
@@ -127,17 +165,13 @@ public class UserController {
 
             // Saving the employee to the database
             employee = employeeService.saveEmployee(employee);
-
-         // Creating the Manager object from the DTO
-            Manager manager = new Manager();
-            manager.setManagerDetails(employee);
-
-            // Saving the manager to the database
-            manager = managerService.saveManager(manager);
-
-
+            
+            Employee eId=employeeService.findByEmpName(employeeDto.getManagerName());
+            
+             
+            Manager managerId=managerService.getManagerByEId(eId);
             // Associate the manager with the employee
-            employee.setManagerDetails(manager);
+            employee.setManagerDetails(managerId);
 
             // Saving the updated employee to the database
             employee = employeeService.saveEmployee(employee);
@@ -154,6 +188,17 @@ public class UserController {
 
             // Fetch the role from the database based on the role name
             Roles role = rolesService.findByRole(employeeDto.getRole());
+            String employeerole=role.getRole();
+            
+            if(employeerole.equals("Manager")) {
+            	// Creating the Manager object from the DTO
+                Manager manager = new Manager();
+                manager.setManagerDetails(employee);
+
+                // Saving the manager to the database
+                manager = managerService.saveManager(manager);
+            	
+            }
 
             // Add the role to the user's roles set
             user.getRoles().add(role);
@@ -168,15 +213,19 @@ public class UserController {
 		}
 	}
 	
-	@PostMapping("/logout")
-	public ResponseEntity<?> logout(HttpServletRequest request) {
+	@PostMapping("/api/logout")
+	public ResponseEntity<String> logout(HttpServletRequest request) {
 	    String authHeader = request.getHeader("Authorization");
+	    System.out.println(authHeader);
 	    if (authHeader != null && authHeader.startsWith("Bearer ")) {
 	        String token = authHeader.substring(7);
 	        TokenBlacklist.add(token);
+	        System.out.println("Token added to blacklist: " + token);
 	    }
-	    return ResponseEntity.ok("Logout successful");
+	    return ResponseEntity.ok("Logout Successful");
+
 	}
+
 
 	
 
