@@ -37,8 +37,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public void automaticRegularization(int sbId, AttendanceTable attendance) {
 		SeatsBooked sb=seatsBookedRepo.findById(sbId).orElseThrow(() -> new ResourceNotFoundException("SeatBooked not found" ));
-        attendance.setStartDate(""+sb.getSbStartDate());
-        attendance.setEndDate(""+sb.getSbEndDate());
+        attendance.setStartDate(""+sb.getSbDate());
+        attendance.setEndDate(""+sb.getSbDate());
         attendance.setShiftStart(""+sb.getPunchIn());
         attendance.setShiftEnd(""+sb.getPunchOut());
         attendance.seteId(sb.geteId());
