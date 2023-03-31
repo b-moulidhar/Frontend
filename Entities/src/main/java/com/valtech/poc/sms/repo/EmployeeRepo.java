@@ -12,6 +12,7 @@ public interface EmployeeRepo extends JpaRepository<Employee, Integer> {
 
 	Employee findByMailId(String mailId);
 
+
 //	Employee findByEId(int eId);
 
 }

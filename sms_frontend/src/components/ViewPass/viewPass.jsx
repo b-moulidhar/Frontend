@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import qrcode from "qrcode"
+import qrcode from "qrcode";
 // import {QrReader} from "react-qr-reader"
 function ViewPass(){
     const qrRef = useRef(null)

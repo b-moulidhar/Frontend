@@ -43,10 +43,24 @@ public class AttendanceServiceImpl implements AttendanceService {
         attendance.setShiftEnd(""+sb.getPunchOut());
         attendance.seteId(sb.geteId());
 	}
+	
+	@Override
+	public void saveAttendance(Employee emp, AttendanceTable attendance) {
+		attendance.seteId(emp);
+		attendance.setStartDate(""+attendance.getStartDate());
+		attendance.setEndDate(""+attendance.getEndDate());
+		attendance.setShiftStart(""+attendance.getShiftStart());
+		attendance.setShiftEnd("" + attendance.getShiftEnd());
+		attendance.setApproval(false);
+		
+	}
+
+
+	
 
 
 	@Override
-	public Employee getSpecificEmploye(AttendanceTable attendance) {
+	public Employee getSpecificEmployee(AttendanceTable attendance) {
 		return employeeRepo.findById(attendance.geteId().geteId())
         .orElseThrow(() -> new ResourceNotFoundException("Employee not found" ));
 	}

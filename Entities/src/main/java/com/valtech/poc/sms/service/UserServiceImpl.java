@@ -22,6 +22,7 @@ import com.valtech.poc.sms.entities.User;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.ManagerRepo;
 import com.valtech.poc.sms.repo.UserRepo;
+import com.valtech.poc.sms.security.JwtUtil;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,6 +32,9 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 
 	@Autowired
 	private UserRepo userepo;
+	
+	@Autowired
+	private JwtUtil jwtUtil;
 
 	@Autowired
 	private EmployeeRepo employeeRepo;
@@ -67,37 +71,6 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 //		return userDao.findByEmpId(empId);
 //		
 //	}
-
-	@Override
-	public String login(int empId, String pass) {
-	    UserDetails userDetails;
-	    try {
-	        userDetails = loadUserByUsername(String.valueOf(empId));
-	    } catch (UsernameNotFoundException ex) {
-	        throw new RuntimeException("User not found with empId: " + empId);
-	    }
-	    User user = userRepo.findByEmpId(empId);
-	    if (user != null && bCryptPasswordEncoder.matches(pass, user.getPass())) {
-	        if (user.isApproval()) {
-	            Map<String, Object> claims = new HashMap<>();
-	            claims.put("empId", user.getEmpId());
-	            claims.put("uId", user.getuId());
-	            claims.put("approval", user.isApproval());
-	            String token = Jwts.builder()
-	                    .setClaims(claims)
-	                    .setIssuedAt(new Date())
-	                    .setExpiration(new Date(System.currentTimeMillis() + 864000000))
-	                    .signWith(SignatureAlgorithm.HS256, "secretkey")
-	                    .compact();
-	            return token;
-	        } else {
-	            throw new RuntimeException("User is not approved");
-	        }
-	    } else {
-	        throw new RuntimeException("Invalid username or password");
-	    }
-	}
-
 
 
 	@Override
@@ -249,6 +222,27 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 	public List<String> getManagerNames() {
 		// TODO Auto-generated method stub
 		return userDao.getMangerNames();
+	}
+	
+	@Override
+	public String login(int empId, String pass) {
+	    UserDetails userDetails;
+	    try {
+	        userDetails = loadUserByUsername(String.valueOf(empId));
+	    } catch (UsernameNotFoundException ex) {
+	        throw new RuntimeException("User not found with empId: " + empId);
+	    }
+	    User user = userRepo.findByEmpId(empId);
+	    if (user != null && bCryptPasswordEncoder.matches(pass, user.getPass())) {
+	        if (user.isApproval()) {
+	        	String token=jwtUtil.generateToken(userDetails);
+	            return token;
+	        } else {
+	            throw new RuntimeException("User is not approved");
+	        }
+	    } else {
+	        throw new RuntimeException("Invalid username or password");
+	    }
 	}
 	
 

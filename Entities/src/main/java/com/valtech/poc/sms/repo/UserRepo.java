@@ -22,5 +22,7 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 	void save(Employee employee);
 
 
+
+
 	
 }

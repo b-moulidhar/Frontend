@@ -30,16 +30,16 @@ public class ManagerController {
 	}
 	
 	@ResponseBody
-	@GetMapping
+	@GetMapping("/GetAllManagers")
 	public List<String> ManagerList() {
 		return managerService.getAllManagerNames();
 		
 	}
 	
-//	@GetMapping("/{eId}")
-//    public Employee getEmployeeById(@PathVariable int eId) {
-//        return employeeService.getEmployeeByeId(eId);
-//    }
+	@GetMapping("/profileDetailsManager/{mgrId}")
+    public Employee getEmployeeById(@PathVariable int eId) {
+        return employeeService.getEmployeeByeId(eId);
+    }
 	
     	
 }

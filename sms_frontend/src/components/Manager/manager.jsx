@@ -1,9 +1,34 @@
+import { useState, useEffect } from "react";
 import Sidebar from "../Sidebar/sidebar";
 import './manager.css';
+import axios from 'axios';
 
 
 function Manager(){
+    const [managerEmp, setManagerEmp] = useState({
+        empId:Number,
+        empName:"",
+        startdate:Date,
+        endDate:Date,
+        shiftStart:"",
+        shiftEnd:""
+    })
+
+    useEffect(()=>{
+        axios.get("http://10.191.80.104:7001/seats/total")
+        .then((response) => {
+            setManagerEmp({
+                ...managerEmp, empId:response.data.empId,
+                
+            })
+            console.log(response.data)
+        })
+        .catch(err => console.log("Error ", err))
+    },[])
+
+
     return(
+       
         
         <div className='manager'>
         <div>
@@ -38,8 +63,9 @@ function Manager(){
             </tr>   
         </tbody>
         </table>
-        
-
+        </div>
+        <div>
+            <a href="/bookseat"><button>Book Seat</button></a>
         </div>
     </div>
     

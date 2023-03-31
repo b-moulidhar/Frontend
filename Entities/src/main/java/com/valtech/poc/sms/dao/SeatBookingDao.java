@@ -15,7 +15,7 @@ public interface SeatBookingDao {
 
 	List<Integer> availableSeats();
 
-	List<SeatsBooked> findAllByEId(Employee emp);
+//	List<SeatsBooked> findAllByEId(Employee emp);
 
 	SeatsBooked findCurrentSeat(Employee emp);
 
@@ -30,6 +30,10 @@ public interface SeatBookingDao {
 	//void notifStatus(boolean notifStatus, int sbId);
 
 	void notifStatus(int sbId);
+
+	//List<SeatsBooked> getSeatBookingsByEId(int eId) ;
+
+	//List<RecurringSeats> countRecurringSeats();
 
 	//void updateNotifStatus(int sbId, Connection connection);
 

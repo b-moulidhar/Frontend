@@ -52,10 +52,10 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
     }
 	
 	
-	@Override
-	public List<SeatsBooked> findEmployeeWiseSeatsBooked(Employee emp)	{
-		return seatBookingDao.findAllByEId(emp);
-	}
+//	@Override
+//	public List<SeatsBooked> findEmployeeWiseSeatsBooked(Employee emp)	{
+//		return seatBookingDao.findAllByEId(emp);
+//	}
 	
 	@Override
 	public SeatsBooked findCurrentSeatBookingDetails(Employee emp) {
@@ -104,6 +104,11 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 		// TODO Auto-generated method stub
 		
 	}
+	
+//	@Override
+//	public List<SeatsBooked>  getSeatBookingsByEId(int eId) {
+//		return seatBookingDao.getSeatBookingsByEId(eId);
+//	}
 	
 //	@Override
 //	public void updateNotifStatus(int sbId, Connection connection) {

@@ -17,8 +17,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	
-	@Autowired
-	private EmployeeRepo employeeRepo;
 	
 	@Override
     public Employee getEmployeeByeId(int eId) {
@@ -26,7 +24,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 	
 	@Autowired
-	EmployeeRepo empRepo;
+	private EmployeeRepo empRepo;
 
 	private static final Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
@@ -50,6 +48,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Employee saveEmployee(Employee employee) {
 		// TODO Auto-generated method stub
-		return employeeRepo.save(employee);
+		return empRepo.save(employee);
 	}
+
+	
 }

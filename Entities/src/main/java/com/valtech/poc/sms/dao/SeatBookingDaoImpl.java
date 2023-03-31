@@ -29,7 +29,7 @@ import com.valtech.poc.sms.repo.SeatRepo;
 @Component
 @ComponentScan
 
-public  class SeatBookingDaoImpl implements SeatBookingDao {
+public abstract  class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -66,51 +66,51 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 	
 
-	@Override
-	public List<SeatsBooked> findAllByEId(Employee emp) {
-		String query = "select * from seats_booked where e_id = ?";
-		int empId = emp.geteId();
-		@SuppressWarnings("deprecation")
-		List<SeatsBooked> seatsBooked = jdbcTemplate.query(query, new Object[] { empId },
-				new ResultSetExtractor<List<SeatsBooked>>() {
-					public List<SeatsBooked> extractData(ResultSet rs) throws SQLException, DataAccessException {
-						List<SeatsBooked> list = new ArrayList<SeatsBooked>();
-						while (rs.next()) {
-							SeatsBooked seatsBooked = new SeatsBooked();
-							seatsBooked.setSbId(rs.getInt("sb_id"));
-							int seatId = rs.getInt("s_id");
-							Seat seat = seatRepo.findById(seatId).get();
-							seatsBooked.setsId(seat);
-//							int mngId = emp.getManagerDetails().getmId();
-//							Manager mng = managerRepo.findById(mngId);
-//							System.out.println(mng);					
-//							emp.setManagerDetails(mng);
-							seatsBooked.seteId(emp);
-							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-							String sbSDate = rs.getString("sb_start_date");
-							LocalDateTime dateTime = LocalDateTime.parse(sbSDate, formatter);
-							seatsBooked.setSbStartDate(dateTime);
-							String sbEDate = rs.getString("sb_end_date");
-							LocalDateTime dateTime1 = LocalDateTime.parse(sbEDate, formatter);
-							seatsBooked.setSbEndDate(dateTime1);
-							String sbISDate = rs.getString("punch_in");
-							LocalDateTime dateTimeI = LocalDateTime.parse(sbISDate, formatter);
-							seatsBooked.setPunchIn(dateTimeI);
-							String sbOSDate = rs.getString("punch_out");
-							LocalDateTime dateTimeO = LocalDateTime.parse(sbOSDate, formatter);
-							seatsBooked.setPunchOut(dateTimeO);
-							seatsBooked.setCode(rs.getString("code"));
-							seatsBooked.setCurrent(rs.getBoolean("current"));
-							list.add(seatsBooked);
-						}
-						return list;
-						
-					}
-
-				});
-//		System.out.println(seatsBooked);
-		return seatsBooked;
-	}
+//	@Override
+//	public List<SeatsBooked> findAllByEId(Employee emp) {
+//		String query = "select * from seats_booked where e_id = ?";
+//		int empId = emp.geteId();
+//		@SuppressWarnings("deprecation")
+//		List<SeatsBooked> seatsBooked = jdbcTemplate.query(query, new Object[] { empId },
+//				new ResultSetExtractor<List<SeatsBooked>>() {
+//					public List<SeatsBooked> extractData(ResultSet rs) throws SQLException, DataAccessException {
+//						List<SeatsBooked> list = new ArrayList<SeatsBooked>();
+//						while (rs.next()) {
+//							SeatsBooked seatsBooked = new SeatsBooked();
+//							seatsBooked.setSbId(rs.getInt("sb_id"));
+//							int seatId = rs.getInt("s_id");
+//							Seat seat = seatRepo.findById(seatId).get();
+//							seatsBooked.setsId(seat);
+////							int mngId = emp.getManagerDetails().getmId();
+////							Manager mng = managerRepo.findById(mngId);
+////							System.out.println(mng);					
+////							emp.setManagerDetails(mng);
+//							seatsBooked.seteId(emp);
+//							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//							String sbSDate = rs.getString("sb_start_date");
+//							LocalDateTime dateTime = LocalDateTime.parse(sbSDate, formatter);
+//							seatsBooked.setSbStartDate(dateTime);
+//							String sbEDate = rs.getString("sb_end_date");
+//							LocalDateTime dateTime1 = LocalDateTime.parse(sbEDate, formatter);
+//							seatsBooked.setSbEndDate(dateTime1);
+//							String sbISDate = rs.getString("punch_in");
+//							LocalDateTime dateTimeI = LocalDateTime.parse(sbISDate, formatter);
+//							seatsBooked.setPunchIn(dateTimeI);
+//							String sbOSDate = rs.getString("punch_out");
+//							LocalDateTime dateTimeO = LocalDateTime.parse(sbOSDate, formatter);
+//							seatsBooked.setPunchOut(dateTimeO);
+//							seatsBooked.setCode(rs.getString("code"));
+//							seatsBooked.setCurrent(rs.getBoolean("current"));
+//							list.add(seatsBooked);
+//						}
+//						return list;
+//						
+//					}
+//
+//				});
+////		System.out.println(seatsBooked);
+//		return seatsBooked;
+//	}
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -181,24 +181,63 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	
+//	
+//	    @Override
+//	    public List<SeatsBooked> getSeatBookingsByEId(int eId)  {
+//	        List<SeatsBooked> bookings = new ArrayList<>();
+//
+//	        try (Connection conn = getConnection();
+//	             Statement stmt = conn.createStatement();
+//	             ResultSet rs = stmt.executeQuery(
+//	                     "SELECT s.s_id, s.s_name, COUNT(*) AS bookings, e.emp_name "
+//	                   + "FROM seat s "
+//	                   + "INNER JOIN seats_booked sb ON s.s_id = sb.s_id "
+//	                   + "INNER JOIN employee e ON sb.e_id = e.e_id "
+//	                   + "WHERE e.e_id=" + eId + " "
+//	                   + "GROUP BY s.s_id, s.s_name, e.emp_name "
+//	                   + "HAVING COUNT(*) >= 1 "
+//	                   + "ORDER BY bookings DESC")) {
+//
+//	            while (rs.next()) {
+//	                int seatId = rs.getInt("s_id");
+//	                String seatName = rs.getString("s_name");
+//	                int numBookings = rs.getInt("bookings");
+//	                String employeeName = rs.getString("emp_name");
+//	                
+//
+//	                SeatsBooked booking = new SeatsBooked(seatId, seatName, numBookings, employeeName);
+//	                bookings.add(booking);
+//	            }
+//	        } 
+//	  
+//	        
+//	        return bookings;
+//	    }
+
+//		private Connection getConnection() {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//	}
+//
 
 	
 //	@Override
 //	public List<RecurringSeats> countRecurringSeats() {
 //		String sql = "SELECT s.s_id, s.s_name, COUNT(*) AS bookings, e.emp_name\r\n"
-//				+ "FROM seat s\r\n"
+//			+ "FROM seat s\r\n"
 //				+ "INNER JOIN seats_booked sb ON s.s_id = sb.s_id\r\n"
 //				+ "INNER JOIN employee e ON sb.e_id = e.e_id\r\n"
 //				+ "WHERE   e.e_id=123\r\n"
 //				+ "GROUP BY s.s_id, s.s_name, e.emp_name\r\n"
-//				+ "HAVING COUNT(*) >= 1\r\n"
+//			+ "HAVING COUNT(*) >= 1\r\n"
 //				+ "ORDER BY bookings DESC;";
 //		List<RecurringSeats> RecurringList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(RecurringSeats.class));
 //		return RecurringList;
 //	}
-	
-
-	
+//	
+//
+//	
 
 
 
