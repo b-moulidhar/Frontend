@@ -99,8 +99,9 @@ public class SeatBookingController {
          }
     
     @PutMapping("/notification/{sbId}")
-    public void notifStatus(@PathVariable int sbId)   {
+    public String notifStatus(@PathVariable int sbId)   {
     	seatService.notifStatus(sbId);
+    	return "Notification Sent";
     }
     
     
