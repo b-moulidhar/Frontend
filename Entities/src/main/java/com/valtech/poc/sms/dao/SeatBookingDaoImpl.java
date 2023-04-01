@@ -181,13 +181,28 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
-	public boolean checkIfEmployeeAlredyBookTheSeat(int eId) {
+	public boolean checkIfEmployeeAlredyBookTheSeat(int eId) throws DataAccessException{
 		String sql="select e_id from seats_booked where current=true and punch_out>now() and sb_end_date>now() ";
        
 		try {
 			int empId = jdbcTemplate.queryForObject(sql, Integer.class);
 		
         if(empId==eId)
+        	return true;
+        return false;
+		}catch (DataAccessException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean checkIfTheSameSeatBookingRecurring(int eId) throws DataAccessException {
+		String sql="SELECT COUNT(*) As bookings FROM seat s INNER JOIN seats_booked sb ON s.s_id = sb.s_id INNER JOIN employee e ON sb.e_id = e.e_id WHERE e.e_id=? GROUP BY s.s_id, s.s_name, e.emp_name HAVING COUNT(*) >= 1 ORDER BY bookings DESC;";
+		try {
+			@SuppressWarnings("deprecation")
+			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId }, Integer.class);
+		
+        if(cnt>=1)
         	return true;
         return false;
 		}catch (DataAccessException e) {

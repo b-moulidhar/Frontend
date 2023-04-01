@@ -178,7 +178,36 @@ public class UserController {
 	    return ResponseEntity.ok("Logout successful");
 	}
 
-	
+//	@ResponseBody
+//	@PostMapping("/save")
+//	public String SaveEmployee(@RequestBody EmployeeRequest employeeRequest) {
+//	    Employee employee = employeeRequest.getEmployee();
+//	    User user = employeeRequest.getUser();
+//	    String managerName = employeeRequest.getManagerName();
+//	    String role = employeeRequest.getRole();
+////	    int mid=userService.getMidByName(managerName);
+//	    Manager manager=userService.getManagerByMname(managerName);
+////	    Employee emp = new Employee(employee.geteId(),employee.getEmpName(), employee.getPhNum(), employee.getMailId(), employee.getManagerDetails());
+////	    userService.saveEmployee(employee,mid);
+//	    System.out.println(employee);
+//	    userService.saveEmployee(employee,manager);
+//
+////		int eId=employee.geteId();
+//
+//		User newUser=new User(user.getuId(),user.getEmpId(),user.getPass(), employee, false, null, null);
+//		userService.saveUser(newUser,employee);
+//		if(role.equals("Manager")) {
+//			Manager mng = new Manager(employee);
+////			managerRepo.save(mng);
+//			userService.saveManager(mng);
+//		}
+//		int rId=userService.getRidByRoleName(role);
+//		int uId=user.getuId();
+//		userService.saveUserRoles(uId,rId);
+//		return "saved all data";
+//
+//	}
+
 
 
 }
