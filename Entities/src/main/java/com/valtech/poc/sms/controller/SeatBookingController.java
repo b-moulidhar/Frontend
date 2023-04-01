@@ -84,6 +84,15 @@ public class SeatBookingController {
 			@RequestParam("sId") int sId) {
 		Employee emp = employeeRepo.findById(eId).get();
 		Seat seat = seatRepo.findById(sId).get();
+		LocalDate sbDate = LocalDate.now();
+		
+//		//check if employee can book seat
+//		if (!seatService.canEmployeeBookSeat(eId, sbDate)) {
+//	        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
+//	        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
+//	    }
+//		
+		//check if the seat is aldready booked
 		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId)) {
 			System.out.println("This seat is aldready booked. Please Book another seat");
 			return ResponseEntity.ok("This seat is aldready booked. Please Book another seat " );
@@ -93,6 +102,8 @@ public class SeatBookingController {
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
+		
+		//check for recurring seats
 		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
 			Seat recSeat=seatService.getSeatById(sId);
 			SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime,  true, code, recSeat, emp, false);
@@ -103,10 +114,17 @@ public class SeatBookingController {
 //		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
 		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, true, code, seat, emp, false);
 		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
-		return ResponseEntity.ok("Seats booked created successfully with ID: " + savedSeatsBooked.getSbId());
-		}
-		}
-		}
+		//check if employee is booking a seat again on the same day
+				if (seatService.canEmployeeBookSeat(eId, sId,sbDate)) {
+			        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
+			        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
+			    }
+				return ResponseEntity.ok("Seats booked created successfully with ID: " + savedSeatsBooked.getSbId());
+		 }
+		 
+		   }
+	    }
+	
 
 	@PutMapping("/notification/{sbId}")
 	public String notifStatus(@PathVariable int sbId) {

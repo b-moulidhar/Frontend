@@ -18,6 +18,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import com.valtech.poc.sms.entities.Employee;
@@ -231,6 +233,7 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 		}
 	}
 
+	
 	@Override
 	public boolean checkIfTheSameSeatBookingRecurring(int eId) throws DataAccessException {
 		String sql="SELECT COUNT(*) As bookings FROM seat s INNER JOIN seats_booked sb ON s.s_id = sb.s_id INNER JOIN employee e ON sb.e_id = e.e_id WHERE e.e_id=? GROUP BY s.s_id, s.s_name, e.emp_name HAVING COUNT(*) >= 1 ORDER BY bookings DESC;";
@@ -246,6 +249,24 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean canEmployeeBookSeat(int eId,int sId, LocalDate sbDate) throws DataAccessException {
+	    try {
+	        String sql = "SELECT COUNT(*) FROM seats_booked " +
+	                     "WHERE e_id = ? " +
+	                     "AND DATE_FORMAT(sb_date, '%Y-%m-%d') = DATE_FORMAT(:sbDate, '%Y-%m-%d')";
+
+	        int count = jdbcTemplate.queryForObject(sql, new Object[] { eId }, Integer.class);
+	        return count == 0;
+	    } catch (DataAccessException e) {
+	       
+	        return false;
+	    }
+	}
+
+
+	
 
 	
 //	
