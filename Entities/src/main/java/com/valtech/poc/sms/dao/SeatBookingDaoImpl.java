@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -51,14 +52,49 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 		// fetching all the available seats
 	}
 
+//	@Override
+//	public List<Integer> availableSeats() {
+//		String query = "SELECT sb_id FROM seats_booked WHERE current = 1";
+//		List<Integer> availableSeats = jdbcTemplate.queryForList(query, Integer.class);
+//		return availableSeats;
+//		// fetching the seats which are booked
+//	}
+// retreiving seat booking details where current = 1
+	
 	@Override
 	public List<Integer> availableSeats() {
-		String query = "SELECT sb_id FROM seats_booked WHERE current = 1";
-		List<Integer> availableSeats = jdbcTemplate.queryForList(query, Integer.class);
-		return availableSeats;
-		// fetching the seats which are booked
+	    String query = "SELECT sb.sb_id, s.s_name " +
+	                   "FROM seats_booked sb " +
+	                   "INNER JOIN seat s ON sb.s_id = s.s_id " +
+	                   "WHERE current = 1";
+	    List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
+	    List<Integer> availableSeats = new ArrayList<>();
+	    for (Map<String, Object> row : rows) {
+	        Integer sbId = (Integer) row.get("sb_id");
+	        String sName = (String) row.get("s_name");
+	        System.out.println("Seat ID: " + sbId + ", Seat Name: " + sName);
+	        availableSeats.add(sbId);
+	   
 	}
+	    return availableSeats;
+	}
+//   @Override
+//	public List<Object[]> availableSeats() {
+//	    String query = "SELECT sb.sb_id, s.s_name FROM seats_booked sb INNER JOIN seat s ON sb.s_id = s.s_id WHERE sb.current = 1";
+//	    List<Object[]> rows = jdbcTemplate.query(query, new Object[]{}, new BeanPropertyRowMapper(Object[].class));
 //
+//	    List<Object[]> availableSeats = new ArrayList<>();
+//	    for (Object[] row : rows) {
+//	        Integer sbId = (Integer) row[0];
+//	        String sName = (String) row[1];
+//	        availableSeats.add(new Object[]{sbId, sName});
+//	    }
+//
+//	    return availableSeats;
+//	}
+
+	
+	
 	@Override
 	public void notifStatus( int sbId) {
 		String sql = "UPDATE seats_booked SET notif_status = ? WHERE sb_id = ?";

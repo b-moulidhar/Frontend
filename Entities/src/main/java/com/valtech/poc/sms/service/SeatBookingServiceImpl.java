@@ -14,7 +14,6 @@ import com.valtech.poc.sms.dao.SeatBookingDaoImpl;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
-import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.repo.SeatsBookedRepo;
 
 @Service
@@ -27,9 +26,6 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 	
 	@Autowired
 	SeatsBookedRepo seatsBookedRepo;
-	
-	@Autowired
-	private SeatRepo seatRepo;
 	
 //	@Override
 //	public String getQrCodeKeyForEmpId(int empId)
@@ -117,14 +113,14 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 
 	@Override
 	public boolean CheckIfTheSameSeatBookingRecurring(int eId) {
-		
-		return seatBookingDao.checkIfTheSameSeatBookingRecurring(eId);
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
 	public Seat getSeatById(int sId) {
-		System.out.println(seatRepo.findById(sId).get());
-		return seatRepo.findById(sId).get();
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 //	@Override

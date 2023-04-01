@@ -56,7 +56,7 @@ public class SeatBookingController {
 	}
 
 //        
-	@GetMapping("/available")
+	@GetMapping("/bookedSeatDetails")
 	public ResponseEntity<List<Integer>> availableSeats() {
 		List<Integer> availableSeats = seatService.availableSeats();
 		return ResponseEntity.ok().body(availableSeats);

@@ -45,6 +45,8 @@ public class AdminServiceImpl implements AdminService{
 	
 	@Autowired
 	private SeatBookingService seatBookingService;
+	
+	@Autowired
 	EmployeeRepo employeeRepo;
 	
 	
@@ -52,6 +54,9 @@ public class AdminServiceImpl implements AdminService{
 	public String generateQrCode(int eId) {
 		Employee emp = employeeRepo.findById(eId).get();
 		User usr = userRepo.findByEmpDetails(emp);
+		  if (usr == null) {
+		   return "000";
+		    }
 		int empId = usr.getEmpId();
 		String code ="" + empId + resetPassword.getRandomNumberString();
 		return code;
