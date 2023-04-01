@@ -29,7 +29,7 @@ import com.valtech.poc.sms.repo.SeatRepo;
 @Component
 @ComponentScan
 
-public abstract  class SeatBookingDaoImpl implements SeatBookingDao {
+public   class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -131,12 +131,12 @@ public abstract  class SeatBookingDaoImpl implements SeatBookingDao {
 //				emp.setManagerDetails(mng);
 				seatsBooked.seteId(emp);
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-				String sbSDate = rs.getString("sb_start_date");
+				String sbSDate = rs.getString("sb_date");
 				LocalDateTime dateTime = LocalDateTime.parse(sbSDate, formatter);
-				seatsBooked.setSbStartDate(dateTime);
-				String sbEDate = rs.getString("sb_end_date");
-				LocalDateTime dateTime1 = LocalDateTime.parse(sbEDate, formatter);
-				seatsBooked.setSbEndDate(dateTime1);
+				seatsBooked.setSbDate(dateTime);
+//				String sbEDate = rs.getString("sb_end_date");
+//				LocalDateTime dateTime1 = LocalDateTime.parse(sbEDate, formatter);
+//				seatsBooked.setSbEndDate(dateTime1);
 				String sbISDate = rs.getString("punch_in");
 				LocalDateTime dateTimeI = LocalDateTime.parse(sbISDate, formatter);
 				seatsBooked.setPunchIn(dateTimeI);
@@ -161,7 +161,7 @@ public abstract  class SeatBookingDaoImpl implements SeatBookingDao {
 	@Override
 	public List<Seat> findAvailableSeatsByDate(LocalDate date) {
 		String query = "SELECT s.s_id, s.s_name " + "FROM seat s " + "WHERE s.s_id NOT IN ( " + "   SELECT sb.s_id "
-				+ "   FROM seats_booked sb " + "   WHERE DATE(sb.sb_start_date) = ? AND sb.current = true" + ")";
+				+ "   FROM seats_booked sb " + "   WHERE DATE(sb.sb_date) = ? AND sb.current = true" + ")";
 		List<Seat> availableSeats = jdbcTemplate.query(query, new Object[] { date },
 				new BeanPropertyRowMapper<>(Seat.class));
 		return availableSeats;
@@ -169,10 +169,10 @@ public abstract  class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Override
 	public void bookSeat(SeatsBooked seatsBooked) {
-		String sql = "INSERT INTO seats_booked (sb_id, sb_start_date,sb_end_date, punch_in, punch_out, current, code, s_id, e_id) "
+		String sql = "INSERT INTO seats_booked (sb_id, sb_date, punch_in, punch_out, current, code, s_id, e_id) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		try {
-			jdbcTemplate.update(sql, seatsBooked.getSbId(), seatsBooked.getSbStartDate(), seatsBooked.getSbEndDate(),
+			jdbcTemplate.update(sql, seatsBooked.getSbId(), seatsBooked.getSbDate(), 
 					seatsBooked.getPunchIn(), seatsBooked.getPunchOut(), seatsBooked.isCurrent(),
 					seatsBooked.getCode(), seatsBooked.getsId(), seatsBooked.geteId());
 		} catch (DataAccessException e) {
@@ -181,13 +181,28 @@ public abstract  class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
-	public boolean checkIfEmployeeAlredyBookTheSeat(int eId) {
+	public boolean checkIfEmployeeAlredyBookTheSeat(int eId) throws DataAccessException{
 		String sql="select e_id from seats_booked where current=true and punch_out>now() and sb_end_date>now() ";
        
 		try {
 			int empId = jdbcTemplate.queryForObject(sql, Integer.class);
 		
         if(empId==eId)
+        	return true;
+        return false;
+		}catch (DataAccessException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean checkIfTheSameSeatBookingRecurring(int eId) throws DataAccessException {
+		String sql="SELECT COUNT(*) As bookings FROM seat s INNER JOIN seats_booked sb ON s.s_id = sb.s_id INNER JOIN employee e ON sb.e_id = e.e_id WHERE e.e_id=? GROUP BY s.s_id, s.s_name, e.emp_name HAVING COUNT(*) >= 1 ORDER BY bookings DESC;";
+		try {
+			@SuppressWarnings("deprecation")
+			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId }, Integer.class);
+		
+        if(cnt>=1)
         	return true;
         return false;
 		}catch (DataAccessException e) {

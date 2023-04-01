@@ -14,6 +14,8 @@ public interface ManagerService {
 
 	Manager saveManager(Manager manager);
 
+	Manager getManagerByEId(Employee eId);
+
 
 
 }

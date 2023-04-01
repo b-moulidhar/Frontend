@@ -46,6 +46,12 @@ public interface SeatBookingService {
 	boolean checkIftheEmployeeAlreadyBookTheseat(int eId);
 
 
+
+	boolean CheckIfTheSameSeatBookingRecurring(int eId);
+
+	Seat getSeatById(int sId);
+
+
 	//void updateNotifStatus(int sbId, Connection connection);
 
 //	void bookSeat();

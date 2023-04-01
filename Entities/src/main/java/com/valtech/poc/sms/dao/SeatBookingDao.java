@@ -39,6 +39,9 @@ public interface SeatBookingDao {
 	boolean checkIfEmployeeAlredyBookTheSeat(int eId);
 
 
+	boolean checkIfTheSameSeatBookingRecurring(int eId);
+
+
 	//void updateNotifStatus(int sbId, Connection connection);
 
 	

@@ -93,9 +93,18 @@ public class SeatBookingController {
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
-		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
+		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
+			Seat recSeat=seatService.getSeatById(sId);
+			SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime,  true, code, recSeat, emp, false);
+			SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
+			return ResponseEntity.ok("The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: " + savedSeatsBooked.getSbId());
+		}
+		else {
+//		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
+		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, true, code, seat, emp, false);
 		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
 		return ResponseEntity.ok("Seats booked created successfully with ID: " + savedSeatsBooked.getSbId());
+		}
 		}
 		}
 

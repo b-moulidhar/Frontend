@@ -63,9 +63,24 @@ public class JwtUtil {
 //        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 //    }
     
+//    public Boolean validateToken(String token, UserDetails userDetails) {
+//        final String username = extractUsername(token);
+//        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !TokenBlacklist.contains(token));
+//    }
+    
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !TokenBlacklist.contains(token));
+        if (username.equals(userDetails.getUsername())) {
+            if (isTokenExpired(token)) {
+                throw new RuntimeException("Token is expired");
+            }
+            if (TokenBlacklist.contains(token)) {
+                throw new RuntimeException("Token is blacklisted");
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     
