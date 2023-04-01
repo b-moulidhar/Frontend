@@ -54,7 +54,7 @@ class SequreMySeatTests {
 	        seat.setsId(sId);
 	        String code = "QR Code";
 	        LocalDateTime now = LocalDateTime.now();
-	        SeatsBooked sb = new SeatsBooked(now, now, now, now, true, code, seat, emp, false);
+	        SeatsBooked sb = new SeatsBooked(now, now, now, true, code, seat, emp, false);
 //	        SeatsBooked savedSeatsBooked = new SeatsBooked();
 	        sb.setSbId(10);
 

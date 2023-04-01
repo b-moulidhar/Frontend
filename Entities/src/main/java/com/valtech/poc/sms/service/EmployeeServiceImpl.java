@@ -40,9 +40,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 	
 	@Override
-	public List<Employee> getAllEmployees(int empID) {
+	public List<Employee> getAllEmployees(int eID) {
 		logger.info("Getting All Employee Details by manager");
-		return employeeDAO.getAllEmployees(empID);
+		return employeeDAO.getAllEmployees(eID);
 	}
 
 	@Override

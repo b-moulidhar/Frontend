@@ -257,8 +257,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 	            throw new RuntimeException("User is not approved");
 	        }
 	    } else {
-	        throw new RuntimeException("Invalid username or password");
-	    }
+	    	throw new IllegalArgumentException("Invalid username or password");	    }
 	}
 	
 

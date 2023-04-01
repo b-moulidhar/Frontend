@@ -3,13 +3,15 @@ import axios from "axios";
 
 import Navbar from "../Navbar/navbar";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 
 function LoginPage() {
   const [empId, setEmpId] = useState("");
   const [pass, setPass] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const location = useLocation();
+  const message = location.state && location.state.message;
 
   const handleLogin = async () => {
     try {
@@ -18,19 +20,26 @@ function LoginPage() {
       localStorage.setItem("token", token);
       localStorage.setItem("EId", EId);
       localStorage.setItem("role", role);
-      // redirect to the home page or any other page
-      window.location="/dashboard";
+      // check if token exists before redirecting to dashboard
+      if (response.data.token!=undefined) {
+        window.location="/dashboard";
+      } else {
+        setErrorMessage("wrong credentials");
+      }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setErrorMessage("Invalid credentials");
+        setErrorMessage(error.response.data.error);
       } else {
-        setErrorMessage("An error occurred during login");
+        setErrorMessage("User does not exist");
       }
     }
   };
+  
+  
 
   return (
     <div>
+      {message && <p>{message}</p>}
       {errorMessage && <p>{errorMessage}</p>}
       <label htmlFor="empId">Employee ID</label>
       <input
@@ -47,6 +56,16 @@ function LoginPage() {
         onChange={(e) => setPass(e.target.value)}
       />
       <button onClick={handleLogin}>Login</button>
-      </div>
-)}
-export default function Login()
+    </div>
+  );
+}
+
+
+export default function Login() {
+  return (
+    <div>
+      <Navbar />
+      <LoginPage />
+    </div>
+  );
+}

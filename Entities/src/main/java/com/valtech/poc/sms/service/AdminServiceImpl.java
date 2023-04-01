@@ -67,10 +67,10 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public int getSeatBookedCount(String sbStartDate) {
+	public int getSeatBookedCount(String sbDate) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-		LocalDateTime dateTime = LocalDateTime.parse(sbStartDate, formatter);
-		System.out.println(sbStartDate);
+		LocalDateTime dateTime = LocalDateTime.parse(sbDate, formatter);
+		System.out.println(sbDate);
 		return adminDao.getSeatBookedCount(dateTime);
 	}
 
