@@ -49,11 +49,27 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+//	@Override
+//	public Manager getManagerByMname(String managerName) {
+//		logger.info("fetching manager ");
+//		int mId=userDao.getMidByMname(managerName);
+//		if(mId!=0) {
+//		Manager manager=managerRepo.findById(mId).get();
+//		return manager;
+//		}
+//		else {
+//			Manager manager=null;
+//			return manager;
+//		}
+////		logger.info("manager id is "+ mId);
+//
+//	}
+
 	@Override
 	public User findByEmail(String email) {
 		Employee emp = employeeRepo.findByMailId(email);
 		User usr = userepo.findByEmpDetails(emp);
-		System.out.println("usr= " + usr);
+//		System.out.println("usr= " + usr);
 		return usr;
 	}
 
@@ -241,8 +257,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 	            throw new RuntimeException("User is not approved");
 	        }
 	    } else {
-	        throw new RuntimeException("Invalid username or password");
-	    }
+	    	throw new IllegalArgumentException("Invalid username or password");	    }
 	}
 	
 

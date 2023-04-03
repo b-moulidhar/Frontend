@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 public class AttendanceTable {
 	@Id
 	@Column(name = "atId")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int atId;
 	private String startDate;
 	private String endDate;

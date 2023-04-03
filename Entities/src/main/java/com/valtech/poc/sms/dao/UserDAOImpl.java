@@ -96,8 +96,8 @@ public class UserDAOImpl implements UserDAO {
 	public List<String> getMangerNames() {
 		// TODO Auto-generated method stub
 		String query = "select emp_name"
-				+ "from  employee e,user u,user_roles ur"
-				+ "where e.e_id=u.e_id and ur.u_id=u.u_id and ur.r_id=(select r_id from roles where role=\"Manager\")";
+				+ " from  employee e,user u,user_roles ur"
+				+ " where e.e_id=u.e_id and ur.u_id=u.u_id and ur.r_id=(select r_id from roles where role=\"Manager\")";
 		List<String> managernames = jdbcTemplate.queryForList(query, String.class);
 		return managernames;
 	}

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.service.spi.ServiceException;
+
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
@@ -40,7 +42,19 @@ public interface SeatBookingService {
 
 	void notifStatus(int sbId);
 
-	boolean checkIftheEmployeeAlreadyBookTheseat(int eId);
+
+	//List<SeatsBooked> getSeatBookingsByEId(int eId);
+
+	boolean checkIftheEmployeeAlreadyBookTheseat(int eId, int sId);
+
+
+
+	boolean CheckIfTheSameSeatBookingRecurring(int eId);
+
+	Seat getSeatById(int sId);
+
+	boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
+
 
 	//void updateNotifStatus(int sbId, Connection connection);
 

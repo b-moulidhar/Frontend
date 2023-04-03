@@ -1,10 +1,12 @@
 package com.valtech.poc.sms.service;
 
 import java.sql.Connection;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -85,43 +87,41 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 		 seatBookingDao.notifStatus( sbId);
 	 }
 	 
-//	@Override
-//	public void createSeatsBooked() {
-//	     SeatsBooked seatsBooked = new SeatsBooked();
-//	     seatsBooked.setSbEndDate(LocalDate.now().plusDays(7));
-//	     seatsBooked.setStartDate(LocalDate.now());
-//	     seatsBooked.setPunchIn(LocalDateTime.now());
-//	     seatsBooked.setPunchOut(LocalDateTime.now().plusHours(8));
-//	     seatsBooked.setCurrent(true);
-//	        seatsBooked.setCode("ABC123");
-//	        seatsBooked.setSId(1L);
-//	        seatsBooked.setEId(2L);
-//	        seatsBookedRepository.save(seatsBooked);
-//	    }
-
-	@Override
+    @Override
 	public void bookSeat(SeatsBooked seatsBooked) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public boolean checkIftheEmployeeAlreadyBookTheseat(int eId) {
+	public boolean checkIftheEmployeeAlreadyBookTheseat(int eId,int sId) {
 		
-		return seatBookingDao.checkIfEmployeeAlredyBookTheSeat(eId);
+		return seatBookingDao.checkIfEmployeeAlredyBookTheSeat(eId,sId);
+	}
+
+	@Override
+	public boolean CheckIfTheSameSeatBookingRecurring(int eId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+    
+	@Override
+	public boolean canEmployeeBookSeat(int eId,int sId, LocalDate sbDate) throws ServiceException {
+	    try {
+	        return seatBookingDao.canEmployeeBookSeat(eId, sId,sbDate);
+	    } catch (DataAccessException e) {
+	        throw new ServiceException("Error checking if employee can book seat", e);
+	    }
+	}
+
+	
+	@Override
+	public Seat getSeatById(int sId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
-//	@Override
-//	public void updateNotifStatus(int sbId, Connection connection) {
-//	    try (Connection connection = dataSource.getConnection()) {
-//	        SeatBookingDao seatBookingDao = new SeatBookingDaoImpl();
-//	        seatBookingDao.updateNotifStatus(sbId, connection);
-//	    } catch (SQLException e) {
-//	        e.printStackTrace();
-//	    }
-//	}
-
-	}
+  }
 
 
 
