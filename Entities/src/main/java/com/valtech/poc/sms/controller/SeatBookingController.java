@@ -108,13 +108,13 @@ public class SeatBookingController {
 		//check for recurring seats
 		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
 			Seat recSeat=seatService.getSeatById(sId);
-			SeatsBooked sb = new SeatsBooked(dateTime, null, null,  true, code, recSeat, emp, false);
+			SeatsBooked sb = new SeatsBooked(dateTime, null, null,  true, code, recSeat, emp, false,false);
 			SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
 			return ResponseEntity.ok("The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: " + savedSeatsBooked.getSbId());
 		}
 		else {
 //		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
-		SeatsBooked sb = new SeatsBooked(dateTime, null, null, true, code, seat, emp, false);
+		SeatsBooked sb = new SeatsBooked(dateTime, null, null, true, code, seat, emp, false,false);
 		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
 		//check if employee is booking a seat again on the same day
 				if (seatService.canEmployeeBookSeat(eId, sId,sbDate)) {
