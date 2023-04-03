@@ -76,7 +76,9 @@ public class AttendanceController {
 	@ResponseBody
 	@PostMapping("/attendanceRegularization/{eId}")
 	public String saveAttendance(@PathVariable("eId") int eId) {
+		logger.info("Request to save the attendance");
 		attendanceService.saveAttendance(eId);
+		logger.info("Attendance Saved");
 		return "saved";
 	}
 
