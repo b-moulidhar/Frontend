@@ -63,8 +63,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public void saveAttendance(int eId) {
 		logger.info("Fetching employee by id");
+		logger.debug("Fetching employee by id"+eId);
 		Employee emp = employeeRepo.findById(eId).get();
 		AttendanceTable attendance =new AttendanceTable();
+		logger.info("setting the values for attendance");
 		attendance.seteId(emp);
 		attendance.setStartDate(""+attendance.getStartDate());
 		attendance.setEndDate(""+attendance.getEndDate());

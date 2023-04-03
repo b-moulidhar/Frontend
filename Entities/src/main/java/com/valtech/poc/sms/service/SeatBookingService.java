@@ -53,9 +53,14 @@ public interface SeatBookingService {
 
 	Seat getSeatById(int sId);
 
-	boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
+	//boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
 
-	boolean checkIftheEmployeeAlreadyBookTheseat(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+	boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+
+	String createSeatsBookedDaily(int eId, int sId, String from, String to);
+
+	String createSeatsBookedWeekly(int eId, int sId, String from, String to);
+
 
 
 	//void updateNotifStatus(int sbId, Connection connection);

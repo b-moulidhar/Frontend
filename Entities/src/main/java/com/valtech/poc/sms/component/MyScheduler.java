@@ -18,9 +18,9 @@ public class MyScheduler {
         System.out.println("scheduled");
     }
     
-    public void dailyNotification() {
-    	mailContent.dailyNotification();
-    }
+//    public void dailyNotification() {
+//    	mailContent.dailyNotification();
+//    }
     
     public void autoCancellation(SeatsBooked sb) {
     	Boolean b = sb.isVerified();
