@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.SeatsBookedRepo;
 import com.valtech.poc.sms.service.MailContent;
@@ -11,7 +12,6 @@ import com.valtech.poc.sms.service.MailContent;
 @Component
 public class MyScheduler {
 	
-	private boolean run = false;
 	
 	@Autowired
 	MailContent mailContent;
@@ -25,8 +25,8 @@ public class MyScheduler {
     }
     
 
-    public void dailyNotification() {
-//    	mailContent.dailyNotification();
+    public void dailyNotification(Employee emp) {
+    	mailContent.dailyNotification(emp);
     }
     
     
