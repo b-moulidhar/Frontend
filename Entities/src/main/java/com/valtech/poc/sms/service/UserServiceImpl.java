@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 	public User findByEmail(String email) {
 		Employee emp = employeeRepo.findByMailId(email);
 		User usr = userepo.findByEmpDetails(emp);
-		System.out.println("usr= " + usr);
+//		System.out.println("usr= " + usr);
 		return usr;
 	}
 

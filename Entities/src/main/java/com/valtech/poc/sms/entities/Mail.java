@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 public class Mail {
 	@Id
 	@Column(name = "mId")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int mId;
 	private String email;
 	private String subject;
