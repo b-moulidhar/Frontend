@@ -63,6 +63,7 @@ public interface SeatBookingService {
 
 
 
+
 	//void updateNotifStatus(int sbId, Connection connection);
 
 //	void bookSeat();

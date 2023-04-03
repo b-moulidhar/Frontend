@@ -1,29 +1,22 @@
 package com.valtech.poc.sms.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.valtech.poc.sms.entities.DateUtil;
-import com.valtech.poc.sms.entities.Employee;
+import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.entities.Seat;
-import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.service.AdminService;
@@ -39,9 +32,6 @@ public class SeatBookingController {
 	private SeatBookingService seatService;
 
 	@Autowired
-	private EmployeeService employeeService;
-
-	@Autowired
 	EmployeeRepo employeeRepo;
 
 	@Autowired
@@ -49,6 +39,9 @@ public class SeatBookingController {
 
 	@Autowired
 	AdminService adminService;
+	
+	@Autowired
+	ScheduledTask scheduledTask;
 
 	@GetMapping("/total")
 	public ResponseEntity<List<Integer>> getAllSeats() {
@@ -88,14 +81,12 @@ public class SeatBookingController {
 		if(from.equals(to)) {
 			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,from,to));
 		}
-		
+	
 		else {
 			return ResponseEntity.ok(seatService.createSeatsBookedWeekly(eId,sId,from,to));
 		}
-
-		 }
 		 
-
+	}
 
 	@PutMapping("/notification/{sbId}")
 	public String notifStatus(@PathVariable int sbId) {
