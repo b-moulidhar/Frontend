@@ -219,11 +219,11 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
-	public boolean checkIfEmployeeAlredyBookTheSeat(int eId) throws DataAccessException{
-		String sql="select e_id from seats_booked where current=true and punch_out>now() and sb_end_date>now() ";
+	public boolean checkIfEmployeeAlredyBookTheSeat(int eId,int sId) throws DataAccessException{
+		String sql="select e_id from seats_booked where current=true and and sb_date>=now() and s_id=?";
        
 		try {
-			int empId = jdbcTemplate.queryForObject(sql, Integer.class);
+			int empId = jdbcTemplate.queryForObject(sql,new Object[] { sId }, Integer.class);
 		
         if(empId==eId)
         	return true;

@@ -47,7 +47,7 @@ public class AdminServiceImpl implements AdminService{
 	private SeatBookingService seatBookingService;
 	
 	@Autowired
-	EmployeeRepo employeeRepo;
+	private EmployeeRepo employeeRepo;
 	
 	
 	@Override
@@ -64,7 +64,7 @@ public class AdminServiceImpl implements AdminService{
 	
 	@Override
 	public int getFoodCount(String ftDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(ftDate, formatter);
 		System.out.println(ftDate);
 		return adminDao.getFoodCount(dateTime);
@@ -73,7 +73,7 @@ public class AdminServiceImpl implements AdminService{
 
 	@Override
 	public int getSeatBookedCount(String sbDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(sbDate, formatter);
 		System.out.println(sbDate);
 		return adminDao.getSeatBookedCount(dateTime);
@@ -81,7 +81,7 @@ public class AdminServiceImpl implements AdminService{
 
 	@Override
 	public int getCount(String ftDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(ftDate, formatter);
 		Food f= adminRepository.getFoodByFtDate(dateTime);
 		return f.getCount();

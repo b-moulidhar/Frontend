@@ -45,7 +45,7 @@ public interface SeatBookingService {
 
 	//List<SeatsBooked> getSeatBookingsByEId(int eId);
 
-	boolean checkIftheEmployeeAlreadyBookTheseat(int eId);
+	boolean checkIftheEmployeeAlreadyBookTheseat(int eId, int sId);
 
 
 
