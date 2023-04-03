@@ -36,7 +36,7 @@ public interface SeatBookingDao {
 
 	//List<RecurringSeats> countRecurringSeats();
 
-	boolean checkIfEmployeeAlredyBookTheSeat(int eId);
+	boolean checkIfEmployeeAlredyBookTheSeat(int eId, int sId);
 
 
 	boolean checkIfTheSameSeatBookingRecurring(int eId);

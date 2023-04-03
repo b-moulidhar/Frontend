@@ -94,9 +94,9 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 	}
 
 	@Override
-	public boolean checkIftheEmployeeAlreadyBookTheseat(int eId) {
+	public boolean checkIftheEmployeeAlreadyBookTheseat(int eId,int sId) {
 		
-		return seatBookingDao.checkIfEmployeeAlredyBookTheSeat(eId);
+		return seatBookingDao.checkIfEmployeeAlredyBookTheSeat(eId,sId);
 	}
 
 	@Override
