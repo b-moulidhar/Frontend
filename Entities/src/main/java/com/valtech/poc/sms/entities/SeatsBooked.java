@@ -18,8 +18,7 @@ public class SeatsBooked {
 	@Column(name = "sbId")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int sbId;
-	private LocalDateTime sbStartDate;
-	private LocalDateTime sbEndDate;
+	private LocalDateTime sbDate;
 	private LocalDateTime punchIn;
 	private LocalDateTime punchOut;
 	private boolean current;
@@ -31,6 +30,45 @@ public class SeatsBooked {
 	@JoinColumn(name = "eId", referencedColumnName = "eId")
 	private Employee eId;
 	private boolean notifStatus;
+	private boolean verified;
+	
+
+	public SeatsBooked(LocalDateTime sbDate, LocalDateTime punchIn, LocalDateTime punchOut, boolean current,
+			String code, Seat sId, Employee eId, boolean notifStatus, boolean verified) {
+		super();
+		this.sbDate = sbDate;
+		this.punchIn = punchIn;
+		this.punchOut = punchOut;
+		this.current = current;
+		this.code = code;
+		this.sId = sId;
+		this.eId = eId;
+		this.notifStatus = notifStatus;
+		this.verified = verified;
+	}
+
+	public SeatsBooked(int sbId, LocalDateTime sbDate, LocalDateTime punchIn, LocalDateTime punchOut, boolean current,
+			String code, Seat sId, Employee eId, boolean notifStatus, boolean verified) {
+		super();
+		this.sbId = sbId;
+		this.sbDate = sbDate;
+		this.punchIn = punchIn;
+		this.punchOut = punchOut;
+		this.current = current;
+		this.code = code;
+		this.sId = sId;
+		this.eId = eId;
+		this.notifStatus = notifStatus;
+		this.verified = verified;
+	}
+
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
 
 	public boolean isNotifStatus() {
 		return notifStatus;
@@ -46,6 +84,16 @@ public class SeatsBooked {
 
 	public void setSbId(int sbId) {
 		this.sbId = sbId;
+	}
+
+	
+	
+	public LocalDateTime getSbDate() {
+		return sbDate;
+	}
+
+	public void setSbDate(LocalDateTime sbDate) {
+		this.sbDate = sbDate;
 	}
 
 	public LocalDateTime getPunchIn() {
@@ -96,61 +144,23 @@ public class SeatsBooked {
 		this.eId = eId;
 	}
 
-	public LocalDateTime getSbStartDate() {
-		return sbStartDate;
-	}
-
-	public void setSbStartDate(LocalDateTime sbStartDate) {
-		this.sbStartDate = sbStartDate;
-	}
-
-	public LocalDateTime getSbEndDate() {
-		return sbEndDate;
-	}
-
-	public void setSbEndDate(LocalDateTime sbEndDate) {
-		this.sbEndDate = sbEndDate;
-	}
+	
 
 	public SeatsBooked() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public SeatsBooked(LocalDateTime sbStartDate, LocalDateTime sbEndDate, LocalDateTime punchIn,
-			LocalDateTime punchOut, boolean current, String code, Seat sId, Employee eId, boolean notifStatus) {
-		super();
-		this.sbStartDate = sbStartDate;
-		this.sbEndDate = sbEndDate;
-		this.punchIn = punchIn;
-		this.punchOut = punchOut;
-		this.current = current;
-		this.code = code;
-		this.sId = sId;
-		this.eId = eId;
-		this.notifStatus = notifStatus;
-	}
-
-	public SeatsBooked(int sbId, LocalDateTime sbStartDate, LocalDateTime sbEndDate, LocalDateTime punchIn,
-			LocalDateTime punchOut, boolean current, String code, Seat sId, Employee eId, boolean notifStatus) {
-		super();
-		this.sbId = sbId;
-		this.sbStartDate = sbStartDate;
-		this.sbEndDate = sbEndDate;
-		this.punchIn = punchIn;
-		this.punchOut = punchOut;
-		this.current = current;
-		this.code = code;
-		this.sId = sId;
-		this.eId = eId;
-		this.notifStatus = notifStatus;
-	}
-
 	@Override
 	public String toString() {
-		return "SeatsBooked [sbId=" + sbId + ", sbStartDate=" + sbStartDate + ", sbEndDate=" + sbEndDate + ", punchIn="
-				+ punchIn + ", punchOut=" + punchOut + ", current=" + current + ", code=" + code + ", sId=" + sId
-				+ ", eId=" + eId + "]";
+		return "SeatsBooked [sbId=" + sbId + ", sbDate=" + sbDate + ", punchIn=" + punchIn + ", punchOut=" + punchOut
+				+ ", current=" + current + ", code=" + code + ", sId=" + sId + ", eId=" + eId + ", notifStatus="
+				+ notifStatus + ", verified=" + verified + "]";
 	}
 
+
+
+
+	
+	
 }

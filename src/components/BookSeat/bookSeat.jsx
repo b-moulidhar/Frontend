@@ -1,95 +1,4 @@
-// import { useState } from "react"
-// import Sidebar from "../Sidebar/sidebar"
-// import "./bookSeat.css";
-// import axios from 'axios';
-
-// export default function BookSeat(){
-
-//     let approve = () => {
-//         axios.post("",place)
-//         .then(response => {
-//             setPlace({
-//                 request:'',
-//             fromdate:Date,
-//             todate:Date,
-//             shifttime: "",
-//             optFood:false
-//             })
-//             console.log(response.data)
-//         })
-//         .catch(err => console.log("Error ", err))    
-//     }
-       
-    
-//     const [place,setPlace] = useState({
-//             request:'',
-//             fromdate:Date,
-//             todate:Date,
-//             shifttime: "",
-//             optFood:false
-//     })
-
-
-
-//     function getRequest(event){
-//             setPlace({
-//                 ...place,[event.target.name]:event.target.value,
-//             })
-//             console.log(place.optFood)
-//     }
-
-//     // function foodOption(event){
-//     //     setOptFood({
-//     //         [event.target.name]:event.target.value
-//     //     })
-//     // }
-
-//     function sendData(){
-//         console.log(place.optFood)
-//         approve();
-//     }
-//     return(
-//         <div className="bookseat_head">
-//             <div>
-//                 <Sidebar/>
-//             </div>
-//         <div className="bookseat_container">
-//         <select   name="request"  value={place.request} onInput={getRequest} required>
-//                     <option value="">Select type of requests</option>
-//                     <option value="weekly">weekly</option>
-//                     <option value="daily">daily</option>
-//                   </select>
-//                   <br />
-// 		<br/>
-//         <label htmlFor="" ></label>
-//         <input type="date" name="fromdate" id="fromdate" placeholder="From Date"  required/> &nbsp;&nbsp;<br /><br /><input type="date" name="todate" id="todate" required/>
-//         <br />
-//         <br />
-//                 <select name="shifttime"  value={place.shifttime} onInput={getRequest} required>
-//                     <option value="">shift time</option>
-//                     <option value="time1">9:00am to 6:00pm</option> 
-//                     <option value="time2">10:00am to 6:00pm</option> 
-//                     <option value="time3">2:00pm to 10:00pm</option> 
-//                     <option value="time4">2:00am to 6:00</option>  
-//                   </select>
-//                   <br />
-//                   <br />
-//                   <p>Would you like to opt for lunch at Office? (It would help us arrange the lunch for you)</p>
-//                    <select name="optFood" value={place.optFood} onInput={getRequest} required>
-//                    <option value="" disabled selected>Select Option</option>
-//                     <option value={true}>Yes</option>
-//                     <option value={false}>No</option>
-//                    </select>
-//                     <br/>
-//                     <br/>
-//                   <a href="/floorList" className="seatbook_next" onClick={sendData} type='submit'>Next</a>
-//         </div>
-//         </div>
-//     )
-// }
-
 import React, { useState } from "react";
-import Sidebar from "../Sidebar/sidebar";
 import "./bookSeat.css";
 
 function BookSeat() {
@@ -126,17 +35,13 @@ function BookSeat() {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     setDifferenceDay(diffDays)
     if(diffDays>7){
-      alert("Not allowed to book for more than & days")
+      alert("Not allowed to book for more than 7 days");
     }
   }
 
   // var date = new Date();
 
   return (
-    <div className="bookseat">
-        <div>
-            <Sidebar/>
-        </div>
     <form onSubmit={handleSubmit} className="seat-booking-form">
       <label htmlFor="branch-name-input">Branch Name:</label>
       <select
@@ -175,11 +80,10 @@ function BookSeat() {
         onChange={(e) => setShiftTiming(e.target.value)}
         className="form-input"
       >
-        <option value="">--Select--</option>
-        <option value="Morning">Morning</option>
-        <option value="Afternoon">Afternoon</option>
-        <option value="Evening">Evening</option>
-        <option value="Night">Night</option>
+        <option value="" disabled>--Select--</option>
+        <option value="Morning">9:00AM - 6:00PM</option>
+        <option value="Afternoon">2:00PM - 10:00PM</option>
+        <option value="night">10:00PM - 6:00AM</option>
       </select>
       <label htmlFor="meal-name-input">Meal:</label>
       <select
@@ -196,7 +100,7 @@ function BookSeat() {
       {request === "Daily" && (
         <>
           {" "}
-          <label htmlFor="from-date-input"> To Date:</label>
+          <label htmlFor="from-date-input"> From Date:</label>
           <input
             id="from-date-input"
             type="date"
@@ -205,7 +109,7 @@ function BookSeat() {
             onChange={(e) => setToDate(e.target.value)}
             className="form-input"
           />
-          <label htmlFor="to-date-input">From Date:</label>
+          <label htmlFor="to-date-input">To Date:</label>
           <input
             id="to-date-input"
             type="date"
@@ -221,7 +125,7 @@ function BookSeat() {
       {request === "Weekly" && (
         <>
           {" "}
-          <label htmlFor="from-date-input"> To Date:</label>
+          <label htmlFor="from-date-input"> From Date:</label>
           <input
             id="from-date-input"
             type="date"
@@ -229,7 +133,7 @@ function BookSeat() {
             onChange={(e) => setFirstDate(e.target.value)}
             className="form-input"
           />
-          <label htmlFor="to-date-input">From Date:</label>
+          <label htmlFor="to-date-input">To Date:</label>
           <input
             id="to-date-input"
             type="date"
@@ -246,7 +150,6 @@ function BookSeat() {
         <a href="/floorList">Next</a>
       </button>
     </form>
-    </div>
   );
 }
 

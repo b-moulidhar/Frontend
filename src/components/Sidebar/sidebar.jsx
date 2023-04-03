@@ -33,6 +33,7 @@ function Sidebar({children}){
         },
         {
             path:"/notify",
+            path:"/notify",
             name:"Notification",
             icon:<FaBell/>
         },

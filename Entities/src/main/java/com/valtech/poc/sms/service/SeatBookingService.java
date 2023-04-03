@@ -2,7 +2,10 @@ package com.valtech.poc.sms.service;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.hibernate.service.spi.ServiceException;
 
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
@@ -39,6 +42,21 @@ public interface SeatBookingService {
 	//void updateNotifStatus(int sbId);
 
 	void notifStatus(int sbId);
+
+
+	//List<SeatsBooked> getSeatBookingsByEId(int eId);
+
+
+
+
+	boolean CheckIfTheSameSeatBookingRecurring(int eId);
+
+	Seat getSeatById(int sId);
+
+	boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
+
+	boolean checkIftheEmployeeAlreadyBookTheseat(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+
 
 	//void updateNotifStatus(int sbId, Connection connection);
 

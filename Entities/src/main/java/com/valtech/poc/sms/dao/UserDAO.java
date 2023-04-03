@@ -31,4 +31,6 @@ public interface UserDAO {
 
 	List<String> getMangerNames();
 
+//	int getMidByMname(String managerName);
+
 }

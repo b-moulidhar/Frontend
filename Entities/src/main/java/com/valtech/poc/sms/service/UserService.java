@@ -41,6 +41,8 @@ public interface UserService {
 
 	List<String> getManagerNames();
 
+//	Manager getManagerByMname(String managerName);
+
 
 //	void saveEmployee(Employee employee, int mid);
 

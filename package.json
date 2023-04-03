@@ -43,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "mdb-react-ui-kit": "^6.0.0",
     "react-qr-scanner": "^1.0.0-alpha.11"
   }
 }

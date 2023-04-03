@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,6 +18,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import com.valtech.poc.sms.entities.Employee;
@@ -29,7 +32,7 @@ import com.valtech.poc.sms.repo.SeatRepo;
 @Component
 @ComponentScan
 
-public  class SeatBookingDaoImpl implements SeatBookingDao {
+public   class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -51,14 +54,49 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 		// fetching all the available seats
 	}
 
+//	@Override
+//	public List<Integer> availableSeats() {
+//		String query = "SELECT sb_id FROM seats_booked WHERE current = 1";
+//		List<Integer> availableSeats = jdbcTemplate.queryForList(query, Integer.class);
+//		return availableSeats;
+//		// fetching the seats which are booked
+//	}
+// retreiving seat booking details where current = 1
+	
 	@Override
 	public List<Integer> availableSeats() {
-		String query = "SELECT sb_id FROM seats_booked WHERE current = 1";
-		List<Integer> availableSeats = jdbcTemplate.queryForList(query, Integer.class);
-		return availableSeats;
-		// fetching the seats which are booked
+	    String query = "SELECT sb.sb_id, s.s_name " +
+	                   "FROM seats_booked sb " +
+	                   "INNER JOIN seat s ON sb.s_id = s.s_id " +
+	                   "WHERE current = 1";
+	    List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
+	    List<Integer> availableSeats = new ArrayList<>();
+	    for (Map<String, Object> row : rows) {
+	        Integer sbId = (Integer) row.get("sb_id");
+	        String sName = (String) row.get("s_name");
+	        System.out.println("Seat ID: " + sbId + ", Seat Name: " + sName);
+	        availableSeats.add(sbId);
+	   
 	}
+	    return availableSeats;
+	}
+//   @Override
+//	public List<Object[]> availableSeats() {
+//	    String query = "SELECT sb.sb_id, s.s_name FROM seats_booked sb INNER JOIN seat s ON sb.s_id = s.s_id WHERE sb.current = 1";
+//	    List<Object[]> rows = jdbcTemplate.query(query, new Object[]{}, new BeanPropertyRowMapper(Object[].class));
 //
+//	    List<Object[]> availableSeats = new ArrayList<>();
+//	    for (Object[] row : rows) {
+//	        Integer sbId = (Integer) row[0];
+//	        String sName = (String) row[1];
+//	        availableSeats.add(new Object[]{sbId, sName});
+//	    }
+//
+//	    return availableSeats;
+//	}
+
+	
+	
 	@Override
 	public void notifStatus( int sbId) {
 		String sql = "UPDATE seats_booked SET notif_status = ? WHERE sb_id = ?";
@@ -131,12 +169,12 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 //				emp.setManagerDetails(mng);
 				seatsBooked.seteId(emp);
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-				String sbSDate = rs.getString("sb_start_date");
+				String sbSDate = rs.getString("sb_date");
 				LocalDateTime dateTime = LocalDateTime.parse(sbSDate, formatter);
-				seatsBooked.setSbStartDate(dateTime);
-				String sbEDate = rs.getString("sb_end_date");
-				LocalDateTime dateTime1 = LocalDateTime.parse(sbEDate, formatter);
-				seatsBooked.setSbEndDate(dateTime1);
+				seatsBooked.setSbDate(dateTime);
+//				String sbEDate = rs.getString("sb_end_date");
+//				LocalDateTime dateTime1 = LocalDateTime.parse(sbEDate, formatter);
+//				seatsBooked.setSbEndDate(dateTime1);
 				String sbISDate = rs.getString("punch_in");
 				LocalDateTime dateTimeI = LocalDateTime.parse(sbISDate, formatter);
 				seatsBooked.setPunchIn(dateTimeI);
@@ -161,7 +199,7 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	@Override
 	public List<Seat> findAvailableSeatsByDate(LocalDate date) {
 		String query = "SELECT s.s_id, s.s_name " + "FROM seat s " + "WHERE s.s_id NOT IN ( " + "   SELECT sb.s_id "
-				+ "   FROM seats_booked sb " + "   WHERE DATE(sb.sb_start_date) = ? AND sb.current = true" + ")";
+				+ "   FROM seats_booked sb " + "   WHERE DATE(sb.sb_date) = ? AND sb.current = true" + ")";
 		List<Seat> availableSeats = jdbcTemplate.query(query, new Object[] { date },
 				new BeanPropertyRowMapper<>(Seat.class));
 		return availableSeats;
@@ -169,10 +207,10 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Override
 	public void bookSeat(SeatsBooked seatsBooked) {
-		String sql = "INSERT INTO seats_booked (sb_id, sb_start_date,sb_end_date, punch_in, punch_out, current, code, s_id, e_id) "
+		String sql = "INSERT INTO seats_booked (sb_id, sb_date, punch_in, punch_out, current, code, s_id, e_id) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		try {
-			jdbcTemplate.update(sql, seatsBooked.getSbId(), seatsBooked.getSbStartDate(), seatsBooked.getSbEndDate(),
+			jdbcTemplate.update(sql, seatsBooked.getSbId(), seatsBooked.getSbDate(), 
 					seatsBooked.getPunchIn(), seatsBooked.getPunchOut(), seatsBooked.isCurrent(),
 					seatsBooked.getCode(), seatsBooked.getsId(), seatsBooked.geteId());
 		} catch (DataAccessException e) {
@@ -180,25 +218,114 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 		}
 	}
 
+	@Override
+	public boolean checkIfEmployeeAlredyBookTheSeat(int eId,LocalDateTime from,LocalDateTime to) throws DataAccessException{
+		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ? AND current = true";
+       
+		try {
+			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,from,to }, Integer.class);
+		
+        if(cnt>0)
+        	return true;
+        return false;
+		}catch (DataAccessException e) {
+			return false;
+		}
+	}
+
 	
+	@Override
+	public boolean checkIfTheSameSeatBookingRecurring(int eId) throws DataAccessException {
+		String sql="SELECT COUNT(*) As bookings FROM seat s INNER JOIN seats_booked sb ON s.s_id = sb.s_id INNER JOIN employee e ON sb.e_id = e.e_id WHERE e.e_id=? GROUP BY s.s_id, s.s_name, e.emp_name HAVING COUNT(*) >= 1 ORDER BY bookings DESC;";
+		try {
+			@SuppressWarnings("deprecation")
+			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId }, Integer.class);
+		
+        if(cnt>=1)
+        	return true;
+        return false;
+		}catch (DataAccessException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	@Override
+	public boolean canEmployeeBookSeat(int eId,int sId, LocalDate sbDate) throws DataAccessException {
+	    try {
+	        String sql = "SELECT COUNT(*) FROM seats_booked " +
+	                     "WHERE e_id = ? " +
+	                     "AND DATE_FORMAT(sb_date, '%Y-%m-%d') = DATE_FORMAT(:sbDate, '%Y-%m-%d')";
+
+	        int count = jdbcTemplate.queryForObject(sql, new Object[] { eId }, Integer.class);
+	        return count == 0;
+	    } catch (DataAccessException e) {
+	       
+	        return false;
+	    }
+	}
+
+
+	
+
+	
+//	
+//	    @Override
+//	    public List<SeatsBooked> getSeatBookingsByEId(int eId)  {
+//	        List<SeatsBooked> bookings = new ArrayList<>();
+//
+//	        try (Connection conn = getConnection();
+//	             Statement stmt = conn.createStatement();
+//	             ResultSet rs = stmt.executeQuery(
+//	                     "SELECT s.s_id, s.s_name, COUNT(*) AS bookings, e.emp_name "
+//	                   + "FROM seat s "
+//	                   + "INNER JOIN seats_booked sb ON s.s_id = sb.s_id "
+//	                   + "INNER JOIN employee e ON sb.e_id = e.e_id "
+//	                   + "WHERE e.e_id=" + eId + " "
+//	                   + "GROUP BY s.s_id, s.s_name, e.emp_name "
+//	                   + "HAVING COUNT(*) >= 1 "
+//	                   + "ORDER BY bookings DESC")) {
+//
+//	            while (rs.next()) {
+//	                int seatId = rs.getInt("s_id");
+//	                String seatName = rs.getString("s_name");
+//	                int numBookings = rs.getInt("bookings");
+//	                String employeeName = rs.getString("emp_name");
+//	                
+//
+//	                SeatsBooked booking = new SeatsBooked(seatId, seatName, numBookings, employeeName);
+//	                bookings.add(booking);
+//	            }
+//	        } 
+//	  
+//	        
+//	        return bookings;
+//	    }
+
+//		private Connection getConnection() {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//	}
+//
 
 	
 //	@Override
 //	public List<RecurringSeats> countRecurringSeats() {
 //		String sql = "SELECT s.s_id, s.s_name, COUNT(*) AS bookings, e.emp_name\r\n"
-//				+ "FROM seat s\r\n"
+//			+ "FROM seat s\r\n"
 //				+ "INNER JOIN seats_booked sb ON s.s_id = sb.s_id\r\n"
 //				+ "INNER JOIN employee e ON sb.e_id = e.e_id\r\n"
 //				+ "WHERE   e.e_id=123\r\n"
 //				+ "GROUP BY s.s_id, s.s_name, e.emp_name\r\n"
-//				+ "HAVING COUNT(*) >= 1\r\n"
+//			+ "HAVING COUNT(*) >= 1\r\n"
 //				+ "ORDER BY bookings DESC;";
 //		List<RecurringSeats> RecurringList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(RecurringSeats.class));
 //		return RecurringList;
 //	}
-	
-
-	
+//	
+//
+//	
 
 
 

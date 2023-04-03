@@ -13,6 +13,7 @@ import com.valtech.poc.sms.dao.AdminDao;
 import com.valtech.poc.sms.dao.UserDAO;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Food;
+import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.entities.User;
 import com.valtech.poc.sms.repo.AdminRepository;
 import com.valtech.poc.sms.repo.EmployeeRepo;
@@ -40,13 +41,22 @@ public class AdminServiceImpl implements AdminService{
 	ResetPassword resetPassword;
 	
 	@Autowired
-	EmployeeRepo employeeRepo;
+	private EmployeeService employeeService;
+	
+	@Autowired
+	private SeatBookingService seatBookingService;
+	
+	@Autowired
+	private EmployeeRepo employeeRepo;
 	
 	
 	@Override
 	public String generateQrCode(int eId) {
 		Employee emp = employeeRepo.findById(eId).get();
 		User usr = userRepo.findByEmpDetails(emp);
+		  if (usr == null) {
+		   return "000";
+		    }
 		int empId = usr.getEmpId();
 		String code ="" + empId + resetPassword.getRandomNumberString();
 		return code;
@@ -54,7 +64,7 @@ public class AdminServiceImpl implements AdminService{
 	
 	@Override
 	public int getFoodCount(String ftDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(ftDate, formatter);
 		System.out.println(ftDate);
 		return adminDao.getFoodCount(dateTime);
@@ -62,16 +72,16 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public int getSeatBookedCount(String sbStartDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-		LocalDateTime dateTime = LocalDateTime.parse(sbStartDate, formatter);
-		System.out.println(sbStartDate);
+	public int getSeatBookedCount(String sbDate) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime dateTime = LocalDateTime.parse(sbDate, formatter);
+		System.out.println(sbDate);
 		return adminDao.getSeatBookedCount(dateTime);
 	}
 
 	@Override
 	public int getCount(String ftDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(ftDate, formatter);
 		Food f= adminRepository.getFoodByFtDate(dateTime);
 		return f.getCount();
@@ -114,6 +124,20 @@ public class AdminServiceImpl implements AdminService{
 	}
 	public List<Map<String, Object>> getRegistrationListForApproval() {
 		return adminDao.getRegistrationListForApproval();
+	}
+
+	@Override
+	public boolean verifyQr(int eId, String code) {
+		Employee emp = employeeService.findById(eId);
+		System.out.println(emp.getEmpName());
+		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
+		String key = sb.getCode();
+		System.out.println(key);
+		System.out.println(code);
+		if(key.equals(code)) {
+			return true;
+		}
+		return false;
 	}
 
 }

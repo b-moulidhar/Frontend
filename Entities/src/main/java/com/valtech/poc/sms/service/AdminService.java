@@ -7,7 +7,7 @@ public interface AdminService {
 
 	int getFoodCount(String ftDate);
 
-	int getSeatBookedCount(String sbStartDate);
+	int getSeatBookedCount(String sbDate);
 
 	int getCount(String ftDate);
 
@@ -24,6 +24,8 @@ public interface AdminService {
 	List<String> findShiftStartTimings();
 
 	List<String> findShiftEndTimings();
+
+	boolean verifyQr(int eId,String code);
 
 
 

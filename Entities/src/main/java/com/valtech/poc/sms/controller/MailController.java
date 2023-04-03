@@ -1,11 +1,14 @@
 package com.valtech.poc.sms.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.service.EmployeeService;
 import com.valtech.poc.sms.service.ResetPassword;
 
@@ -26,7 +29,7 @@ public class MailController {
 		System.out.println(b);
 		if (b == true) {
 			Boolean forgot = resetPassword.generateOtp(email);
-			System.out.println(forgot);
+//			System.out.println(forgot);
 			String s1 = "sent";
 			return s1;
 		}
@@ -34,20 +37,19 @@ public class MailController {
 		return s2;
 	}
 
-//	@PostMapping("/reset/newPass/{id}")
-//	public String newPass(@PathVariable("id") int id, @RequestParam String otpKey, @RequestParam String newPassword) {
-//
-//		Employee emp = empService.findById(id);
-//		String email = emp.getMailId();
-//		System.out.println("test mail= " + email);
-//		boolean b = resetPassword.newPasswod(email, otpKey, newPassword);
-//		System.out.println(b);
-//		if (b == true) {
-//			String password = bCryptPasswordEncoder.encode(user.getPassword());
-//			return "changed";
-//		}
-//		return "fail";
-//	}
+	@PostMapping("/reset/newPass/{id}")
+	public String newPass(@PathVariable("id") int id, @RequestParam String otpKey, @RequestParam String newPassword) {
+
+		Employee emp = empService.findById(id);
+		String email = emp.getMailId();
+		System.out.println("test mail= " + email);
+		boolean b = resetPassword.newPasswod(email, otpKey, newPassword);
+		System.out.println(b);
+		if (b == true) {			
+			return "changed";
+		}
+		return "fail";
+	}
 	
 //	@PostMapping("/reset/{email}")
 //    public String forgotPass(@PathVariable("email") String email, @RequestHeader("Authorization") String jwt) throws Exception {

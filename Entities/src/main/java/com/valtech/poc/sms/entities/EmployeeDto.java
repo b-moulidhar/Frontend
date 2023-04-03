@@ -8,11 +8,13 @@ public class EmployeeDto {
 	private int empId;
 	private String pass;
 	private String role;
+	private String managerName;
 	public EmployeeDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public EmployeeDto(String empName, String phNum, String mailId, int empId, String pass, String role) {
+	public EmployeeDto(String empName, String phNum, String mailId, int empId, String pass, String role,
+			String managerName) {
 		super();
 		this.empName = empName;
 		this.phNum = phNum;
@@ -20,6 +22,7 @@ public class EmployeeDto {
 		this.empId = empId;
 		this.pass = pass;
 		this.role = role;
+		this.managerName = managerName;
 	}
 	public String getEmpName() {
 		return empName;
@@ -57,11 +60,18 @@ public class EmployeeDto {
 	public void setRole(String role) {
 		this.role = role;
 	}
+	public String getManagerName() {
+		return managerName;
+	}
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
 	@Override
 	public String toString() {
 		return "EmployeeDto [empName=" + empName + ", phNum=" + phNum + ", mailId=" + mailId + ", empId=" + empId
-				+ ", pass=" + pass + ", role=" + role + "]";
+				+ ", pass=" + pass + ", role=" + role + ", managerName=" + managerName + "]";
 	}
+	
 	
 	
 	

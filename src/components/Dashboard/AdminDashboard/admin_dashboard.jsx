@@ -3,11 +3,25 @@ import { useEffect, useState } from 'react';
 import './admin_dashboard.css';
 
 function AdminDashboard(){
-    const [count,setCount] = useState({counts:0})
+    const [count,setCount] = useState(0)
+    // useEffect(() => {
+    //   axios.get("http://10.191.80.104:7001/seats/total").then((response) => {
+    //     setCount(response.data);alert(typeof response.url);
+    //   }); 
+    // }, []);
     useEffect(() => {
-      axios.get("http://10.191.80.104:7001/seats/total").then((response) => {
-        setCount(response.data);alert(response.data);
-      }); 
+      // Fetch data from API
+      axios.get('http://10.191.80.103:7001/seats/total',{headers: {Accept: 'application/json'
+       }})
+        .then(response => {
+          // Update state with data count
+          setCount(response.data.length);
+          console.log(response.data)
+  alert(response.data.length);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }, []);
     // useEffect(()=>{
     //     axios.get("http://10.191.80.104:7001/seats/total").then((res)=>{
@@ -29,7 +43,7 @@ function AdminDashboard(){
         }
     }
     return (
-            <div className="dashboard_container">
+      <div className="dashboard_container">
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
               <div className="container-fluid">
                 <a className="navbar-brand" href="#">
@@ -127,7 +141,76 @@ function AdminDashboard(){
         </div>
       </div>
     </div>
-    )
-        }
+      // <div classname="container admin_body">
+      //   <div classname="mainpage">
+      //     <div classname="admin_container">
+      //       <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      //         <div className="container-fluid">
+      //           <a className="navbar-brand" href="#">
+      //             Navbar
+      //           </a>
+      //           <button
+      //             className="navbar-toggler"
+      //             type="button"
+      //             data-bs-toggle="collapse"
+      //             data-bs-target="#navbarSupportedContent"
+      //             aria-controls="navbarSupportedContent"
+      //             aria-expanded="false"
+      //             aria-label="Toggle navigation"
+      //           >
+      //             <span className="navbar-toggler-icon" />
+      //           </button>
+      //           <div
+      //             className="collapse navbar-collapse"
+      //             id="navbarSupportedContent"
+      //           >
+      //             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+      //               <li className="nav-item">ADMIN DASHBOARD</li>
+      //             </ul>
+      //           </div>
+      //         </div>
+      //       </nav>
+      //       <div classname="admin">
+      //         <div classname="total_count">
+      //           <div className="card" style={{ width: "18rem" }}>
+      //             <div className="card-body">
+      //               <h5 className="card-title">Food count</h5>
+      //               <h6 className="card-subtitle mb-2 text-body-secondary">
+      //                 Food count
+      //               </h6>
+      //               <p className="card-text">
+      //                 {count.counts}
+      //               </p>
+      //             </div>
+      //           </div>
 
-        export default AdminDashboard;
+      //           <div className="card" style={{ width: "18rem" }}>
+      //             <div className="card-body">
+      //               <h5 className="card-title">Employee count</h5>
+      //               <h6 className="card-subtitle mb-2 text-body-secondary">
+      //                 Employee count
+      //               </h6>
+      //               <p className="card-text">
+      //                 {count.counts}
+      //               </p>
+      //             </div>
+      //           </div>
+      //         </div>
+      //         <select name id>
+      //           <option value selected>
+      //             generate report
+      //           </option>
+      //           <option value>weekly</option>
+      //           <option value>monthly</option>
+      //         </select>
+      //         <div>registration approval</div>
+      //         <div>scan QR</div>
+      //       </div>
+      //     </div>
+      //   </div>
+      // </div>
+      
+    );
+}
+
+export default AdminDashboard;

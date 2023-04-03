@@ -36,7 +36,7 @@
  .dashboard_container{
     /* background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
      
-     /* background-image: url('D:/PoC/SMS/sms/sms_frontend/src/assets/valtech.png'); */
+     background-image: url('https://media.glassdoor.com/l/ef/9a/d9/3f/valtech-india.jpg');
 
      background-position: center ;
      background-repeat: no-repeat;
@@ -110,7 +110,6 @@ ul li {
 .atten{
     display: flex;
     justify-content: space-evenly;
-
     padding: 10px;
     margin: auto;
 }

@@ -1,3 +1,4 @@
+
 import './navbar.css';
 import { useState } from 'react';
 
@@ -14,6 +15,7 @@ function Navbar(){
       }
     
     return(
+        <div>
         <div>
             
             {/* <nav className="navbar navbar-expand-md">
@@ -36,7 +38,7 @@ function Navbar(){
                 </div>
             </nav>
 
-        </div>
+        </div></div>
     )
 }
 
