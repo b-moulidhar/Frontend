@@ -30,6 +30,45 @@ public class SeatsBooked {
 	@JoinColumn(name = "eId", referencedColumnName = "eId")
 	private Employee eId;
 	private boolean notifStatus;
+	private boolean verified;
+	
+
+	public SeatsBooked(LocalDateTime sbDate, LocalDateTime punchIn, LocalDateTime punchOut, boolean current,
+			String code, Seat sId, Employee eId, boolean notifStatus, boolean verified) {
+		super();
+		this.sbDate = sbDate;
+		this.punchIn = punchIn;
+		this.punchOut = punchOut;
+		this.current = current;
+		this.code = code;
+		this.sId = sId;
+		this.eId = eId;
+		this.notifStatus = notifStatus;
+		this.verified = verified;
+	}
+
+	public SeatsBooked(int sbId, LocalDateTime sbDate, LocalDateTime punchIn, LocalDateTime punchOut, boolean current,
+			String code, Seat sId, Employee eId, boolean notifStatus, boolean verified) {
+		super();
+		this.sbId = sbId;
+		this.sbDate = sbDate;
+		this.punchIn = punchIn;
+		this.punchOut = punchOut;
+		this.current = current;
+		this.code = code;
+		this.sId = sId;
+		this.eId = eId;
+		this.notifStatus = notifStatus;
+		this.verified = verified;
+	}
+
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
 
 	public boolean isNotifStatus() {
 		return notifStatus;
@@ -112,39 +151,15 @@ public class SeatsBooked {
 		// TODO Auto-generated constructor stub
 	}
 
-	public SeatsBooked(int sbId, LocalDateTime sbDate, LocalDateTime punchIn, LocalDateTime punchOut, boolean current,
-			String code, Seat sId, Employee eId, boolean notifStatus) {
-		super();
-		this.sbId = sbId;
-		this.sbDate = sbDate;
-		this.punchIn = punchIn;
-		this.punchOut = punchOut;
-		this.current = current;
-		this.code = code;
-		this.sId = sId;
-		this.eId = eId;
-		this.notifStatus = notifStatus;
-	}
-	
-	public SeatsBooked(LocalDateTime sbDate, LocalDateTime punchIn, LocalDateTime punchOut, boolean current,
-			String code, Seat sId, Employee eId, boolean notifStatus) {
-		super();
-		this.sbDate = sbDate;
-		this.punchIn = punchIn;
-		this.punchOut = punchOut;
-		this.current = current;
-		this.code = code;
-		this.sId = sId;
-		this.eId = eId;
-		this.notifStatus = notifStatus;
-	}
-
 	@Override
 	public String toString() {
 		return "SeatsBooked [sbId=" + sbId + ", sbDate=" + sbDate + ", punchIn=" + punchIn + ", punchOut=" + punchOut
 				+ ", current=" + current + ", code=" + code + ", sId=" + sId + ", eId=" + eId + ", notifStatus="
-				+ notifStatus + "]";
+				+ notifStatus + ", verified=" + verified + "]";
 	}
+
+
+
 
 	
 	

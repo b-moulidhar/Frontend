@@ -13,6 +13,7 @@ import com.valtech.poc.sms.entities.AttendanceTable;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.exception.ResourceNotFoundException;
+import com.valtech.poc.sms.repo.AttendanceRepository;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatsBookedRepo;
 
@@ -28,6 +29,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 	
 	@Autowired
 	private EmployeeRepo employeeRepo;
+	
+	@Autowired
+	private AttendanceRepository attendanceRepository;
+	
+	@Autowired
+	private MailContent mailContent;
 
 	@Override
 	public void updateAttendance(int atId) {
@@ -35,13 +42,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 	
 	@Override
-	public void automaticRegularization(int sbId, AttendanceTable attendance) {
+	public void automaticRegularization(int sbId) {
+		AttendanceTable attendance = new AttendanceTable();
 		SeatsBooked sb=seatsBookedRepo.findById(sbId).orElseThrow(() -> new ResourceNotFoundException("SeatBooked not found" ));
         attendance.setStartDate(""+sb.getSbDate());
         attendance.setEndDate(""+sb.getSbDate());
         attendance.setShiftStart(""+sb.getPunchIn());
         attendance.setShiftEnd(""+sb.getPunchOut());
         attendance.seteId(sb.geteId());
+		attendanceRepository.save(attendance);
+		mailContent.attendanceApprovalRequest(attendance);
 	}
 	
 	@Override
