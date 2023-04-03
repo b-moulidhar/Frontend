@@ -42,9 +42,6 @@ public class AttendanceController {
 
 	@Autowired
 	private AttendanceService attendanceService;
-	
-	@Autowired
-	private SeatBookingService seatService;
 
 	@Autowired
 	private AttendanceRepository attendanceRepository;
@@ -70,7 +67,6 @@ public class AttendanceController {
 	@PostMapping("/attRegularization")
 	public String saveAttendance(@RequestBody AttendanceTable attendance) {
 		Employee employee = attendanceService.getSpecificEmployee(attendance);
-		// Manager manager = employee.getManagerDetails();
 		attendance.seteId(employee);
 		attendanceRepository.save(attendance);
 		mailContent.attendanceApprovalRequest(attendance);
@@ -79,12 +75,10 @@ public class AttendanceController {
 
 	@ResponseBody
 	@PostMapping("/attendanceRegularization/{eId}")
-	public String saveAttendance(@PathVariable("eId") int eId, @RequestBody AttendanceTable attendance) {
-		Employee emp = employeeRepo.findById(eId).get();
-		System.out.println(emp.geteId());
-		attendanceService.saveAttendance(emp, attendance);
-		attendanceRepository.save(attendance);
-		mailContent.attendanceApprovalRequest(attendance);
+	public String saveAttendance(@PathVariable("eId") int eId) {
+		logger.info("Request to save the attendance");
+		attendanceService.saveAttendance(eId);
+		logger.info("Attendance Saved");
 		return "saved";
 	}
 
@@ -103,8 +97,7 @@ public class AttendanceController {
 	public String approveAttendance(@PathVariable("atId") int atId) {
 		logger.info("Requesting approval");
 		String mail = attendanceService.getMailIdByAtId(atId);
-		attendanceService.updateAttendance(atId);
-		mailContent.attendanceApproved(mail);
+		attendanceService.updateAttendance(atId,mail);
 		return "approved";
 
 	}
@@ -113,8 +106,7 @@ public class AttendanceController {
 	@DeleteMapping("/disapproveAttendance/{atId}")
 	public String deleteAttendanceRequest(@PathVariable("atId") int atId) {
 		String mail = attendanceService.getMailIdByAtId(atId);
-		attendanceService.deleteAttendanceRequest(atId);
-		mailContent.attendanceDisApproved(mail);
+		attendanceService.deleteAttendanceRequest(atId,mail);
 		return "disapproved";
 	}
 

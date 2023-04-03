@@ -7,19 +7,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
@@ -48,6 +46,9 @@ public class SeatBookingController {
 
 	@Autowired
 	AdminService adminService;
+	
+	@Autowired
+	ScheduledTask scheduledTask;
 
 	@GetMapping("/total")
 	public ResponseEntity<List<Integer>> getAllSeats() {
@@ -94,7 +95,7 @@ public class SeatBookingController {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
 		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-		//check if the seat is aldready booked
+		//check if the seat is already booked
 		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId,fromDateTime,toDateTime)) {
 			System.out.println("This seat is aldready booked. Please Book another seat");
 			return ResponseEntity.ok("This seat is aldready booked. Please Book another seat " );
@@ -109,14 +110,16 @@ public class SeatBookingController {
 		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
 			System.out.println("Reccuring");
 			Seat recSeat=seatService.getSeatById(sId);
-			SeatsBooked sb = new SeatsBooked(dateTime, null, null,  true, code, recSeat, emp, false,false);
+			SeatsBooked sb = new SeatsBooked(dateTime, null, null,  true, code, recSeat, emp, true,false);
 			SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
+			scheduledTask.scheduleTask(1000, savedSeatsBooked);
 			return ResponseEntity.ok("The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: " + savedSeatsBooked.getSbId());
 		}
 		else {
 //		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
-		SeatsBooked sb = new SeatsBooked(dateTime, null, null, true, code, seat, emp, false,false);
+		SeatsBooked sb = new SeatsBooked(dateTime, null, null, true, code, seat, emp, true,false);
 		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
+		scheduledTask.scheduleTask(1000, savedSeatsBooked);
 		//check if employee is booking a seat again on the same day
 				if (seatService.canEmployeeBookSeat(eId, sId,sbDate)) {
 			        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
