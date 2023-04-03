@@ -1,6 +1,0 @@
-function Data(){
-    return(
-        <>
-        </>
-    )
-}

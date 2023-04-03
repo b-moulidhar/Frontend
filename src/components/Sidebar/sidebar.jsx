@@ -21,7 +21,7 @@ function Sidebar({children}){
             icon:<FaHome/>
         },
         {
-            path:"/profile",
+            path:"/profile/:id",
             name:"Profile",
             icon:<FaUserAlt/>
         }
@@ -33,12 +33,13 @@ function Sidebar({children}){
         },
         {
             path:"/notify",
+            path:"/notify",
             name:"Notification",
             icon:<FaBell/>
         },
         {
-            path:"/regular",
-            name:"Regular",
+            path:"/atten_regularize",
+            name:"Atten_Regularize",
             icon:<FaStickyNote/>
         },
         {

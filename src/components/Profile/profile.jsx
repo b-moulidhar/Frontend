@@ -1,141 +1,67 @@
-import React, {useState, useEffect} from "react";
-import "./profile.css";
+
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import {
-  MDBCol,
-  MDBContainer,
-  MDBRow,
-  MDBCard,
-  MDBCardText,
-  MDBCardBody,
-  MDBCardImage,
-  MDBBtn
-} from "mdb-react-ui-kit";
-import Sidebar from "../Sidebar/sidebar";
+function Profile() {
+  const [userData, setUserData] = useState({
+    id: '',
+    name: '',
+    email: '',
+    phone: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-export default function ProfilePage() {
-  const [profile, setProfile] = useState({
-     name: "",
-     email:"",
-     emp_id:Number,
-     phone:Number,
-     role:""
-  })
-  useEffect(()=>{
-    axios.get(`http://10.191.80.112:7001/employee/getAllEmployees/`,{
-       headers : {
-         Accept: 'application/json'
-       }
-    })
-    .then((response) => {
-          // setProfile({
-          //   ...profile,name:"abc",
-          //   ...profile,email:response.data.email
-          // })
-      setProfile(JSON.stringify(response.data))})
-      // console.log(JSON.stringify(response.data))})
-    .catch((err) => console.log(err))
-  },[]);
+  useEffect(() => {
+    setIsLoading(true);
+    axios.get('') // backend API URL
+      .then(response => {
+        setUserData(response.data);
+        setIsLoading(false);
+      })
+      .catch(error => console.error(error));
+  }, []);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+   
+  }
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setUserData(prevUserData => ({
+      ...prevUserData,
+      [name]: value
+    }));
+  }
+
   return (
-    <div className="profilepage">
-      <div>
-        <Sidebar />
-      </div>
-      <div>
-        <section
-          className="details_profile"
-          style={{ backgroundColor: "#eee" }}
-        >
-          <MDBContainer className="py-5">
-            <MDBRow>
-              <MDBCol lg="4">
-                <MDBCard className="mb-4">
-                  <MDBCardBody className="text-center">
-                     <MDBCardImage
-                      src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                      alt="avatar"
-                      className="rounded-circle"
-                      style={{ width: "150px" }}
-                      fluid
-                    />
-                   <p className="text-muted mb-1">Full Stack Developer</p>
-                    <p className="text-muted mb-4">
-                      Bay Area, San Francisco, CA
-                    </p>
-                    <div className="d-flex justify-content-center mb-2">
-                      <MDBBtn>Follow</MDBBtn>
-                      <MDBBtn outline className="ms-1">
-                        Message
-                      </MDBBtn> 
-                    </div>
-                  </MDBCardBody>
-                </MDBCard>
-              </MDBCol>
-              <MDBCol lg="8">
-                <MDBCard className="mb-4">
-                  <MDBCardBody>
-                    <MDBRow>
-                      <MDBCol sm="3">
-                        <MDBCardText>Full Name</MDBCardText>
-                      </MDBCol>
-                      <MDBCol sm="9">
-                        <MDBCardText className="text-muted">
-                          {profile.name}
-                        </MDBCardText>
-                      </MDBCol>
-                    </MDBRow>
-                    <hr />
-                    <MDBRow>
-                      <MDBCol sm="3">
-                        <MDBCardText>Email</MDBCardText>
-                      </MDBCol>
-                      <MDBCol sm="9">
-                        <MDBCardText className="text-muted">
-                          {profile.email}
-                        </MDBCardText>
-                      </MDBCol>
-                    </MDBRow>
-                    <hr />
-                    <MDBRow>
-                      <MDBCol sm="3">
-                        <MDBCardText>Employee Id</MDBCardText>
-                      </MDBCol>
-                      <MDBCol sm="9">
-                        <MDBCardText className="text-muted">
-                          {profile.emp_id}
-                        </MDBCardText>
-                      </MDBCol>
-                    </MDBRow>
-                    <hr />
-                    <MDBRow>
-                      <MDBCol sm="3">
-                        <MDBCardText>Mobile</MDBCardText>
-                      </MDBCol>
-                      <MDBCol sm="9">
-                        <MDBCardText className="text-muted">
-                          {profile.phone}
-                        </MDBCardText>
-                      </MDBCol>
-                    </MDBRow>
-                    <hr />
-                    <MDBRow>
-                      <MDBCol sm="3">
-                        <MDBCardText>Role</MDBCardText>
-                      </MDBCol>
-                      <MDBCol sm="9">
-                        <MDBCardText className="text-muted">
-                          {profile.role}
-                        </MDBCardText>
-                      </MDBCol>
-                    </MDBRow>
-                  </MDBCardBody>
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </section>
-      </div>
+    <div className="container mt-5">
+      <h1>Profile</h1>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="id">ID</label>
+            <input type="text" className="form-control" id="id" name="id" value={userData.id} onChange={handleChange} readOnly />
+          </div>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input type="text" className="form-control" id="name" name="name" value={userData.name} onChange={handleChange} required />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input type="email" className="form-control" id="email" name="email" value={userData.email} onChange={handleChange} required />
+          </div>
+          <div className="form-group">
+            <label htmlFor="phone">Phone</label>
+            <input type="tel" className="form-control" id="phone" name="phone" value={userData.phone} onChange={handleChange} required />
+          </div>
+          {/* <button type="submit" className="btn btn-primary">Save</button> */}
+        </form>
+      )}
     </div>
   );
 }
+
+export default Profile;
