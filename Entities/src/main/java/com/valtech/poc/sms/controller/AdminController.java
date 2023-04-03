@@ -173,7 +173,8 @@ public class AdminController {
 		return adminService.getRegistrationListForApproval();
 	}
 		
-	@GetMapping("/profileDetailsAdmin/{admeId}")
+	@ResponseBody
+	@GetMapping("/profileDetailsAdmin/{admnId}")
     public Employee getAdminById(@PathVariable int eId) {
         return employeeService.getEmployeeByeId(eId);
     }
