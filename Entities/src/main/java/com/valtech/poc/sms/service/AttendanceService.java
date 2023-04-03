@@ -20,13 +20,13 @@ public interface AttendanceService {
 
 	List<Map<String, Object>> getAttendanceListForApproval(int eId);
 
-	void deleteAttendanceRequest(int atId);
+	void deleteAttendanceRequest(int atId,String mail);
 
 	String getMailIdByAtId(int atId);
 
 	void automaticRegularization(int sbId, AttendanceTable attendance);
 
-	void updateAttendance(int atId);
+	void updateAttendance(int atId,String mail);
 
-	void saveAttendance(Employee emp, AttendanceTable attendance);
+	void saveAttendance(int eId);
 }
