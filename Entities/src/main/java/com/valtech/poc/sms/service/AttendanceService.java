@@ -24,7 +24,7 @@ public interface AttendanceService {
 
 	String getMailIdByAtId(int atId);
 
-	void automaticRegularization(int sbId, AttendanceTable attendance);
+	void automaticRegularization(int sbId);
 
 	void updateAttendance(int atId);
 
