@@ -63,6 +63,13 @@ public interface SeatBookingService {
 
 
 
+	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);
+
+
+
+
+	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
+
 
 	//void updateNotifStatus(int sbId, Connection connection);
 

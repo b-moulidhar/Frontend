@@ -124,6 +124,20 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+
+    @Override
+    public List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate) {
+        return seatBookingDao.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
+    }
+
+    @Override
+    public List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return seatBookingDao.getSeatsBookedByDate(startDate, endDate);
+    }
+
+	
 
 	@Override
 	public boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
@@ -192,3 +206,5 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	}
 
 }
+
+

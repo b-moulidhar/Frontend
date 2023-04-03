@@ -1,10 +1,12 @@
 package com.valtech.poc.sms.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +15,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.entities.Seat;
+import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.service.AdminService;
-import com.valtech.poc.sms.service.EmployeeService;
 import com.valtech.poc.sms.service.SeatBookingService;
 
 @RestController
@@ -93,6 +96,32 @@ public class SeatBookingController {
 		seatService.notifStatus(sbId);
 		return "Notification Sent";
 	}
+	
+	@ResponseBody
+	@GetMapping("/booked")
+    public ResponseEntity<List<SeatsBooked>> getSeatsBookedByDate(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+        
+        List<SeatsBooked> seatsBooked = seatService.getSeatsBookedByDate(startDate, endDate);
+        
+        return ResponseEntity.ok(seatsBooked);
+    }
+
+
+
+
+
+
+    @GetMapping("/by-employee-and-date")
+    public ResponseEntity<List<SeatsBooked>> getSeatsBookedByEmployeeAndDate(
+            @RequestParam int empId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        List<SeatsBooked> seatsBookedList = seatService.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
+        return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
+    }
 
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
