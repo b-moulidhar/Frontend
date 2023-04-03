@@ -241,7 +241,7 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 			@SuppressWarnings("deprecation")
 			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId }, Integer.class);
 		
-        if(cnt>=1)
+        if(cnt>=2)
         	return true;
         return false;
 		}catch (DataAccessException e) {

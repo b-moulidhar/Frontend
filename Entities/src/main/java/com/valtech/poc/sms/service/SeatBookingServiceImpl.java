@@ -97,8 +97,7 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 
 	@Override
 	public boolean CheckIfTheSameSeatBookingRecurring(int eId) {
-		// TODO Auto-generated method stub
-		return false;
+		return seatBookingDao.checkIfTheSameSeatBookingRecurring(eId);
 	}
     
 	@Override

@@ -107,6 +107,7 @@ public class SeatBookingController {
 		
 		//check for recurring seats
 		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
+			System.out.println("Reccuring");
 			Seat recSeat=seatService.getSeatById(sId);
 			SeatsBooked sb = new SeatsBooked(dateTime, null, null,  true, code, recSeat, emp, false,false);
 			SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
