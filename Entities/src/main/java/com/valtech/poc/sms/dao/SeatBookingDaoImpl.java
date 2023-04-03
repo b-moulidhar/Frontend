@@ -219,13 +219,13 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
-	public boolean checkIfEmployeeAlredyBookTheSeat(int eId,int sId) throws DataAccessException{
-		String sql="select e_id from seats_booked where current=true and and sb_date>=now() and s_id=?";
+	public boolean checkIfEmployeeAlredyBookTheSeat(int eId,LocalDateTime from,LocalDateTime to) throws DataAccessException{
+		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ? AND current = true";
        
 		try {
-			int empId = jdbcTemplate.queryForObject(sql,new Object[] { sId }, Integer.class);
+			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,from,to }, Integer.class);
 		
-        if(empId==eId)
+        if(cnt>0)
         	return true;
         return false;
 		}catch (DataAccessException e) {

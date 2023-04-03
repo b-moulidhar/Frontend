@@ -23,6 +23,7 @@ import com.valtech.poc.sms.entities.User;
 import com.valtech.poc.sms.repo.SeatsBookedRepo;
 import com.valtech.poc.sms.repo.UserRepo;
 import com.valtech.poc.sms.service.AdminService;
+import com.valtech.poc.sms.service.AttendanceService;
 import com.valtech.poc.sms.service.EmployeeService;
 import com.valtech.poc.sms.service.SeatBookingService;
 import com.valtech.poc.sms.service.UserService;
@@ -44,6 +45,9 @@ public class AdminController {
 
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	AttendanceService attendanceService;
 
 	private final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -71,7 +75,8 @@ public class AdminController {
 //		LocalDateTime dateTime = formatter.format(now);
 		sb.setPunchOut(dateTime);
 		seatsBookedRepo.save(sb);
-		return "test";
+		attendanceService.automaticRegularization(sb.getSbId());
+		return "checked out";
 	}
 
 	@ResponseBody

@@ -2,6 +2,7 @@ package com.valtech.poc.sms.service;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
@@ -45,7 +46,6 @@ public interface SeatBookingService {
 
 	//List<SeatsBooked> getSeatBookingsByEId(int eId);
 
-	boolean checkIftheEmployeeAlreadyBookTheseat(int eId, int sId);
 
 
 
@@ -53,7 +53,15 @@ public interface SeatBookingService {
 
 	Seat getSeatById(int sId);
 
-	boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
+	//boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
+
+	boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+
+	String createSeatsBookedDaily(int eId, int sId, String from, String to);
+
+	String createSeatsBookedWeekly(int eId, int sId, String from, String to);
+
+
 
 
 	//void updateNotifStatus(int sbId, Connection connection);

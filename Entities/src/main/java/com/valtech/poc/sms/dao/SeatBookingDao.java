@@ -2,8 +2,10 @@ package com.valtech.poc.sms.dao;
 
 import java.sql.Connection;
 import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.dao.DataAccessException;
 
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
@@ -36,12 +38,13 @@ public interface SeatBookingDao {
 
 	//List<RecurringSeats> countRecurringSeats();
 
-	boolean checkIfEmployeeAlredyBookTheSeat(int eId, int sId);
 
 
 	boolean checkIfTheSameSeatBookingRecurring(int eId);
 
 	boolean canEmployeeBookSeat(int eId,int sId, LocalDate sbDate);
+
+	boolean checkIfEmployeeAlredyBookTheSeat(int eId, LocalDateTime from, LocalDateTime to) throws DataAccessException;
 
 
 	//void updateNotifStatus(int sbId, Connection connection);

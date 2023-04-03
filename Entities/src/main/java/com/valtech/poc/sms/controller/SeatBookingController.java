@@ -1,28 +1,22 @@
 package com.valtech.poc.sms.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.valtech.poc.sms.entities.Employee;
+import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.entities.Seat;
-import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.service.AdminService;
@@ -38,9 +32,6 @@ public class SeatBookingController {
 	private SeatBookingService seatService;
 
 	@Autowired
-	private EmployeeService employeeService;
-
-	@Autowired
 	EmployeeRepo employeeRepo;
 
 	@Autowired
@@ -48,6 +39,9 @@ public class SeatBookingController {
 
 	@Autowired
 	AdminService adminService;
+	
+	@Autowired
+	ScheduledTask scheduledTask;
 
 	@GetMapping("/total")
 	public ResponseEntity<List<Integer>> getAllSeats() {
@@ -81,50 +75,18 @@ public class SeatBookingController {
 
 	@PostMapping("/create/{eId}")
 	public synchronized ResponseEntity<String> createSeatsBooked(@PathVariable("eId") int eId,
-			@RequestParam("sId") int sId) {
-		Employee emp = employeeRepo.findById(eId).get();
-		Seat seat = seatRepo.findById(sId).get();
-		LocalDate sbDate = LocalDate.now();
+			@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
 		
-//		//check if employee can book seat
-//		if (!seatService.canEmployeeBookSeat(eId, sbDate)) {
-//	        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
-//	        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
-//	    }
-//		
-		//check if the seat is aldready booked
-		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId,sId)==false) {
-			System.out.println("This seat is aldready booked. Please Book another seat");
-			return ResponseEntity.ok("This seat is aldready booked. Please Book another seat " );
-		}
-		else {
-		String code = adminService.generateQrCode(eId);
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
 		
-		//check for recurring seats
-		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
-			Seat recSeat=seatService.getSeatById(sId);
-			SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime,  true, code, recSeat, emp, false);
-			SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
-			return ResponseEntity.ok("The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: " + savedSeatsBooked.getSbId());
+		if(from.equals(to)) {
+			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,from,to));
 		}
-		else {
-//		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
-		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, true, code, seat, emp, false);
-		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
-		//check if employee is booking a seat again on the same day
-				if (seatService.canEmployeeBookSeat(eId, sId,sbDate)) {
-			        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
-			        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
-			    }
-				return ResponseEntity.ok("Seats booked created successfully with ID: " + savedSeatsBooked.getSbId());
-		 }
-		 
-		   }
-	    }
 	
+		else {
+			return ResponseEntity.ok(seatService.createSeatsBookedWeekly(eId,sId,from,to));
+		}
+		 
+	}
 
 	@PutMapping("/notification/{sbId}")
 	public String notifStatus(@PathVariable int sbId) {
