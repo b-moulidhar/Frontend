@@ -1,84 +1,67 @@
-import React, {useState, useEffect } from 'react';
-import Sidebar from '../Sidebar/sidebar';
-import "./profile.css";
 
-function Profile(){
-    const data1 = [
-        {
-            email: "abc@valtech.com",
-            phone: 1234567890,
-            emp_id: 1,
-            role:"employee"
-        },
-        {
-            email: "pqr@valtech.com",
-            phone: 1234567890,
-            emp_id: 2,
-            role:"manager"
-        },
-        {
-            email: "wer@valtech.com",
-            phone: 1234567890,
-            emp_id: 3,
-            role:"admin"
-        },
-        {
-            email: "asd@valtech.com",
-            phone: 1234567890,
-            emp_id: 4,
-            role:"employee"
-        }
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-    ]
-    //const[data, setData] = useState("");
-    // useEffect(()=>{
-    //     fetch("").then((result)=>{
-    //         result.json().then((res)=>{
-    //             console.log(res)
-    //             setData(res)
-    //         })
-    //     })
-    // },[])
-    // console.log(data);
-    return(
-        <div className='profile'>
-        <Sidebar/>
-        <div>
-            <div className="imgs">
-           <div className="container-image">
-            
-           </div>
-           </div>
-           <h2>User Info</h2>
-            <h3>Name</h3>
-            <table className="table">
-            <thead>
-                <tr>
-                <th scope="col">Email ID</th>
-                <th scope="col">Phone Number</th>
-                <th scope="col">Employee ID</th>
-                <th scope="col">Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    data1.map((items)=>
-                
-                <tr>
-                <th scope="row">{items.email}</th>
-                <td>{items.phone}</td>
-                <td>{items.emp_id}</td>
-                <td>{items.role}</td>
-                </tr>
-                    )
+function Profile() {
+  const [userData, setUserData] = useState({
+    id: '',
+    name: '',
+    email: '',
+    phone: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios.get('') // backend API URL
+      .then(response => {
+        setUserData(response.data);
+        setIsLoading(false);
+      })
+      .catch(error => console.error(error));
+  }, []);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+   
+  }
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setUserData(prevUserData => ({
+      ...prevUserData,
+      [name]: value
+    }));
+  }
+
+  return (
+    <div className="container mt-5">
+      <h1>Profile</h1>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="id">ID</label>
+            <input type="text" className="form-control" id="id" name="id" value={userData.id} onChange={handleChange} readOnly />
+          </div>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input type="text" className="form-control" id="name" name="name" value={userData.name} onChange={handleChange} required />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input type="email" className="form-control" id="email" name="email" value={userData.email} onChange={handleChange} required />
+          </div>
+          <div className="form-group">
+            <label htmlFor="phone">Phone</label>
+            <input type="tel" className="form-control" id="phone" name="phone" value={userData.phone} onChange={handleChange} required />
+          </div>
+          {/* <button type="submit" className="btn btn-primary">Save</button> */}
+        </form>
+      )}
+    </div>
+  );
 }
-                
-               
-            </tbody>
-            </table>
 
-            </div>
-        </div>
-    )
-}
 export default Profile;

@@ -29,7 +29,7 @@ public class MailController {
 		System.out.println(b);
 		if (b == true) {
 			Boolean forgot = resetPassword.generateOtp(email);
-			System.out.println(forgot);
+//			System.out.println(forgot);
 			String s1 = "sent";
 			return s1;
 		}

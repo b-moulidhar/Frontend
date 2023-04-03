@@ -1,42 +1,44 @@
-import './navbar.css';
-import {
-    FaPowerOff
 
-} from "react-icons/fa";
+import './navbar.css';
+import { useState } from 'react';
 
 function Navbar(){
-    const navItem=[
-        {
-            path:"/signout",
-            name:"Signout",
-            icon:<FaPowerOff/>
-        },
-    ]
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    function handleLogout() {
+        // Make a request to the backend to invalidate the token
+        // and remove it from the client-side storage
+        setIsLoggingOut(true);
+        localStorage.removeItem("token");
+        // Redirect to the initial page
+       window.location="/"
+      }
+    
     return(
-        <nav className="navbar navbar-expand-md navbar-dark bg-dark">
-    <div className="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
-        {/* <ul className="navbar-nav mr-auto">
-            <li className="nav-item active">
-                <a className="nav-link" href="#">Profile</a>
-            </li>
+        <div>
+        <div>
             
-        </ul> */}
-    </div>
-    <div className="mx-auto order-0">
-        <a className="navbar-brand mx-auto" href="#">SMS</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
-            <span className="navbar-toggler-icon"></span>
-        </button>
-    </div>
-    <div className="navbar-collapse collapse w-100 order-3 order-md-0 dual-collapse2">
-        <ul className="navbar-nav ml-auto">
-            <li className="nav-item">
-                <a className="nav-link " href="#">Sign out</a>
-            </li>
-           
-        </ul>
-    </div>
-</nav>
+            {/* <nav className="navbar navbar-expand-md">
+    
+                <div className="mx-auto order-0">
+                    <a className="navbar-brand mx-auto app_name ml-auto" href="#">SMS</a>
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <button >Logout</button>
+                </div>
+    
+            </nav> */}.
+           <nav>
+                <div class="navbar-left">
+                    <a href="#">SMS</a>
+                </div>
+                <div class="navbar-right">
+                    <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+                </div>
+            </nav>
+
+        </div></div>
     )
 }
 
