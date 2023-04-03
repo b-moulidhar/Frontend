@@ -1,4 +1,5 @@
 import { useState } from "react";
+import './register.css'
 
 function Register(){
   const [password, setPassword] = useState('');
@@ -51,13 +52,13 @@ function PasswordValidation() {
 }
     return(
       
-        <>
+        <div className="register">
             <form className="row g-3 needs-validation" onSubmit={PasswordValidation} noValidate>
             <div className="main">
             <div >
               <div>
                 <div>
-                  <h1>Registration</h1>
+                  <h1 style={{color:"white"}}>Registration</h1>
                   <div>
                     
                     <input type="text" placeholder="name" className="name" pattern="[A-Za-z]{5,15}" name="name" value={user.name} onChange={newUser} required/>
@@ -103,7 +104,7 @@ function PasswordValidation() {
                 
                  
                  <div className="login-button">
-                 <button  >submit</button><br></br>
+                 <a href="/login"><button  >submit</button></a><br></br>
                  <br></br>
                  {/* <button ><Link to={"/"}>Login Page</Link></button> */}
                  </div>
@@ -115,7 +116,7 @@ function PasswordValidation() {
            </div>
 </form>
 
-        </>
+        </div>
     )
 }
 export default Register;

@@ -1,10 +1,12 @@
  .login_back{
-  background-image:url('D:/sms_frontend/sms_frontend/src/assets/valtech.png');
-  background-position: center ;
-     background-repeat: no-repeat;
-     background-size: cover;
-     width: 100%;
+  background :url('../../assets/valtech.png')  ;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100vh;
  }
+
  .main {
     text-align: center;
     justify-content: center;
@@ -13,7 +15,7 @@
     padding-bottom: 90px;
     
   }
-  .admin-main{
+  /* .admin-main{
     text-align: center;
     justify-content: center;
     display: flex; 
@@ -21,7 +23,7 @@
     flex-direction: column;
     padding-top: 250px;
     padding-left: 750px; 
-  }
+  } */
   .sub-main {
     display: flex;
     justify-content: center;
@@ -32,7 +34,7 @@
     border-radius: 60px; 
     background-color: rgb(224, 167, 167);
   }
-  .imgs {
+  /* .imgs {
       padding-top: 20px;
       justify-content: center;
       display: flex;
@@ -50,7 +52,7 @@
     height: 100px;
     width: 100px;
     border-radius: 130px;
-  } 
+  }  */
 
   
   input{
@@ -70,7 +72,7 @@
   .second-input{
       padding-top: 20px;
   }
-
+/* 
   button.btn-list{
     width: 150px;
     height: 50px;
@@ -79,7 +81,7 @@
     color: white;
     font-size: 25px;
     border: none;
-  }
+  } */
   button{
       width: 380px;
       height: 50px;
@@ -127,7 +129,7 @@
     box-shadow: inset 0px 0px 25px 0px #f18686;
     border: none;
     outline: none;
-    background-color: #fff;
+    background-color: #08ed3e;
     text-decoration: none;
     line-height: 50px;
     color: white;
@@ -135,6 +137,7 @@
 
   .login{
     width: 300px;
+    background-color: blue;
   }
 
    a1{

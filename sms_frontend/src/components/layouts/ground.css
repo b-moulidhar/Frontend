@@ -75,3 +75,7 @@
 .selected {
   background: #87ff96;
 }
+
+input[type="radio"] {
+  visibility: hidden;
+}

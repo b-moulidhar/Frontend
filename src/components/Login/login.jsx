@@ -1,134 +1,114 @@
-
-// import styled from 'styled-components';
-import './login.css'
-// import firebase from '../firebase';
-import React, { useState, useEffect } from 'react';
+import { useState } from "react";
+// import Navbar from "../Navbar/navbar";
 import axios from 'axios';
-// import logo from '../assests/logo.png'
+import "./login.css";
+import { useLocation } from "react-router-dom";
 
-function Login() {
-  var Data = []
-    // useEffect(() => {
-        // const signUpButton = document.getElementById('signUp');
-        // const signInButton = document.getElementById('signin');
-        // // const container = document.getElementById('container');
+export default function Login(){
 
-        // signUpButton.addEventListener('click', () => {
-        //   signin.classList.add('right-panel-active');
-        // });
+  //  const [state,setState] = useState({uid:'',password:''});
+  // //  const[dig,setDig] = useState({dig:Number});
+  //  const navigate = useNavigate();
 
-        // signInButton.addEventListener('click', () => {
-        //   signin.classList.remove('right-panel-active');
-        // });
-    // }, []);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  //  function loginFunc(event){
+  //   const name = event.target.name;
+  //   const value = event.target.value;
 
-    useEffect(()=>{
-      axios.get("https://reqres.in/api/users").then((res)=>{
-        console.log(res.data.data)
-          Data = res.data.data
-      })
-    },[])
+  //   setState((prevState) => ({
+  //     ...prevState,
+  //     [name]: value
+  //   }));  
+  //  }
 
-    const [loginemail, setLoginmail] = useState('');
-    const [loginpassword, setLoginPassword] = useState('');
+  //  function checkVal(event){
+  //   setDig({
+  //     ...dig,dig: event.target.value
+  //   });
+  //   console.log(dig.length)
+  //   if(dig.length<5){
+  //     alert("do not exceed more than 4 characters")
+  //   }
 
-    const loginhandleSubmit =(event) => {
-        event.preventDefault();
-        Data.map((data)=>{
-          console.log('hello',password)
-            if(data.id===password){
-              alert("same id");
-            }
-        })
-        // try {
-        //     await firebase.auth().signInWithEmailAndPassword(email, password);
-        //     // Redirect to home page
-        // } catch (error) {
-        //     console.error(error);
-        // }
-    };
+  //  }
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        // try {
-        //     await firebase.auth().createUserWithEmailAndPassword(email, password);
-        //     // Redirect to home page
-        // } catch (error) {
-        //     console.error(error);
-        // }
+  const [empId, setEmpId] = useState("");
+  const [pass, setPass] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const location = useLocation();
+  const message = location.state && location.state.message;
+
+  const handleLogin = (e) => {
+    e.preventDefault()
+    try {
+      const response = axios.post("http://10.191.80.73:7001/api/login", { empId, pass })
+      .then((res)=>{
         
-    };
+        const { token, EId, role } = res.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("EId", EId);
+        localStorage.setItem("role", role);
+        // redirect to the home page or any other page
+        if(res.data.token!=undefined){
+          window.location="/dashboard/"+EId;
+        }else{
+          // alert("invalid credentials")
+          setErrorMessage("wrong credentials");
+        }
+        console.log("posted",res.data)})
+      .catch((err)=>console.log(err));
+      console.log(response.data)
+     
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setErrorMessage(error.response.data.error);
+        // console.log(error.response);
+      } else {
+        setErrorMessage("User Does not exist");
+        // console.log(error.response);
+      }
+    }
+  };
+
+
     return (
-        <div className='main'>
+      <div className="login_back">  
+      <form>
+      {message && <p>{message}</p>}        
+      {errorMessage && <p>{errorMessage}</p>}
+        <div className="main">
+        <div className="sub-main">
+       <div>
+        
+         <div>
+           <h1>Login Page</h1>
+           <br/>
+           <div>
+             {/* <label htmlFor="empId">Employee ID</label> */}
+             <input type="number" id="empId" placeholder="Employee Id" className="name" min="1000" max="9999"    value={empId} onChange={(e) => setEmpId(e.target.value)} required/>
+           </div>
+           <div className="second-input">
+             {/* <label htmlFor="pass">Password <br/></label> */}
+             <input type="password" id="pass" placeholder="Password" className="name"  pattern="[A-Za-z0-9#@$&]{3,10}" value={pass}  onChange={(e) => setPass(e.target.value)} required />
+           </div>
+          <div className="login-button">
+          <button  type="submit" className="login" onClick={handleLogin}>Login</button>
+          </div>
+           
+            <p className="link1">
+            <a href="/forget" className="a1">Forgot password ?</a> <br></br>
+            <a href="/register" className="a2">Register</a>             
+            </p>
             
-            <div className='left'>
-                {/* <img className="logo" src={logo} alt='logo'/> */}
-                {/* <span className='tesla'>Tesla</span> */}
-                {/* <img src='https://tesla-cdn.thron.com/delivery/public/image/tesla/649c549e-12b4-40c6-9294-7e996b8d3ccb/bvlatuR/std/4096x3071/Model-S-Specs-Hero-Desktop-LHD' alt='' /> */}
-            </div>
-            <div className='right'>
+           
+ 
+         </div>
+       </div>
+       
 
-                <div className="container" id="signin">
-                    <div className="form-container sign-up-container" hidden='true'>
-                        <form onSubmit={handleSubmit}>
-                            <h1>Create Account</h1>
-                            <span>or use your email for registration</span>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                value={email}
-                                onChange={(event) => setEmail(event.target.value)}
-                            />
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
-                            />
-                            <button type="submit">Sign up</button>
-                        </form>
-                    </div>
-                    <div class="form-container sign-in-container" >
-                        <form >
-                            <h1>Sign in</h1>
-                            <span>or use your account</span>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                value={email}
-                                onChange={(event) => setEmail(event.target.value)}
-                            />
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
-                            />
-                            <button onClick={loginhandleSubmit} type="submit">Log in</button>
-                        </form>
-                    </div>
-                    {/* <div className="overlay-container">
-                        <div className="overlay">
-                            <div className="overlay-panel overlay-left">
-                                <h1>Welcome Back!</h1>
-                                <p>To keep connected with us please login with your personal info</p>
-                                <button className="ghost" id="signIn">Sign In</button>
-                            </div>
-                            <div class="overlay-panel overlay-right">
-                                <h1>Hello, Friend!</h1>
-                                <p>Enter your personal details and start journey with us</p>
-                                <button className="ghost" id="signUp">Sign Up</button>
-                                </div>
-                                </div>
-                              </div> */}
-                </div>
+     </div>
+    </div>
 
-            </div>
-        </div>
-
-    )
+      </form>
+      </div>
+    );
 }
-
-export default Login
