@@ -1,0 +1,19 @@
+.profilepage {
+  display: flex;
+
+  gap: 8rem;
+
+  background-image: url("D:/PoC/SequreMySeat/src/assets/valtech.png");
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+  background-size: cover;
+}
+
+.details_profile {
+  margin: 100px auto;
+
+  background-color: white;
+}
