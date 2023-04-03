@@ -93,7 +93,7 @@ public class SeatBookingController {
 //	    }
 //		
 		//check if the seat is aldready booked
-		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId)) {
+		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId,sId)==false) {
 			System.out.println("This seat is aldready booked. Please Book another seat");
 			return ResponseEntity.ok("This seat is aldready booked. Please Book another seat " );
 		}

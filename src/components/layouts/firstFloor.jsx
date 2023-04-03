@@ -3,22 +3,22 @@ import "./ground.css"
 
 const GroundFloor = () => {
   const [seats,setSeats]= useState([
-    { id: 1, name: "0001", booked: false, selected:false},
-    { id: 2, name: "0002", booked: false, selected:false},
-    { id: 3, name: "0003", booked: false, selected:false},
-    { id: 4, name: "0004", booked: false, selected:false},
-    { id: 5, name: "0005", booked: false, selected:false},
-    { id: 6, name: "0006", booked: false, selected:false},
-    { id: 7, name: "0007", booked: false, selected:false},
-    { id: 8, name: "0008", booked: false, selected: false},
-    { id: 9, name: "0009", booked: false, selected:false},
-    { id: 10, name: "0010", booked: false, selected:false},
-    { id: 11, name: "0011", booked: false, selected:false},
-    { id: 12, name: "0012", booked: false, selected:false},
-    { id: 13, name: "0013", booked: false, selected:false},
-    { id: 14, name: "0014", booked: false, selected:false},
-    { id: 15, name: "0015", booked: false, selected:false},
-    { id: 16, name: "0016", booked: false, selected:false},
+    { id: 1, name: "1001", booked: false, selected:false},
+    { id: 2, name: "1002", booked: false, selected:false},
+    { id: 3, name: "1003", booked: false, selected:false},
+    { id: 4, name: "1004", booked: false, selected:false},
+    { id: 5, name: "1005", booked: false, selected:false},
+    { id: 6, name: "1006", booked: false, selected:false},
+    { id: 7, name: "1007", booked: false, selected:false},
+    { id: 8, name: "1008", booked: false, selected: false},
+    { id: 9, name: "1009", booked: false, selected:false},
+    { id: 10, name: "1010", booked: false, selected:false},
+    { id: 11, name: "1011", booked: false, selected:false},
+    { id: 12, name: "1012", booked: false, selected:false},
+    { id: 13, name: "1013", booked: false, selected:false},
+    { id: 14, name: "1014", booked: false, selected:false},
+    { id: 15, name: "1015", booked: false, selected:false},
+    { id: 16, name: "1016", booked: false, selected:false},
   ]);
 
   const [selected,setSelected] = useState({})
@@ -28,7 +28,6 @@ const GroundFloor = () => {
     //logic for deselection
     setSelected({
       seatId: name,
-      floorId: "GF",
     })
   };
 
@@ -46,7 +45,7 @@ const GroundFloor = () => {
       <div>
       <h1>Seat Matrix</h1>
 
-      <h2>Ground Floor</h2>
+      <h2>First Floor</h2>
 
       </div>
 

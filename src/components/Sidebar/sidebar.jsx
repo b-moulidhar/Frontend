@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
-    FaTH,
+    FaHome,
     FaUserAlt,
-    FashoppigBag,
     FaBars,
     FaElementor,
-    FaBullhorn
+    FaBell,
+    FaStickyNote,
+    FaPowerOff
 
 } from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
@@ -17,7 +18,7 @@ function Sidebar({children}){
         {
             path:"/dashboard",
             name:"Dashboard",
-            icon:<FaUserAlt/>
+            icon:<FaHome/>
         },
         {
             path:"/profile",
@@ -26,14 +27,24 @@ function Sidebar({children}){
         }
         ,
         {
-            path:"/profile",
+            path:"/manager",
             name:"Manager",
             icon:<FaElementor/>
         },
         {
-            path:"/profile",
+            path:"/notify",
             name:"Notification",
-            icon:<FaBullhorn/>
+            icon:<FaBell/>
+        },
+        {
+            path:"/regular",
+            name:"Regular",
+            icon:<FaStickyNote/>
+        },
+        {
+            path:"/",
+            name:"Signout",
+            icon:<FaPowerOff/>
         }
     ]
     return(
@@ -41,7 +52,7 @@ function Sidebar({children}){
             <div className='sidebar_container'>
                 <div style={{width: isOpen ? "250px" : "50px"}} className='sidebar'>
                     <div className='top_section'>
-                        <h1 style={{display: isOpen ? "block" : "none"}} className="logo">Logo</h1>
+                        <h1 style={{display: isOpen ? "block" : "none"}} className="logo">SMS</h1>
                        <div style={{marginLeft: isOpen ? "50px" : "0px"}} className="bars">
                             <FaBars onClick={toggle}/>
                        </div>
