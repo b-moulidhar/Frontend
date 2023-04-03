@@ -1,0 +1,20 @@
+.table1{
+    border: 1px solid black;
+    margin: 50px;
+    
+   
+}
+
+.manager{
+    display: flex;
+    text-align: center;
+    /* background: linear-gradient(217deg, rgba(25, 88, 48, 0.8), rgba(140, 247, 140, 0) 70.71%) */
+
+
+}
+
+.manager_approve{
+    width: fit-content;
+   
+    margin: 10px;
+}

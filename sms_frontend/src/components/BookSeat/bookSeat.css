@@ -1,0 +1,119 @@
+/* .bookseat_head{
+    display: flex;
+}
+
+.bookseat_container{
+   
+    margin: 100px;
+    margin-top: 50px;
+    border-radius: 25px;
+    padding: 50px;
+    text-align: center;
+    background-color:white;
+    box-shadow: 2px 5px 5px 5px grey;
+
+}
+
+select{
+    width: 300px;
+    height: 50px;
+    border-radius: 60px;
+    box-shadow: 10px 5px 5px ;
+    border: none;
+    outline: none;
+    background-color: #fff;
+}
+
+.seatbook_next{
+    width: 300px;
+    height: 50px;
+    border-radius: 60px;
+    box-shadow: 10px 5px 5px rgb(11, 13, 18);
+    border: none;
+    outline: none;
+    background-color: skyblue;
+    text-decoration: none;
+    line-height: 50px;
+    color:black;
+}
+
+.seatbook_next:hover{
+    background-color: rgb(35, 65, 186);
+} */
+
+.bookseat{
+    display: flex;
+}
+
+.seat-booking-form {
+  
+    border: 1px solid rgb(143, 141, 141);
+    margin: 100px auto;
+    width: 40%;
+    gap: 0.5rem;
+    border-radius: 15px;
+    padding: 50px;
+    text-align: center;
+    background-color:white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    -webkit-box-shadow: 1px 3px 25px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 3px 25px 0px rgba(0,0,0,0.75);
+    box-shadow: 1px 3px 25px 0px rgba(0,0,0,0.75);
+    
+  }
+  
+  .form-input {
+    
+    width: 300px;
+    padding: 5px;
+    height: 50px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: none;
+    outline: none;
+    background-color: #e2dede;
+    text-decoration: none;
+    line-height: 50px;
+    color: #0b0b0b;
+    font-family: Arial, Helvetica, sans-serif;
+    gap: 1rem;
+    
+  }
+  
+  .form-button {
+    box-shadow: inset 0px 0px 50px 0px #070808;
+    background-color:#9c7373 ;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  button{
+    background-color: #e2dede;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: larger;
+  }
+  
+  .form-button:hover {
+    background-color: #0069d9;
+  }
+  a{
+    text-decoration: none;
+    font-size: medium;
+  }
+  
+  @media screen and (max-width: 600px) {
+    .form-input {
+      width: 100%;
+    }
+  
+    .form-button {
+      width: 100%;
+    }
+  }
+  

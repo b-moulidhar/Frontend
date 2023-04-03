@@ -1,9 +1,11 @@
 nav{
     background-color: crimson;
     height: 70px;
-    
+    justify-content: space-between;
 }
 
 .app_name{
     color: white;
 }
+
+

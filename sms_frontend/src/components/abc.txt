@@ -1,0 +1,159 @@
+import React, { useState } from 'react';
+
+
+
+
+
+const Floor = () => {
+
+ const [seats, setSeats] = useState([
+
+{ id: 1, name: 'A1', booked: false },
+{ id: 2, name: 'A2', booked: false },
+ { id: 3, name: 'A3', booked: false },
+ { id: 4, name: 'A4', booked: false },
+{ id: 5, name: 'B1', booked: false },
+{ id: 6, name: 'B2', booked: false },
+{ id: 7, name: 'B3', booked: false },
+{ id: 8, name: 'B4', booked: false },
+{ id: 9, name: 'C1', booked: false },
+{ id: 10, name: 'C2', booked: false },
+{ id: 11, name: 'C3', booked: false },
+{ id: 12, name: 'C4', booked: false },
+{ id: 13, name: 'D1', booked: false },
+{ id: 14, name: 'D2', booked: false },
+ { id: 15, name: 'D3', booked: false },
+{ id: 16, name: 'D4', booked: false },
+]);
+
+
+
+const handleSeatClick = (id) => {
+const updatedSeats = seats.map((seat) => {
+if (seat.id === id) {
+return { ...seat, booked: !seat.booked };
+} else {
+ return seat;
+}
+});
+setSeats(updatedSeats);
+ };
+
+
+
+return (
+<div className="seat-booking-app">
+
+<h1>Seat Matrix</h1>
+
+<h2>Ground Floor</h2>
+
+<div className="seat-map">
+
+{seats.map((seat) => (
+
+<div
+ key={seat.id}
+className={`seat ${seat.booked ? 'booked' : ''}`}
+ onClick={() => handleSeatClick(seat.id)}
+>
+{seat.name}
+</div>
+))}
+</div>
+<br/>
+<div id="legend">
+<div class="floor_seat"></div> <div class="txt">Available</div>
+<div class="seat taken"></div> <div class="txt">Taken</div>
+<div class="seat selected"></div> <div class="txt">Your Chosen Seats</div>
+{/* {
+     seats.map((seat)=>(
+        <div className='seat-map'>
+         <div className='seat'> {seat.id}</div>
+        </div>
+    )
+    )
+    } */}
+</div>
+</div>
+);
+};
+
+
+
+
+export default Floor;
+
+
+import { Link } from "react-router-dom";
+
+// import "./login.css";
+
+// export default function Login(){
+
+//    const [state,setState] = useState({uid:'',password:''});
+//    const[dig,setDig] = useState({dig:Number})
+
+//    function loginFunc(event){
+//     setState({
+//       [event.target.name]: event.target.value,
+//     });
+    
+//    }
+
+//    function checkVal(event){
+//     setDig({
+//       ...dig,dig: event.target.value
+//     });
+//     console.log(dig.length)
+//     if(dig.length<5){
+//       alert("do not exceed more than 4 characters")
+//     }
+
+//    }
+//     return (
+//       <div>
+//       <Navbar/>
+//         <form>
+//         <div className="main">
+//      <div className="sub-main">
+//        <div>
+//          <div className="imgs">
+//            <div className="container-image">
+            
+//            </div>
+
+
+//          </div>
+//          <div>
+//            <h1>Login Page</h1>
+//            <div>
+            
+//              <input type="number" placeholder="Employee Id" className="name" name="empid" minlength="4" maxLength="4" required value={state.uid} onChange={loginFunc} onInput={checkVal}/>
+//            </div>
+//            <div className="second-input">
+             
+//              <input type="password" placeholder="Password" className="name" name="password" pattern="[A-Za-z0-9#@$&]{3,10}" required  value={state.password} onChange={loginFunc}/>
+//            </div>
+//           <div className="login-button">
+//           <Link to="/combine_dashboard"><button>Login</button></Link>
+//           </div>
+           
+//             <p className="link1">
+//             <a href="/forget" className="a1">Forgot password ?</a> <br></br>
+//             <a href="/register" className="a2">Register</a>             
+//             </p>
+            
+           
+ 
+//          </div>
+//        </div>
+       
+
+//      </div>
+//     </div>
+// </form>
+
+//       </div>
+//     );
+// }
