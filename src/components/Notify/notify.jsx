@@ -1,51 +1,50 @@
+import Sidebar from "../Sidebar/sidebar";
+// import Card from "../Card/card"
+import './notify.css';
+
 function Notify(){
     return(
+            <div className='notify'>
+        
+       <div>
+        <Sidebar/>
+       </div>
         <div>
-            <div className='profile'>
-       
-        <div>
-            <h2>This is the notify</h2>
-            <div className="imgs">
-           <div className="container-image">
             
-           </div>
+        <div class="middle-row col-lg-7 text-center">
+        <div class="box5 shadow">
+            <span class="numb">
+                0
+            </span>
+            <span class="char">
+                Approved
+            </span>
+        </div>
+        <div class="box6 shadow">
+            <span class="numb">
+                0
+            </span>
+            <span class="char">
+                Pending
+            </span>
+        </div>
+        <div class="box7 shadow">
+            <span class="numb">
+                0
+            </span>
+            <span class="char">
+                Rejected
+            </span>
+            
+        </div>
+    </div>
+            {/* <Card title="Approved" body="0"/> */}
+            {/* <Card/> */}
 
-
-         </div>
-            <table className="table">
-            <thead>
-                <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                </tr>
-                <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                </tr>
-                <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                </tr>
-            </tbody>
-            </table>
 
             </div>
         </div>
-        </div>
+        
     )
 }
 
