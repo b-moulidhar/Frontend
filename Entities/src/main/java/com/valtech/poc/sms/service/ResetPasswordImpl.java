@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.valtech.poc.sms.entities.Otp;
@@ -72,7 +73,7 @@ public class ResetPasswordImpl implements ResetPassword {
 //		System.out.println("key = "+key);
 //		System.out.println("otpKey= "+otpKey);
 		if (otpKey.equals(key)) {
-			usr.setPass(password);
+			usr.setPass(new BCryptPasswordEncoder().encode(password));
 			usr.setOtp(null);
 			userRepo.save(usr);
 			mailContent.successfulPasswordChange(usr);

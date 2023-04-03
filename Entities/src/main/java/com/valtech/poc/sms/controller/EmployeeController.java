@@ -21,16 +21,15 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 	
-	@GetMapping("/{eId}")
+	@GetMapping("/profileDetailsEmployee/{eId}")
     public Employee getEmployeeById(@PathVariable int eId) {
         return employeeService.getEmployeeByeId(eId);
     }
 	
 	@ResponseBody
-	@GetMapping("/getAllEmployees/{empID}")
-	public  List<Employee> getAllEmployees(@PathVariable ("empID") int empID) {
-		
-		return employeeService.getAllEmployees(empID);
+	@GetMapping("/getAllEmployees/{eId}")
+	public  List<Employee> getAllEmployees(@PathVariable ("eId") int eId) {
+		return employeeService.getAllEmployees(eId);
 		
 	}
 }

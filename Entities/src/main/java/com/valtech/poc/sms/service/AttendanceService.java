@@ -8,7 +8,7 @@ import com.valtech.poc.sms.entities.Employee;
 
 public interface AttendanceService {
 
-	Employee getSpecificEmploye(AttendanceTable attendance);
+	Employee getSpecificEmployee(AttendanceTable attendance);
 
 	AttendanceTable getList(int atId);
 
@@ -27,4 +27,6 @@ public interface AttendanceService {
 	void automaticRegularization(int sbId, AttendanceTable attendance);
 
 	void updateAttendance(int atId);
+
+	void saveAttendance(Employee emp, AttendanceTable attendance);
 }

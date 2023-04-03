@@ -31,6 +31,19 @@ public interface SeatBookingDao {
 
 	void notifStatus(int sbId);
 
+
+	//List<SeatsBooked> getSeatBookingsByEId(int eId) ;
+
+	//List<RecurringSeats> countRecurringSeats();
+
+	boolean checkIfEmployeeAlredyBookTheSeat(int eId);
+
+
+	boolean checkIfTheSameSeatBookingRecurring(int eId);
+
+	boolean canEmployeeBookSeat(int eId,int sId, LocalDate sbDate);
+
+
 	//void updateNotifStatus(int sbId, Connection connection);
 
 	

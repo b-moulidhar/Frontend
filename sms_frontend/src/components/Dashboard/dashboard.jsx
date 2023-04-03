@@ -1,7 +1,23 @@
+import axios from "axios";
 import Sidebar from "../Sidebar/sidebar";
 import "./dashboard.css";
 
+
+
 function Dashboard() {
+  function handleViewBooking() {
+    axios.get('http://localhost:7001/welcome', {
+  headers: {
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    'X-Role': localStorage.getItem('role'),
+    'X-Eid': localStorage.getItem('eid')
+  },
+  responseType: 'json'
+})
+  .then(response => console.log(response.data))
+  .catch(error => console.error(error));
+  }
+  
   return (
     <div className="dashboard_container">
       <div className="mainpage">
@@ -32,34 +48,20 @@ function Dashboard() {
             </div>
           </div> */}
 
-      <div class="middle-row col-lg-7 text-center">
-              <div class="box5 shadow">
-                  <span class="numb">
-                      0
-                  </span>
-                  <span class="char">
-                      Approved
-                  </span>
-              </div>
-              <div class="box6 shadow">
-                  <span class="numb">
-                      0
-                  </span>
-                  <span class="char">
-                      Pending
-                  </span>
-              </div>
-              <div class="box7 shadow">
-                  <span class="numb">
-                      0
-                  </span>
-                  <span class="char">
-                      Rejected
-                  </span>
-                  
-              </div>
+          <div class="middle-row col-lg-7 text-center ">
+            <div class="box5 shadow">
+              <span class="numb">0</span>
+              <span class="char">Approved</span>
+            </div>
+            <div class="box6 shadow">
+              <span class="numb">0</span>
+              <span class="char">Pending</span>
+            </div>
+            <div class="box7 shadow">
+              <span class="numb">0</span>
+              <span class="char">Rejected</span>
+            </div>
           </div>
-
 
           <div className="dashboard">
             <a href="/bookseat">
@@ -67,12 +69,12 @@ function Dashboard() {
                 Book Seat
               </button>
             </a>
-            <a href="/viewpass">
-              <button type="button" className="btn btn-success seat">
-                View Booking
-              </button>
+            <a>
+            <button type="button" className="btn btn-success seat" onClick={handleViewBooking}>
+        View Booking
+      </button>
             </a>
-        </div>
+          </div>
 
           {/* <div className="dashboard_bottom">
             <div>

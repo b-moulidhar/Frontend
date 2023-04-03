@@ -37,16 +37,30 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public void automaticRegularization(int sbId, AttendanceTable attendance) {
 		SeatsBooked sb=seatsBookedRepo.findById(sbId).orElseThrow(() -> new ResourceNotFoundException("SeatBooked not found" ));
-        attendance.setStartDate(""+sb.getSbStartDate());
-        attendance.setEndDate(""+sb.getSbEndDate());
+        attendance.setStartDate(""+sb.getSbDate());
+        attendance.setEndDate(""+sb.getSbDate());
         attendance.setShiftStart(""+sb.getPunchIn());
         attendance.setShiftEnd(""+sb.getPunchOut());
         attendance.seteId(sb.geteId());
 	}
+	
+	@Override
+	public void saveAttendance(Employee emp, AttendanceTable attendance) {
+		attendance.seteId(emp);
+		attendance.setStartDate(""+attendance.getStartDate());
+		attendance.setEndDate(""+attendance.getEndDate());
+		attendance.setShiftStart(""+attendance.getShiftStart());
+		attendance.setShiftEnd("" + attendance.getShiftEnd());
+		attendance.setApproval(false);
+		
+	}
+
+
+	
 
 
 	@Override
-	public Employee getSpecificEmploye(AttendanceTable attendance) {
+	public Employee getSpecificEmployee(AttendanceTable attendance) {
 		return employeeRepo.findById(attendance.geteId().geteId())
         .orElseThrow(() -> new ResourceNotFoundException("Employee not found" ));
 	}

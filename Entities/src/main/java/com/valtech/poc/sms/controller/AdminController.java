@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -85,6 +86,13 @@ public class AdminController {
 		System.out.println(code);
 		return code;
 	}
+	
+	@ResponseBody
+	@PostMapping("/qr/verification/{eId}")
+	public boolean verifyQrCode(@PathVariable("eId") int eId, @RequestParam("code") String code) {
+		boolean b = adminService.verifyQr(eId, code);
+		return b;
+	}
 
 	@ResponseBody
 	@GetMapping("/qr/codeGenerator/{empId}")
@@ -103,10 +111,10 @@ public class AdminController {
 	}
 
 	@ResponseBody
-	@GetMapping("/seatCount/{sbStartDate}")
-	public int getCountBySbDate(@PathVariable("sbStartDate") String sbStartDate) {
+	@GetMapping("/seatCount/{sbDate}")
+	public int getCountBySbDate(@PathVariable("sbDate") String sbDate) {
 		logger.info("Fetching the seat booked count");
-		int count = adminService.getSeatBookedCount(sbStartDate);
+		int count = adminService.getSeatBookedCount(sbDate);
 		return count;
 
 	}
@@ -165,6 +173,9 @@ public class AdminController {
 		return adminService.getRegistrationListForApproval();
 	}
 		
- 
+	@GetMapping("/profileDetailsAdmin/{admeId}")
+    public Employee getAdminById(@PathVariable int eId) {
+        return employeeService.getEmployeeByeId(eId);
+    }
 	
 }

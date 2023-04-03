@@ -56,7 +56,7 @@ public class SeatBookingController {
 	}
 
 //        
-	@GetMapping("/available")
+	@GetMapping("/bookedSeatDetails")
 	public ResponseEntity<List<Integer>> availableSeats() {
 		List<Integer> availableSeats = seatService.availableSeats();
 		return ResponseEntity.ok().body(availableSeats);
@@ -67,19 +67,7 @@ public class SeatBookingController {
 	public ResponseEntity<List<Integer>> getTotalSeatsCount() {
 		List<Integer> totalSeats = seatService.countTotalSeats();
 		return ResponseEntity.ok().body(totalSeats);
-
-	}
-
-//    @ResponseBody
-//    @GetMapping("/employees/{id}")
-//      public ResponseEntity<List<SeatsBooked>> findEmployeeWiseSeatsBooked(@PathVariable("id") int eId) {
-//         Employee emp = employeeService.getEmployeeByeId(eId);      
-//         List<SeatsBooked> seatsBookedList = seatService.findEmployeeWiseSeatsBooked(emp);
-//           if (seatsBookedList.isEmpty()) {
-//              return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//            }
-//           return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
-//        }
+     }
 
 	@GetMapping("/available/{date}")
 	public ResponseEntity<List<Seat>> getAvailableSeatsByDate(
@@ -96,20 +84,66 @@ public class SeatBookingController {
 			@RequestParam("sId") int sId) {
 		Employee emp = employeeRepo.findById(eId).get();
 		Seat seat = seatRepo.findById(sId).get();
+		LocalDate sbDate = LocalDate.now();
+		
+//		//check if employee can book seat
+//		if (!seatService.canEmployeeBookSeat(eId, sbDate)) {
+//	        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
+//	        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
+//	    }
+//		
+		//check if the seat is aldready booked
+		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId)) {
+			System.out.println("This seat is aldready booked. Please Book another seat");
+			return ResponseEntity.ok("This seat is aldready booked. Please Book another seat " );
+		}
+		else {
 		String code = adminService.generateQrCode(eId);
-//    	SeatsBooked sb = new SeatsBooked(null, null, LocalDateTime.now(), null, true, code, seat, emp,false);
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
-		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
+		
+		//check for recurring seats
+		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
+			Seat recSeat=seatService.getSeatById(sId);
+			SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime,  true, code, recSeat, emp, false);
+			SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
+			return ResponseEntity.ok("The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: " + savedSeatsBooked.getSbId());
+		}
+		else {
+//		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
+		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, true, code, seat, emp, false);
 		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
-		return ResponseEntity.ok("Seats booked created successfully with ID: " + savedSeatsBooked.getSbId());
-	}
+		//check if employee is booking a seat again on the same day
+				if (seatService.canEmployeeBookSeat(eId, sId,sbDate)) {
+			        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
+			        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
+			    }
+				return ResponseEntity.ok("Seats booked created successfully with ID: " + savedSeatsBooked.getSbId());
+		 }
+		 
+		   }
+	    }
+	
 
 	@PutMapping("/notification/{sbId}")
-	public void notifStatus(@PathVariable int sbId) {
+	public String notifStatus(@PathVariable int sbId) {
 		seatService.notifStatus(sbId);
+		return "Notification Sent";
 	}
+
+//	@GetMapping("/recurring/{eId}")
+//	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
+//			List<SeatsBooked> booking = seatService.getSeatBookingsByEId(eId);
+//	        return ResponseEntity.ok().body(recurringSeats);
+//	}    
+//	        
+	        
+//	@PutMapping("/notification/{sbId}")
+//	public void notifStatus(@PathVariable int sbId) {
+//       seatService.notifStatus(sbId);
+//	}
+//
 
 //   
 //     @GetMapping("/current-booking")
