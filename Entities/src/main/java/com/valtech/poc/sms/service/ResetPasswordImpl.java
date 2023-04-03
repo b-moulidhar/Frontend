@@ -62,7 +62,7 @@ public class ResetPasswordImpl implements ResetPassword {
 		usr.setOtp(otp);
 		userRepo.save(usr);
 //		ResponseEntity<UserDetails> user1= userfacade.saveUser(usr);
-		System.out.println(usr);
+//		System.out.println(usr);
 		return true;
 	}
 

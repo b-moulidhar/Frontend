@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 public class Food {
 	@Id
 	@Column(name = "ftId")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int ftId;
 	private LocalDateTime ftDate;
 	private int count;
