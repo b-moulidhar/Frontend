@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
@@ -93,11 +94,6 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 		
 	}
 
-	@Override
-	public boolean checkIftheEmployeeAlreadyBookTheseat(int eId,int sId) {
-		
-		return seatBookingDao.checkIfEmployeeAlredyBookTheSeat(eId,sId);
-	}
 
 	@Override
 	public boolean CheckIfTheSameSeatBookingRecurring(int eId) {
@@ -119,6 +115,12 @@ public  class SeatBookingServiceImpl implements SeatBookingService {
 	public Seat getSeatById(int sId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean checkIftheEmployeeAlreadyBookTheseat(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+		// TODO Auto-generated method stub
+		return seatBookingDao.checkIfEmployeeAlredyBookTheSeat(eId,fromDateTime,toDateTime);
 	}
 	
   }

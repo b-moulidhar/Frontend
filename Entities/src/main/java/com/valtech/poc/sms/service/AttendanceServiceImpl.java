@@ -40,6 +40,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	
 	private final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
+	
 	@Override
 	public void updateAttendance(int atId,String mail) {
 		attendanceDao.approveAttendance(atId);
@@ -47,13 +48,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 	
 	@Override
-	public void automaticRegularization(int sbId, AttendanceTable attendance) {
+	public void automaticRegularization(int sbId) {
+		AttendanceTable attendance = new AttendanceTable();
 		SeatsBooked sb=seatsBookedRepo.findById(sbId).orElseThrow(() -> new ResourceNotFoundException("SeatBooked not found" ));
         attendance.setStartDate(""+sb.getSbDate());
         attendance.setEndDate(""+sb.getSbDate());
         attendance.setShiftStart(""+sb.getPunchIn());
         attendance.setShiftEnd(""+sb.getPunchOut());
         attendance.seteId(sb.geteId());
+		attendanceRepository.save(attendance);
+		mailContent.attendanceApprovalRequest(attendance);
 	}
 	
 	@Override

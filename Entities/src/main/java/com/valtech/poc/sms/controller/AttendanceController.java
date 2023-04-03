@@ -82,15 +82,15 @@ public class AttendanceController {
 		return "saved";
 	}
 
-	@ResponseBody
-	@PostMapping("/automaticAttendance/{sbId}")
-	public String AutomaticRegularization(@PathVariable("sbId") int sbId) {
-		AttendanceTable attendance = new AttendanceTable();
-		attendanceService.automaticRegularization(sbId, attendance);
-		attendanceRepository.save(attendance);
-		mailContent.attendanceApprovalRequest(attendance);
-		return "saved";
-	}
+//	@ResponseBody
+//	@PostMapping("/automaticAttendance/{sbId}")
+//	public String AutomaticRegularization(@PathVariable("sbId") int sbId) {
+//		AttendanceTable attendance = new AttendanceTable();
+//		attendanceService.automaticRegularization(sbId, attendance);
+//		attendanceRepository.save(attendance);
+//		mailContent.attendanceApprovalRequest(attendance);
+//		return "saved";
+//	}
 
 	@ResponseBody
 	@PutMapping("/attendanceApproval/{atId}")

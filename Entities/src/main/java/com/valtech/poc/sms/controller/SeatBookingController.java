@@ -81,7 +81,7 @@ public class SeatBookingController {
 
 	@PostMapping("/create/{eId}")
 	public synchronized ResponseEntity<String> createSeatsBooked(@PathVariable("eId") int eId,
-			@RequestParam("sId") int sId) {
+			@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
 		Employee emp = employeeRepo.findById(eId).get();
 		Seat seat = seatRepo.findById(sId).get();
 		LocalDate sbDate = LocalDate.now();
@@ -91,28 +91,30 @@ public class SeatBookingController {
 //	        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
 //	        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
 //	    }
-//		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
+		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
 		//check if the seat is aldready booked
-		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId,sId)==false) {
+		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId,fromDateTime,toDateTime)) {
 			System.out.println("This seat is aldready booked. Please Book another seat");
 			return ResponseEntity.ok("This seat is aldready booked. Please Book another seat " );
 		}
 		else {
 		String code = adminService.generateQrCode(eId);
 		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
 		
 		//check for recurring seats
 		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
 			Seat recSeat=seatService.getSeatById(sId);
-			SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime,  true, code, recSeat, emp, false);
+			SeatsBooked sb = new SeatsBooked(dateTime, null, null,  true, code, recSeat, emp, false,false);
 			SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
 			return ResponseEntity.ok("The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: " + savedSeatsBooked.getSbId());
 		}
 		else {
 //		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
-		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, true, code, seat, emp, false);
+		SeatsBooked sb = new SeatsBooked(dateTime, null, null, true, code, seat, emp, false,false);
 		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
 		//check if employee is booking a seat again on the same day
 				if (seatService.canEmployeeBookSeat(eId, sId,sbDate)) {
