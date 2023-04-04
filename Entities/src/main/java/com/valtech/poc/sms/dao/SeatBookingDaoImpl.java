@@ -1,7 +1,5 @@
 package com.valtech.poc.sms.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -16,18 +14,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import com.valtech.poc.sms.entities.Employee;
-import com.valtech.poc.sms.entities.Manager;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.ManagerRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
+import com.valtech.poc.sms.repo.SeatsBookedRepo;
 
 @Component
 @ComponentScan
@@ -39,6 +33,9 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	SeatRepo seatRepo;
+	
+	@Autowired
+	SeatsBookedRepo seatsBookedRepo;
 
 	@Autowired
 	SeatBookingDao seatBookingDao;
@@ -155,37 +152,39 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 	public SeatsBooked findCurrentSeat(Employee emp) {
 		int empId = emp.geteId();
 		System.out.println(empId);
-		String query = "select * from seats_booked where current = 1 and e_id = ?";
-		return jdbcTemplate.queryForObject(query, new Object[] { empId }, new RowMapper<SeatsBooked>() {
-			public SeatsBooked mapRow(ResultSet rs, int rowNum) throws SQLException {
-				SeatsBooked seatsBooked = new SeatsBooked();
-				seatsBooked.setSbId(rs.getInt("sb_id"));
-				int seatId = rs.getInt("s_id");
-				Seat seat = seatRepo.findById(seatId).get();
-				seatsBooked.setsId(seat);
-//				int mngId = emp.getManagerDetails().getmId();
-//				Manager mng = managerRepo.findById(mngId);
-//				System.out.println(mng);					
-//				emp.setManagerDetails(mng);
-				seatsBooked.seteId(emp);
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-				String sbSDate = rs.getString("sb_date");
-				LocalDateTime dateTime = LocalDateTime.parse(sbSDate, formatter);
-				seatsBooked.setSbDate(dateTime);
-//				String sbEDate = rs.getString("sb_end_date");
-//				LocalDateTime dateTime1 = LocalDateTime.parse(sbEDate, formatter);
-//				seatsBooked.setSbEndDate(dateTime1);
-				String sbISDate = rs.getString("punch_in");
-				LocalDateTime dateTimeI = LocalDateTime.parse(sbISDate, formatter);
-				seatsBooked.setPunchIn(dateTimeI);
-				String sbOSDate = rs.getString("punch_out");
-				LocalDateTime dateTimeO = LocalDateTime.parse(sbOSDate, formatter);
-				seatsBooked.setPunchOut(dateTimeO);
-				seatsBooked.setCode(rs.getString("code"));
-				return seatsBooked;
-			}
-
-		});
+		System.out.println(emp.getEmpName());
+		List<SeatsBooked> sb1= seatsBookedRepo.findAllByeId(emp);
+		System.out.println(sb1);
+		return null;
+//		String query = "select * from seats_booked where current = 1 and e_id = ?";
+//		return jdbcTemplate.queryForObject(query, new Object[] { empId }, BeanPropertyRowMapper.newInstance(SeatsBooked.class));
+//		return jdbcTemplate.queryForObject(query, new Object[] { empId }, new RowMapper<SeatsBooked>() {
+//			public SeatsBooked mapRow(ResultSet rs, int rowNum) throws SQLException {
+//				SeatsBooked seatsBooked = new SeatsBooked();
+//				seatsBooked.setSbId(rs.getInt("sb_id"));
+//				int seatId = rs.getInt("s_id");
+//				Seat seat = seatRepo.findById(seatId).get();
+//				seatsBooked.setsId(seat);
+////				int mngId = emp.getManagerDetails().getmId();
+////				Manager mng = managerRepo.findById(mngId);
+////				System.out.println(mng);					
+////				emp.setManagerDetails(mng);
+//				seatsBooked.seteId(emp);
+//				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//				String sbSDate = rs.getString("sb_date");
+//				LocalDateTime dateTime = LocalDateTime.parse(sbSDate, formatter);
+//				seatsBooked.setSbDate(dateTime);
+////				String sbEDate = rs.getString("sb_end_date");
+////				LocalDateTime dateTime1 = LocalDateTime.parse(sbEDate, formatter);
+////				seatsBooked.setSbEndDate(dateTime1);
+//				String sbISDate = rs.getString("punch_in");
+//				LocalDateTime dateTimeI = LocalDateTime.parse(sbISDate, formatter);
+//				seatsBooked.setPunchIn(dateTimeI);
+//				String sbOSDate = rs.getString("punch_out");
+//				LocalDateTime dateTimeO = LocalDateTime.parse(sbOSDate, formatter);
+//				seatsBooked.setPunchOut(dateTimeO);
+//				seatsBooked.setCode(rs.getString("code"));
+//				return seatsBooked;	
 	}
 
 	@Override
@@ -232,7 +231,21 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 			return false;
 		}
 	}
-
+	
+	@Override
+	public boolean checkIfEmployeeAlredyBookTheSeatDaily(int eId,LocalDateTime from) throws DataAccessException{
+		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=from AND current = true";
+       
+		try {
+			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,from }, Integer.class);
+		
+        if(cnt>0)
+        	return true;
+        return false;
+		}catch (DataAccessException e) {
+			return false;
+		}
+	}
 	
 	@Override
 	public boolean checkIfTheSameSeatBookingRecurring(int eId) throws DataAccessException {

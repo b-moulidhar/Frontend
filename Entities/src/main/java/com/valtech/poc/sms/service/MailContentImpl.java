@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.valtech.poc.sms.entities.AttendanceTable;
 import com.valtech.poc.sms.entities.Employee;
+import com.valtech.poc.sms.entities.Mail;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.entities.User;
 
@@ -108,5 +109,16 @@ public class MailContentImpl implements MailContent {
 				+ "\n Seat booked: " + sb.getsId().getsName() + " \n Seat reserved for : " + sb.getSbDate();
 		sendMail.sendMail(email, subject, body);
 	}
+	
+	@Override
+	public void unsentMails(Mail mail) {
+		String email = mail.getEmail();
+		String subject = mail.getSubject();
+		String body = mail.getBody();
+		sendMail.sendMail(email, subject, body);
+		mail.setStatus(true);
+	}
+	
+	
 
 }

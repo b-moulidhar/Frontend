@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.valtech.poc.sms.component.ScheduledTask;
+import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.service.AdminService;
 import com.valtech.poc.sms.service.EmployeeService;
+import com.valtech.poc.sms.service.MailContent;
 import com.valtech.poc.sms.service.SeatBookingService;
 
 @RestController
@@ -42,6 +44,7 @@ public class SeatBookingController {
 	
 	@Autowired
 	ScheduledTask scheduledTask;
+
 
 	@GetMapping("/total")
 	public ResponseEntity<List<Integer>> getAllSeats() {
@@ -84,8 +87,7 @@ public class SeatBookingController {
 	
 		else {
 			return ResponseEntity.ok(seatService.createSeatsBookedWeekly(eId,sId,from,to));
-		}
-		 
+		}		 
 	}
 
 	@PutMapping("/notification/{sbId}")

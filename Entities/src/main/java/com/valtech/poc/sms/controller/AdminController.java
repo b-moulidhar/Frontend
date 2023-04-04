@@ -68,11 +68,11 @@ public class AdminController {
 		User usr = userService.findByEmpId(empId);
 		Employee emp = usr.getEmpDetails();
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
-		System.out.println("sb details: " + sb.getPunchIn());
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
 //		LocalDateTime dateTime = formatter.format(now);
+		sb.setCurrent(false);
 		sb.setPunchOut(dateTime);
 		seatsBookedRepo.save(sb);
 		attendanceService.automaticRegularization(sb.getSbId());
@@ -87,6 +87,7 @@ public class AdminController {
 		Employee emp = employeeService.findById(eId);
 		System.out.println(emp.getEmpName());
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
+		System.out.println(sb);
 		String code = sb.getCode();
 		System.out.println(code);
 		return code;

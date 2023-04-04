@@ -14,6 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.dao.SeatBookingDao;
 import com.valtech.poc.sms.dao.SeatBookingDaoImpl;
 import com.valtech.poc.sms.entities.DateUtil;
@@ -42,6 +43,12 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 
 	@Autowired
 	SeatRepo seatRepo;
+	
+	@Autowired
+	ScheduledTask scheduledTask;
+	
+	@Autowired
+	MailContent mailContent;
 
 //	@Override
 //	public String getQrCodeKeyForEmpId(int empId)
@@ -130,6 +137,13 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		// TODO Auto-generated method stub
 		return seatBookingDao.checkIfEmployeeAlredyBookTheSeat(eId, fromDateTime, toDateTime);
 	}
+	
+	@Override
+	public boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime) {
+		// TODO Auto-generated method stub
+		return seatBookingDao.checkIfEmployeeAlredyBookTheSeatDaily(eId, fromDateTime);
+	}
+
 
 	@Override
 	public String createSeatsBookedDaily(int eId, int sId, String from, String to) {
@@ -138,24 +152,30 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
 		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
+		LocalDate fromDate = fromDateTime.toLocalDate();
 
 		// check if the seat is already booked
-		if (checkIftheSeatIsCurrentlyBooked(eId, fromDateTime, toDateTime)) {
+		if (checkIftheSeatIsCurrentlyBookedDaily(eId, fromDateTime)) {
 			return "This employee has already booked the seat.";
 		} else {
 			String code = adminService.generateQrCode(eId);
-			LocalDateTime now = LocalDateTime.now();
-			LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
+			LocalDateTime localDateTime = fromDate.atStartOfDay();
+			//LocalDateTime dateTime = LocalDateTime.parse(formatter.format(localDateTime), formatter);
+			long limit = 60000*240;
 			// check for recurring seats
 			if (CheckIfTheSameSeatBookingRecurring(eId)) {
 				Seat recSeat = getSeatById(sId);
-				SeatsBooked sb = new SeatsBooked(dateTime, null, null, true, code, recSeat, emp, false, false);
+				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, recSeat, emp, false, false);
 				SeatsBooked savedSeatsBooked = saveSeatsBookedDetails(sb);
+				scheduledTask.scheduleTask(limit, savedSeatsBooked);
+				//mailContent.dailyNotification(emp);
 				return "The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: "
 						+ savedSeatsBooked.getSbId();
 			} else {
-				SeatsBooked sb = new SeatsBooked(dateTime, null, null, true, code, seat, emp, false, false);
+				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false);
 				SeatsBooked savedSeatsBooked = saveSeatsBookedDetails(sb);
+				scheduledTask.scheduleTask(limit, savedSeatsBooked);
+//				mailContent.dailyNotification(emp);
 				// check if employee is booking a seat again on the same day
 //				if (canEmployeeBookSeat(eId, sId,fromDateTime)) {
 //			        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.";

@@ -22,8 +22,13 @@ public interface SeatsBookedRepo extends JpaRepository<SeatsBooked, Integer>{
 
 	   // @Query("UPDATE seats_booked sb SET sb.notifStatus = ? WHERE sb.sbId = ?")
 	    //void notifStatus( @PathVariable("sbId") int sbId);
+	
+	
+	
 
 	}
+
+	
 
 
 
