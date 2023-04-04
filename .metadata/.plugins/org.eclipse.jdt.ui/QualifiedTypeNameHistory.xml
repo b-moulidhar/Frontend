@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="org.springframework.dao.IncorrectResultSizeDataAccessException"/>
+    <fullyQualifiedTypeName name="org.springframework.dao.EmptyResultDataAccessException"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.DeleteMapping"/>
+    <fullyQualifiedTypeName name="com.valtech.poc.sms.entities.AttendanceTable"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.GetMapping"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.ResponseBody"/>
+    <fullyQualifiedTypeName name="org.springframework.stereotype.Controller"/>
+    <fullyQualifiedTypeName name="com.valtech.poc.sms.service.AttendanceService"/>
+    <fullyQualifiedTypeName name="com.valtech.poc.sms.entities.Employee"/>
+    <fullyQualifiedTypeName name="org.springframework.stereotype.Component"/>
+    <fullyQualifiedTypeName name="com.valtech.poc.sms.dao.AttendanceDao"/>
+    <fullyQualifiedTypeName name="com.valtech.poc.sms.repo.SeatsBookedRepo"/>
+    <fullyQualifiedTypeName name="com.valtech.poc.sms.repo.EmployeeRepo"/>
+    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
+    <fullyQualifiedTypeName name="org.springframework.jdbc.core.JdbcTemplate"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.CrossOrigin"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestBody"/>
+</qualifiedTypeNameHistroy>

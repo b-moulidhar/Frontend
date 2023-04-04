@@ -63,6 +63,15 @@ public interface SeatBookingService {
 
 
 
+	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);
+
+
+
+
+	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
+
+	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
+
 
 	//void updateNotifStatus(int sbId, Connection connection);
 

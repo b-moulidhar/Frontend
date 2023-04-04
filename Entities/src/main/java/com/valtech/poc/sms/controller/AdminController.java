@@ -55,7 +55,8 @@ public class AdminController {
 	@GetMapping("/foodCount/{ftDate}")
 	public int getFoodCount(@PathVariable("ftDate") String ftDate) {
 		logger.info("Fetching the food count");
-		int count = adminService.getFoodCount(ftDate);
+		String foodDate = ftDate + " 00:00:00";
+		int count = adminService.getFoodCount(foodDate);
 		return count;
 	}
 
@@ -112,14 +113,16 @@ public class AdminController {
 	@ResponseBody
 	@GetMapping("/foodCountWithJpa/{ftDate}")
 	public int getCountByFtdate(@PathVariable("ftDate") String ftDate) {
-		return adminService.getCount(ftDate);
+		String foodDate = ftDate + " 00:00:00";
+		return adminService.getCount(foodDate);
 	}
 
 	@ResponseBody
 	@GetMapping("/seatCount/{sbDate}")
 	public int getCountBySbDate(@PathVariable("sbDate") String sbDate) {
 		logger.info("Fetching the seat booked count");
-		int count = adminService.getSeatBookedCount(sbDate);
+		String SeatDate = sbDate + " 00:00:00";
+		int count = adminService.getSeatBookedCount(SeatDate);
 		return count;
 
 	}

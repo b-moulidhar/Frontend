@@ -1,21 +1,15 @@
 package com.valtech.poc.sms.service;
 
-import java.sql.Connection;
-
-import java.sql.SQLException;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.valtech.poc.sms.dao.SeatBookingDao;
-import com.valtech.poc.sms.dao.SeatBookingDaoImpl;
 import com.valtech.poc.sms.entities.DateUtil;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
@@ -124,6 +118,20 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+
+    @Override
+    public List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate) {
+        return seatBookingDao.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
+    }
+
+    @Override
+    public List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return seatBookingDao.getSeatsBookedByDate(startDate, endDate);
+    }
+
+	
 
 	@Override
 	public boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
@@ -179,7 +187,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		LocalDate toDate = toDateTime.toLocalDate();
 		List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
 		if (checkIftheSeatIsCurrentlyBooked(eId, fromDateTime, toDateTime)) {
-			return "This employee has aldready booked.";
+			return "This employee has already booked.";
 		} else {
 		for (LocalDate date : dates) {
 			LocalDateTime localDateTime = date.atStartOfDay();
@@ -190,5 +198,15 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return "Seats booked successfully ";
 	}
 	}
+	@Override
+	public byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception {
+	    List<SeatsBooked> seatsBooked = getSeatsBookedByDate(startDate, endDate);
+	    
+	    byte[] pdf=seatBookingDao.generateSeatsBookedPDF(seatsBooked);
+	    return pdf;
+	}
+
 
 }
+
+
