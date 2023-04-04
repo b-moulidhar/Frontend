@@ -24,6 +24,7 @@ import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.service.AdminService;
+import com.valtech.poc.sms.service.HolidayService;
 import com.valtech.poc.sms.service.SeatBookingService;
 
 @RestController
@@ -45,6 +46,9 @@ public class SeatBookingController {
 	
 	@Autowired
 	ScheduledTask scheduledTask;
+	
+	@Autowired
+	HolidayService holidayService;
 
 	@GetMapping("/total")
 	public ResponseEntity<List<Integer>> getAllSeats() {
@@ -80,7 +84,11 @@ public class SeatBookingController {
 	public synchronized ResponseEntity<String> createSeatsBooked(@PathVariable("eId") int eId,
 			@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
 		
-		
+		LocalDate bookingDate = LocalDate.parse(from);
+		if (holidayService.isHoliday(bookingDate)) {
+		    return ResponseEntity.badRequest().body("Booking not allowed on holidays");
+		}
+
 		if(from.equals(to)) {
 			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,from,to));
 		}
