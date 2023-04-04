@@ -1,11 +1,13 @@
 package com.valtech.poc.sms.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Manager;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
+import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.ManagerRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 
@@ -45,6 +48,9 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 	
 	@Autowired
 	ManagerRepo managerRepo;
+	
+	@Autowired
+	EmployeeRepo employeeRepo;
 
 	@Override
 	public List<Integer> getAllSeats() {
@@ -149,6 +155,57 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 ////		System.out.println(seatsBooked);
 //		return seatsBooked;
 //	}
+	@SuppressWarnings("deprecation")
+	@Override
+	public List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate) {
+	    String query = "SELECT * FROM seats_booked WHERE sb_date >= ? AND sb_date <= ?";
+	    List<SeatsBooked> seatsBooked = new ArrayList<>();
+
+	    jdbcTemplate.query(query, new Object[]{startDate, endDate}, resultSet -> {
+	        SeatsBooked sb = new SeatsBooked();
+	        sb.setSbId(resultSet.getInt("sb_id"));
+	        sb.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
+	        sb.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
+	      sb.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
+
+	        seatsBooked.add(sb);
+	    });
+
+	    return seatsBooked;
+	}
+
+
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public List<SeatsBooked> findSeatsBookedBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+	    String query = "SELECT * FROM seats_booked WHERE sb_date >= ? AND sb_date <= ?";
+	    Object[] params = { startDate, endDate };
+	    List<SeatsBooked> seatsBookedList = jdbcTemplate.query(query, params, new BeanPropertyRowMapper<>(SeatsBooked.class));
+	    return seatsBookedList;
+	}
+
+
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate) {
+	    String query = "SELECT * FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ?";
+	    List<SeatsBooked> seatsBooked = new ArrayList<>();
+
+	    jdbcTemplate.query(query, new Object[]{empId, startDate, endDate}, resultSet -> {
+	        SeatsBooked sb = new SeatsBooked();
+	        sb.setSbId(resultSet.getInt("sb_id"));
+	        sb.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
+	        sb.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
+	        sb.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
+
+	        seatsBooked.add(sb);
+	    });
+
+	    return seatsBooked;
+	}
+
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -264,6 +321,10 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 	        return false;
 	    }
 	}
+
+	
+
+	
 
 
 	

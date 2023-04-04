@@ -47,6 +47,15 @@ public interface SeatBookingDao {
 	boolean checkIfEmployeeAlredyBookTheSeat(int eId, LocalDateTime from, LocalDateTime to) throws DataAccessException;
 
 
+	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);
+
+
+	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
+
+
+	List<SeatsBooked> findSeatsBookedBetweenDates(LocalDateTime startDate, LocalDateTime endDate);
+
+
 	//void updateNotifStatus(int sbId, Connection connection);
 
 	
