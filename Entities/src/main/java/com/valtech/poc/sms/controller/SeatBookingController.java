@@ -113,7 +113,7 @@ public class SeatBookingController {
 
 
 
-    @GetMapping("/by-employee-and-date")
+    @GetMapping("/byemployee")
     public ResponseEntity<List<SeatsBooked>> getSeatsBookedByEmployeeAndDate(
             @RequestParam int empId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,

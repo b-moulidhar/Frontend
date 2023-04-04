@@ -159,23 +159,21 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 	@Override
 	public List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate) {
 	    String query = "SELECT * FROM seats_booked WHERE sb_date >= ? AND sb_date <= ?";
-	    
-	    
-		List<SeatsBooked> seatsBooked = jdbcTemplate.query(query, new Object[]{startDate, endDate},
-	            new BeanPropertyRowMapper<>(SeatsBooked.class));
+	    List<SeatsBooked> seatsBooked = new ArrayList<>();
 
-	    for (SeatsBooked sb : seatsBooked) {
-	        int seatId = sb.getsId().getsId();
-	        int empId = sb.geteId().geteId(); // assuming the employee ID is an int
-	        System.out.println(empId);
-	        Seat seat = seatRepo.findById(seatId).get();
-	        Employee employee = employeeRepo.findById(empId).get(); // fetch employee object by ID
-	        sb.setsId(seat);
-	        sb.seteId(employee);
-	    }
+	    jdbcTemplate.query(query, new Object[]{startDate, endDate}, resultSet -> {
+	        SeatsBooked sb = new SeatsBooked();
+	        sb.setSbId(resultSet.getInt("sb_id"));
+	        sb.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
+	        sb.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
+	      sb.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
+
+	        seatsBooked.add(sb);
+	    });
 
 	    return seatsBooked;
 	}
+
 
 
 	@SuppressWarnings("deprecation")
@@ -191,19 +189,23 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-    public List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate) {
-        String query = "SELECT * FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ?";
-        List<SeatsBooked> seatsBooked = jdbcTemplate.query(query, new Object[]{empId, startDate, endDate},
-                new BeanPropertyRowMapper<>(SeatsBooked.class));
+	public List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate) {
+	    String query = "SELECT * FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ?";
+	    List<SeatsBooked> seatsBooked = new ArrayList<>();
 
-        for (SeatsBooked sb : seatsBooked) {
-            int seatId = sb.getsId().getsId();
-            Seat seat = seatRepo.findById(seatId).get();
-            sb.setsId(seat);
-        }
+	    jdbcTemplate.query(query, new Object[]{empId, startDate, endDate}, resultSet -> {
+	        SeatsBooked sb = new SeatsBooked();
+	        sb.setSbId(resultSet.getInt("sb_id"));
+	        sb.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
+	        sb.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
+	        sb.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
 
-        return seatsBooked;
-    }
+	        seatsBooked.add(sb);
+	    });
+
+	    return seatsBooked;
+	}
+
 
 	@SuppressWarnings("deprecation")
 	@Override
