@@ -1,21 +1,15 @@
 package com.valtech.poc.sms.service;
 
-import java.sql.Connection;
-
-import java.sql.SQLException;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.valtech.poc.sms.dao.SeatBookingDao;
-import com.valtech.poc.sms.dao.SeatBookingDaoImpl;
 import com.valtech.poc.sms.entities.DateUtil;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
@@ -204,6 +198,14 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return "Seats booked successfully ";
 	}
 	}
+	@Override
+	public byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception {
+	    List<SeatsBooked> seatsBooked = getSeatsBookedByDate(startDate, endDate);
+	    
+	    byte[] pdf=seatBookingDao.generateSeatsBookedPDF(seatsBooked);
+	    return pdf;
+	}
+
 
 }
 

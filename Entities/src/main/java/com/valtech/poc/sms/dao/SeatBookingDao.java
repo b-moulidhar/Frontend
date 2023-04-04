@@ -52,8 +52,9 @@ public interface SeatBookingDao {
 
 	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
 
+	byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception;
 
-	List<SeatsBooked> findSeatsBookedBetweenDates(LocalDateTime startDate, LocalDateTime endDate);
+
 
 
 	//void updateNotifStatus(int sbId, Connection connection);
