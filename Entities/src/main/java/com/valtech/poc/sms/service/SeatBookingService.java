@@ -70,6 +70,8 @@ public interface SeatBookingService {
 
 	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
 
+	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
+
 
 	//void updateNotifStatus(int sbId, Connection connection);
 

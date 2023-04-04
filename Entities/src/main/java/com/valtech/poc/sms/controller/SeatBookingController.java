@@ -2,6 +2,7 @@ package com.valtech.poc.sms.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,12 @@ import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.service.AdminService;
 import com.valtech.poc.sms.service.HolidayService;
 import com.valtech.poc.sms.service.SeatBookingService;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
 
 @RestController
 @CrossOrigin(origins = "http://10.191.80.103/:3000")
@@ -107,29 +114,50 @@ public class SeatBookingController {
 	
 	@ResponseBody
 	@GetMapping("/booked")
-    public ResponseEntity<List<SeatsBooked>> getSeatsBookedByDate(
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        
-        List<SeatsBooked> seatsBooked = seatService.getSeatsBookedByDate(startDate, endDate);
-        
-        return ResponseEntity.ok(seatsBooked);
-    }
+	public ResponseEntity<List<SeatsBooked>> getSeatsBookedByDate(
+	        @RequestParam("startDate") String startDateStr,
+	        @RequestParam("endDate") String endDateStr) {
+
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    
+	    List<SeatsBooked> seatsBooked = seatService.getSeatsBookedByDate(startDate, endDate);
+	    
+	    return ResponseEntity.ok(seatsBooked);
+	}
+	@ResponseBody
+	@GetMapping("/booked/report")
+	public ResponseEntity<byte[]> generateSeatsBookedReport(@RequestParam("startDate") String startDateStr,
+	                                                           @RequestParam("endDate") String endDateStr) throws Exception {
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+	    byte[] pdfBytes = seatService.generateSeatsBookedReportPDF(startDate, endDate);
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_PDF);
+	    headers.setContentDisposition(ContentDisposition.builder("attachment")
+	            .filename("seats_booked.pdf")
+	            .build());
+
+	    return ResponseEntity.ok().headers(headers).body(pdfBytes);
+	}
 
 
+	@ResponseBody
+	@GetMapping("/booked/byemployee")
+	public ResponseEntity<List<SeatsBooked>> getSeatsBookedByEmployeeAndDate(
+	        @RequestParam int empId,
+	        @RequestParam("startDate") String startDateStr,
+	        @RequestParam("endDate") String endDateStr) {
 
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    
+	    List<SeatsBooked> seatsBookedList = seatService.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
+	    return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
+	}
 
-
-
-    @GetMapping("/byemployee")
-    public ResponseEntity<List<SeatsBooked>> getSeatsBookedByEmployeeAndDate(
-            @RequestParam int empId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-
-        List<SeatsBooked> seatsBookedList = seatService.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
-        return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
-    }
 
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
