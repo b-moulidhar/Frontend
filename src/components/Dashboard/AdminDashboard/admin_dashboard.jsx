@@ -4,25 +4,54 @@ import './admin_dashboard.css';
 
 function AdminDashboard(){
     const [count,setCount] = useState(0)
-    // useEffect(() => {
-    //   axios.get("http://10.191.80.104:7001/seats/total").then((response) => {
-    //     setCount(response.data);alert(typeof response.url);
-    //   }); 
-    // }, []);
+    const [foodCount,setFoodCount] = useState(0)
+    // const currentDate = new Date().toLocaleDateString();
+    const dateObj = new Date();
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+  
+    const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    
+    // const [foodcount,setFoodCount]=useState(0)
     useEffect(() => {
-      // Fetch data from API
-      axios.get('http://10.191.80.103:7001/seats/total',{headers: {Accept: 'application/json'
-       }})
-        .then(response => {
-          // Update state with data count
-          setCount(response.data.length);
-          console.log(response.data)
-  alert(response.data.length);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }, []);
+      const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+      axios.get("http://10.191.80.103:7001/seatCount/2023-04-03").then((response)=>{  
+        setCount(response.data);
+
+        console.log(response.data);
+        // alert(typeof response.url);
+      }).catch((err)=>{
+        console.log(err);
+      })
+      }, []);
+    //   useEffect(() => {
+ 
+    //     axios.get("http://10.191.80.103:7001/seatCount/"+currentDate).then((response) => (response.data))
+    //     .then((data)=>{setCount(data)
+    //       // setCount(response.data);
+  
+    //       console.log();
+    //       // alert(typeof response.url);
+    //     })
+    //     }, );
+    // console.log(count)
+    // alert(currentDate);
+  //   useEffect(() => {
+  //     // Fetch data from API
+  //     axios.get('http://10.191.80.103:7001/seats/total',{headers: {Accept: 'application/json'
+  //      }})
+  //       .then(response => {
+  //         // Update state with data count
+  //         setCount(response.data.length);
+  //         console.log(response.data)
+  // alert(response.data.length);
+  //       })
+  //       .catch(error => {
+  //         console.log(error);
+  //       });
+  //   }, []);
     // useEffect(()=>{
     //     axios.get("http://10.191.80.104:7001/seats/total").then((res)=>{
     //             setCount({

@@ -236,7 +236,7 @@ public   class SeatBookingDaoImpl implements SeatBookingDao {
 	
 	@Override
 	public boolean checkIfTheSameSeatBookingRecurring(int eId) throws DataAccessException {
-		String sql="SELECT COUNT(*) As bookings FROM seat s INNER JOIN seats_booked sb ON s.s_id = sb.s_id INNER JOIN employee e ON sb.e_id = e.e_id WHERE e.e_id=? GROUP BY s.s_id, s.s_name, e.emp_name HAVING COUNT(*) >= 1 ORDER BY bookings DESC;";
+		String sql="SELECT COUNT(*) As bookings FROM seat s INNER JOIN seats_booked sb ON s.s_id = sb.s_id INNER JOIN employee e ON sb.e_id = e.e_id WHERE e.e_id=? GROUP BY s.s_id, s.s_name, e.emp_name HAVING COUNT(*) >= 7 ORDER BY bookings DESC;";
 		try {
 			@SuppressWarnings("deprecation")
 			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId }, Integer.class);
