@@ -193,7 +193,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		LocalDate toDate = toDateTime.toLocalDate();
 		List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
 		if (checkIftheSeatIsCurrentlyBooked(eId, fromDateTime, toDateTime)) {
-			return "This employee has aldready booked.";
+			return "This employee has already booked.";
 		} else {
 		for (LocalDate date : dates) {
 			LocalDateTime localDateTime = date.atStartOfDay();

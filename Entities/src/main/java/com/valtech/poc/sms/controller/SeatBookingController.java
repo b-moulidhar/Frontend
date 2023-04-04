@@ -83,20 +83,22 @@ public class SeatBookingController {
 	@PostMapping("/create/{eId}")
 	public synchronized ResponseEntity<String> createSeatsBooked(@PathVariable("eId") int eId,
 			@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
-		
+		String stDate = from + " 00:00:00";
+		String edDate = to + " 00:00:00";
 		LocalDate bookingDate = LocalDate.parse(from);
 		if (holidayService.isHoliday(bookingDate)) {
 		    return ResponseEntity.badRequest().body("Booking not allowed on holidays");
 		}
 
+		
 		if(from.equals(to)) {
 			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,from,to));
 		}
 	
 		else {
-			return ResponseEntity.ok(seatService.createSeatsBookedWeekly(eId,sId,from,to));
+			return ResponseEntity.ok(seatService.createSeatsBookedWeekly(eId,sId,stDate,edDate));
 		}
-		 
+		
 	}
 
 	@PutMapping("/notification/{sbId}")
