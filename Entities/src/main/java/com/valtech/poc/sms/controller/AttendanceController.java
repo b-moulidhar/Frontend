@@ -75,11 +75,16 @@ public class AttendanceController {
 
 	@ResponseBody
 	@PostMapping("/attendanceRegularization/{eId}")
-	public String saveAttendance(@PathVariable("eId") int eId) {
+	public void saveAttendance(@PathVariable("eId") int eId,@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,@RequestParam("shiftStart")String shiftStart,@RequestParam("shiftEnd")String shiftEnd ) {
 		logger.info("Request to save the attendance");
-		attendanceService.saveAttendance(eId);
-		logger.info("Attendance Saved");
-		return "saved";
+		if(startDate.equals(endDate)) {
+			System.out.println("daily");
+		attendanceService.saveAttendance(eId,startDate,endDate,shiftStart,shiftEnd);
+		}
+		else {
+			System.out.println("weekly");
+	    attendanceService.saveAttendanceForMultipleDays(eId,startDate,endDate,shiftStart,shiftEnd);
+		}
 	}
 
 //	@ResponseBody

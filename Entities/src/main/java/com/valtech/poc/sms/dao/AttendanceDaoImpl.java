@@ -1,9 +1,11 @@
 package com.valtech.poc.sms.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -108,6 +110,42 @@ String query="select * from attendance_table a JOIN employee e ON a.e_id = e.e_i
     	return jdbcTemplate.queryForObject(query, String.class, atId);
 		
 	}
+
+	@Override
+	public boolean checkIfTheAttendanceIsRegularized(int eId, String startDate, String endDate) {
+		String sql= "SELECT COUNT(*) FROM attendance_table WHERE e_id = ? AND start_date = ? AND end_date=? ";
+	       
+		try {
+			@SuppressWarnings("deprecation")
+			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,startDate,endDate }, Integer.class);
+		
+        if(cnt>0)
+        	return true;
+        return false;
+		}catch (DataAccessException e) {
+			return false;
+		}
+	}
+
+
+
+	@Override
+	public boolean checkIfTheAttendanceIsRegularised(int eId, String startDate, String endDate) {
+		String sql = "SELECT COUNT(*) FROM attendance_table WHERE e_id = ? AND start_date BETWEEN ? AND ? AND end_date BETWEEN ? AND ?";
+		try {
+			@SuppressWarnings("deprecation")
+			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { eId, startDate, endDate, startDate, endDate }, Integer.class);
+
+			if (cnt > 0)
+				return true;
+			return false;
+		} catch (DataAccessException e) {
+			return false;
+		}
+	}
+
+
+
 
 	
 	
