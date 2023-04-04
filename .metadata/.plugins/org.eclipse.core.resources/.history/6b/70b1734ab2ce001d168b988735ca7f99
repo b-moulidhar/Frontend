@@ -1,5 +1,0 @@
-package com.valtech.poc.sms.dao;
-
-public class AttendanceDaoImpl {
-
-}
