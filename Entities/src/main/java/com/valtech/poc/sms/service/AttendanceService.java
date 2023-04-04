@@ -28,5 +28,7 @@ public interface AttendanceService {
 
 	void updateAttendance(int atId,String mail);
 
-	void saveAttendance(int eId);
+	void saveAttendance(int eId, String startDate, String endDate, String shiftStart, String shiftEnd);
+
+	void saveAttendanceForMultipleDays(int eId, String startDate, String endDate, String shiftStart, String shiftEnd);
 }
