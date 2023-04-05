@@ -51,5 +51,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return empRepo.save(employee);
 	}
 
+	@Override
+	public List<Employee> getAllEmployeesUnderTheManager(int eId) {
+	return employeeDAO.getAllEmployeesUnderTheManager(eId);
+	}
+
 	
 }

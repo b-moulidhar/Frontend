@@ -16,5 +16,7 @@ public interface EmployeeService {
 
 	Employee saveEmployee(Employee employee);
 
+	List<Employee> getAllEmployeesUnderTheManager(int eId);
+
 
 }

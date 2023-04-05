@@ -98,7 +98,7 @@ public class SeatBookingController {
 
 		
 		if(from.equals(to)) {
-			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,stId,from,to));
+			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,stId,stDate,edDate));
 		}
 	
 		else {

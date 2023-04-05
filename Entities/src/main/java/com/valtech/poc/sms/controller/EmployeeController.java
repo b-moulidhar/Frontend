@@ -33,4 +33,10 @@ public class EmployeeController {
 		return employeeService.getAllEmployees(eId);
 		
 	}
+	
+	@ResponseBody
+	@GetMapping("/getAllEmployeesUnderTheManager")
+	public List<Employee>getAllEmployeesUnderTheManager(@PathVariable ("eId") int eId){
+		return employeeService.getAllEmployeesUnderTheManager(eId);
+	}
 }

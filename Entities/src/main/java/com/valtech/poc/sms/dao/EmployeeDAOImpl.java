@@ -4,9 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -69,8 +71,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	    		});
 		return employees;
 	}
-
-	
+	@Override
+	public List<Employee> getAllEmployeesUnderTheManager(int eId) {
+	    String query = "SELECT * FROM employee WHERE m_id = (SELECT m_id FROM manager WHERE e_id = ?)";
+	    List<Employee> employees = jdbcTemplate.query(query, new Object[]{eId}, new BeanPropertyRowMapper<>(Employee.class));
+	    return employees;
+	}
 	
 	
 
