@@ -22,7 +22,7 @@ export default function Login(){
     e.preventDefault()
     // console.log("hello");
     try {
-      const response = axios.post("http://localhost:7001/api/login", { empId, pass })
+      const response = axios.post("http://10.191.80.73:7001/api/login", { empId, pass })
       .then((res)=>{
         
         const { token, EId, role } = res.data;

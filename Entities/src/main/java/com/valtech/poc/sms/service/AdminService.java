@@ -27,6 +27,8 @@ public interface AdminService {
 
 	boolean verifyQr(int eId,String code);
 
+	int getCountOfFoodOpt(String seatDate);
+
 
 
 

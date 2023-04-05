@@ -132,12 +132,19 @@ public class AdminServiceImpl implements AdminService{
 		System.out.println(emp.getEmpName());
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
 		String key = sb.getCode();
-		System.out.println(key);
-		System.out.println(code);
 		if(key.equals(code)) {
+			sb.setVerified(true);
+			seatsBookedRepo.save(sb);
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int getCountOfFoodOpt(String seatDate) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime dateTime = LocalDateTime.parse(seatDate, formatter);
+		return adminDao.getCountOfFoodOpt(dateTime);
 	}
 
 }

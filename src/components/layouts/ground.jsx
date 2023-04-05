@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./ground.css"
+
+import "./ground.css";
 
 const GroundFloor = () => {
   const [seats,setSeats]= useState([
@@ -80,7 +81,7 @@ const GroundFloor = () => {
             // }
 ))}
       </div>
-      <br />
+      <br />{" "}
       <div id="legend">
             <label>
              Available seats

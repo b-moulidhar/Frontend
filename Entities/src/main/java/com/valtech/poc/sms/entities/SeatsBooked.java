@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "SeatsBooked")
@@ -30,6 +31,46 @@ public class SeatsBooked {
 	@JoinColumn(name = "eId", referencedColumnName = "eId")
 	private Employee eId;
 	private boolean notifStatus;
+	private boolean verified;
+	private boolean food;
+	@OneToOne(targetEntity = ShiftTimings.class)
+	@JoinColumn(name = "stId", referencedColumnName = "stId")
+	private ShiftTimings st;
+
+	@Transient
+	private int emId;
+
+	public boolean isFood() {
+		return food;
+	}
+
+	public void setFood(boolean food) {
+		this.food = food;
+	}
+
+	public ShiftTimings getSt() {
+		return st;
+	}
+
+	public void setSt(ShiftTimings st) {
+		this.st = st;
+	}
+
+	public int getEmId() {
+		return emId;
+	}
+
+	public void setEmId(int emId) {
+		this.emId = emId;
+	}
+
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
 
 	public boolean isNotifStatus() {
 		return notifStatus;
@@ -47,8 +88,6 @@ public class SeatsBooked {
 		this.sbId = sbId;
 	}
 
-	
-	
 	public LocalDateTime getSbDate() {
 		return sbDate;
 	}
@@ -105,15 +144,13 @@ public class SeatsBooked {
 		this.eId = eId;
 	}
 
-	
-
 	public SeatsBooked() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public SeatsBooked(int sbId, LocalDateTime sbDate, LocalDateTime punchIn, LocalDateTime punchOut, boolean current,
-			String code, Seat sId, Employee eId, boolean notifStatus) {
+			String code, Seat sId, Employee eId, boolean notifStatus, boolean verified, boolean food, ShiftTimings st) {
 		super();
 		this.sbId = sbId;
 		this.sbDate = sbDate;
@@ -124,10 +161,13 @@ public class SeatsBooked {
 		this.sId = sId;
 		this.eId = eId;
 		this.notifStatus = notifStatus;
+		this.verified = verified;
+		this.food = food;
+		this.st = st;
 	}
-	
+
 	public SeatsBooked(LocalDateTime sbDate, LocalDateTime punchIn, LocalDateTime punchOut, boolean current,
-			String code, Seat sId, Employee eId, boolean notifStatus) {
+			String code, Seat sId, Employee eId, boolean notifStatus, boolean verified, boolean food, ShiftTimings st) {
 		super();
 		this.sbDate = sbDate;
 		this.punchIn = punchIn;
@@ -137,15 +177,18 @@ public class SeatsBooked {
 		this.sId = sId;
 		this.eId = eId;
 		this.notifStatus = notifStatus;
+		this.verified = verified;
+		this.food = food;
+		this.st = st;
 	}
 
 	@Override
 	public String toString() {
 		return "SeatsBooked [sbId=" + sbId + ", sbDate=" + sbDate + ", punchIn=" + punchIn + ", punchOut=" + punchOut
 				+ ", current=" + current + ", code=" + code + ", sId=" + sId + ", eId=" + eId + ", notifStatus="
-				+ notifStatus + "]";
+				+ notifStatus + ", verified=" + verified + ", food=" + food + ", st=" + st + ", emId=" + emId + "]";
 	}
 
-	
-	
+
+
 }

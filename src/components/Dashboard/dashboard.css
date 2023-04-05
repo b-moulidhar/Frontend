@@ -5,8 +5,35 @@
     text-decoration: none;
     /* background-color: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
     /* background-color: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
+    /* background-color: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
 }
 
+.dashboard_head{
+    margin-left: 100px;
+    margin-top: 20px;
+    background-color: rgb(27, 3, 55);
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    /* border: 1px solid black; */
+    box-shadow: 10px 5px 5px grey;
+}
+ .dashboard_container{
+    /* background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
+     
+<<<<<<< HEAD
+     /* background-image: url('D:/sindhu/SMS/src/assets/valtech.png'); */
+     /* background-position: center ; */
+     /* background-repeat: no-repeat; */
+=======
+     background-image: url('D:/sms_frontend/sms_frontend/src/assets/valtech.png');
+     background-position: center ;
+     background-repeat: no-repeat;
+     /* background-attachment: fixed; */
+     background-size: cover;
+     /* width: 100%;
+     height: 100%; */
+} 
 .dashboard_head{
     margin-left: 100px;
     margin-top: 20px;
@@ -23,8 +50,9 @@
      background-image: url('D:/PoC/SMS/sms/sms_frontend/src/assets/valtech.png');
      background-position: center ;
      background-repeat: no-repeat;
+>>>>>>> e83fe7c45f977d5360997632009e281ece91c17b
      /* background-attachment: fixed; */
-     background-size: cover;
+     /* background-size: cover; */
      /* width: 100%;
      height: 100%; */
 } 
@@ -34,7 +62,6 @@
     justify-content: space-evenly;
     margin: auto;
     margin-top: 100px;
-    
 }
 
 .dashboard_bottom{
@@ -52,33 +79,9 @@
     
 }
 /* .top {
-.dashboard{
-    display: flex;
-    justify-content: space-evenly;
-    margin: auto;
-    margin-top: 100px;
-    
-}
-
-.dashboard_bottom{
-    display: flex;
-    justify-content: space-evenly;
-    margin-left: 200px;
-    margin-right: 200px;
-    margin-top: 50px;
-    border-radius: 10px;
-    text-align: center;
-    background-color: rgb(27, 3, 55);
-    /* border: 1px solid black; */
-    /* box-shadow: 10px 5px 5px grey;
-    color: white;
-    
-} */
-/* .top {
     text-align: center;
     justify-content: center;
 } */
-/* } */ */
 
 ul li {
     list-style-type: none;
@@ -89,18 +92,11 @@ ul li {
     height: 100px;
     /* border-radius: 100px; */
     /* box-shadow: inset 0px 0px 25px 0px #f18686; */
-    /* border-radius: 100px; */
-    /* box-shadow: inset 0px 0px 25px 0px #f18686; */
     border: none;
     outline: none;
     background-color: #592cb9;
-    background-color: #592cb9;
     color: black;
     margin: auto;
-    padding: 50px;
-    box-shadow: 10px 5px 5px grey;
-
-    /* justify-content: space-between; */
     padding: 50px;
     box-shadow: 10px 5px 5px grey;
 
@@ -111,16 +107,13 @@ ul li {
 
 
 /* .status{
-/* .status{
     text-align: center;
     justify-content: center;
     background-color: rgb(69, 3, 69);
     border-radius: 10px;
     box-shadow: inset 0px 0px 25px 0px #fadfdf; 
-    box-shadow: inset 0px 0px 25px 0px #fadfdf; 
     color: white;
 } */
-/* } */ */
 
 .atten{
     display: flex;
@@ -138,13 +131,7 @@ ul li {
     width: 250px;
     height: 150px;
     /* justify-content: center; */
-    /* justify-content: center; */
     margin: 0 100px;
-    color: white;
-    box-shadow: 10px 5px 5px grey;
-
-
-    /* box-shadow: inset 0px 0px 25px 0px #fadfdf; */
     color: white;
     box-shadow: 10px 5px 5px grey;
 

@@ -54,7 +54,11 @@ function BookSeat() {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-
+  useEffect(()=>{
+    axios.get("http://10.191.80.104:7001/shiftStart").then((res)=>{
+      console.log(res.data)
+    })
+  },[])
   function todayDate() {
     const now = new window.Date();
     const year = now.getFullYear();
