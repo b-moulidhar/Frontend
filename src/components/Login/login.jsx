@@ -10,23 +10,31 @@ export default function Login(){
   const [pass, setPass] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // const setAuthToken = token => {
+  //   if (token) {
+  //     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  //   } else {
+  //     delete axios.defaults.headers.common['Authorization'];
+  //   }
+  // };
+
   const handleLogin = (e) => {
     e.preventDefault()
-    console.log("hello");
+    // console.log("hello");
     try {
-      const response = axios.post("http://10.191.80.104:7001/api/login", { empId, pass })
+      const response = axios.post("http://localhost:7001/api/login", { empId, pass })
       .then((res)=>{
         
         const { token, EId, role } = res.data;
-        localStorage.setItem("token", token);
+        const tkn = localStorage.setItem("token", token);
         localStorage.setItem("EId", EId);
         localStorage.setItem("role", role);
+        // setAuthToken(tkn)
         // redirect to the home page or any other page
         if(res.data.token!=undefined){
           if(localStorage.getItem("role")==="Manager"){
             window.location="/manager/"+EId;
           }else if(localStorage.getItem("role")==="Employee"){
-
             window.location="/dashboard/"+EId;
           }else if(localStorage.getItem("role")==="Admin"){
             window.location="/admin/"+EId;
@@ -81,49 +89,71 @@ export default function Login(){
 
    }
     return (
-      <div>
-      {/* <Navbar/> */}
       
-    <div className="container">
-  <div className="row">
-    <div className="col-lg-3 col-md-2" />
-    <div className="col-lg-6 col-md-8 login-box">
-      <div className="col-lg-12 login-key">
-        <i className="fa fa-key" aria-hidden="true" />
-      </div>
-      <div className="col-lg-12 login-title">
-        SMS
-      </div>
-      <div className="col-lg-12 login-form">
-        <div className="col-lg-12 login-form">
-          <form>
-            <div className="form-group">
-              <label className="form-control-label">USERNAME</label>
-              <input type="text" className="form-control" value={empId} required onChange={(e) => setEmpId(e.target.value)}/>
-              <span>{errorMessage&& <span className="danger">*{errorMessage}</span>}</span>
-            </div>
-            <div className="form-group">
-              <label className="form-control-label">PASSWORD</label>
-              <input type="password" className="form-control" i value={pass} required  onChange={(e) => setPass(e.target.value)}/>
-            </div>
-            <div className="col-lg-12 loginbttm">
-              <div className="col-lg-6 login-btm login-text">
-                {/* Error Message */}
+
+      <section className="h-100 gradient-form" style={{backgroundColor: '#eee'}}>
+  <div className="container py-5 h-100">
+    <div className="row d-flex justify-content-center align-items-center h-100">
+      <div className="col-xl-10">
+        <div className="card rounded-3 text-black">
+          <div className="row g-0">
+            <div className="col-lg-6">
+              <div className="card-body p-md-5 mx-md-4">
+                <div className="text-center">
+                  <img src="https://left-hand-corner.000webhostapp.com/images/smslogo.png" style={{width: 80}} alt="logo" />
+                  <h4 className="mt-1 mb-5 pb-1">We are The Lotus Team</h4>
+                </div>
+                <form>
+                  <p>Please login to your account</p>
+                  <div className="form-outline mb-4">
+                  <input type="text" className="form-control" value={empId} id="user" required onChange={(e) => setEmpId(e.target.value)}/>
+                    <label className="form-label" htmlFor="user">
+                      Username
+                    </label>
+                  </div>
+                  <div className="form-outline mb-4">
+                  <input type="password" className="form-control" id="pswd" value={pass} required  onChange={(e) => setPass(e.target.value)}/>
+                    <label className="form-label" htmlFor="pswd">
+                      Password
+                    </label>
+                  </div>
+
+                  <div className="text-center pt-1 mb-5 pb-1">
+                    <button onClick={handleLogin} className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">
+                      Log in
+                    </button>
+                    <a className="text-muted" href="#!">
+                      Forgot password?
+                    </a>
+                  </div>
+                  <div className="d-flex align-items-center justify-content-center pb-4">
+                    <p className="mb-0 me-2">Don't have an account?</p>
+                    <button type="button" className="btn btn-outline-danger">
+                      Create new
+                    </button>
+                  </div>
+                </form>
               </div>
-              <div className="col-lg-6 login-btm login-button">
-                <button type="submit" className="btn btn-outline-primary"  onClick={handleLogin}>LOGIN</button>
+            </div>
+            <div className="col-lg-6 d-flex align-items-center gradient-custom-2">
+              <div className="text-white px-3 py-4 p-md-5 mx-md-4">
+                <h4 className="mb-4">We are more than just a company</h4>
+                <p className="small mb-0">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing
+                  elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis
+                  nostrud exercitation ullamco laboris nisi ut aliquip
+                  ex ea commodo consequat.
+                </p>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-      <div className="col-lg-3 col-md-2" />
     </div>
   </div>
-</div>
+</section>
 
-
-
-      </div>
+      // </div>
     );
 }

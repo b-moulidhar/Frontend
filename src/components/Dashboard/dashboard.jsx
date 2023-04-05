@@ -1,8 +1,14 @@
+
 import Navbar from "../Navbar/navbar";
 import Sidebar from "../Sidebar/sidebar";
 import "./dashboard.css";
+import { useParams } from "react-router-dom";
 
 function Dashboard() {
+  const {id} = useParams();
+  function seatBook(){
+  window.location="/bookseat/"+id;
+  }
   return (
     <div className="dashboard_container">
       <Navbar/>
@@ -34,7 +40,7 @@ function Dashboard() {
 
                 <div className="dashboard">
                   <a href="/bookseat">
-                    <button type="button" className="btn btn-primary seat">
+                    <button type="button" onChange={seatBook} className="btn btn-primary seat">
                       Book Seat
                     </button>
                   </a>
