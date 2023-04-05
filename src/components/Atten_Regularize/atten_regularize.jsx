@@ -46,7 +46,7 @@ function Atten_Regularize(){
             <input type="time" value={timeOut} onChange={(e) => setTimeOut(e.target.value)} />
           </label>
           <br />
-          <label>
+          {/* <label>
             Duty Type:
             <select value={dutyType} onChange={(e) => setDutyType(e.target.value)}>
               <option value="">Select a duty type</option>
@@ -64,7 +64,7 @@ function Atten_Regularize(){
               <option value="Sick">Sick</option>
               <option value="Work From Home">Work From Home</option>
             </select>
-          </label>
+          </label> */}
           <br />
           <label>
             Employee Comments:

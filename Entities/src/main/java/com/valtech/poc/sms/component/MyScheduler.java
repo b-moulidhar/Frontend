@@ -53,7 +53,7 @@ public class MyScheduler {
     	}
     	String delay = prop.getProperty("shift.cancel.delay");
     	int delayInHrs = Integer.parseInt(delay);
-    	long Delay = 60000*delayInHrs;
+    	long Delay = 3600000*delayInHrs;
 //    	scheduledTask.scheduleTask(Delay, sb);
     }
     

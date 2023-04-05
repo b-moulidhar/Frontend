@@ -32,7 +32,6 @@ function ViewPass(){
          ...data,name:res.data.data[1].first_name,
                  emp_id:res.data.data[1].id,
                  email:res.data.data[1].email
-
         })
       })
     }, []);

@@ -10,4 +10,6 @@ public interface EmployeeDAO {
 
 	List<Employee> getAllEmployees(int empID);
 
+	List<Employee> getAllEmployeesUnderTheManager(int eId);
+
 }

@@ -51,17 +51,15 @@ public class AttendanceController {
 
 	@ResponseBody
 	@PostMapping("/attendanceRegularization/{eId}")
-	public void saveAttendance(@PathVariable("eId") int eId,@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,@RequestParam("shiftStart")String shiftStart,@RequestParam("shiftEnd")String shiftEnd ) {
+	public String saveAttendance(@PathVariable("eId") int eId,@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,@RequestParam("shiftStart")String shiftStart,@RequestParam("shiftEnd")String shiftEnd ) {
 		logger.info("Request to save the attendance");
-		String stDate = startDate + " 00:00:00";
-		String edDate = endDate + " 00:00:00";
 		if(startDate.equals(endDate)) {
 			System.out.println("daily");
-		attendanceService.saveAttendance(eId,startDate,endDate,shiftStart,shiftEnd);
+		return attendanceService.saveAttendance(eId,startDate,endDate,shiftStart,shiftEnd);
 		}
 		else {
 			System.out.println("weekly");
-	    attendanceService.saveAttendanceForMultipleDays(eId,stDate,edDate,shiftStart,shiftEnd);
+	   return attendanceService.saveAttendanceForMultipleDays(eId,startDate,endDate,shiftStart,shiftEnd);
 		}
 	}
 
@@ -141,33 +139,5 @@ public class AttendanceController {
 
 	}
 
-//	@ResponseBody
-//	@PostMapping("/WeeklySeatBooking/{eId}")
-//	public synchronized ResponseEntity<String> HandlingWeeklySeatBooking(@PathVariable("eId") int eId,@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
-//		Employee emp = employeeRepo.findById(eId).get();
-//		Seat seat = seatRepo.findById(sId).get();
-//		
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-//		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-//		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-//		 LocalDate fromDate = fromDateTime.toLocalDate();
-//	        LocalDate toDate = toDateTime.toLocalDate();
-//		  List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
-//		  System.out.println(dates);
-//		  for (LocalDate date : dates) {
-//			  System.out.println(date);
-//			  SeatsBooked sb= new SeatsBooked();
-//			  LocalDateTime localDateTime = date.atStartOfDay();
-//			  sb.seteId(emp);
-//			  sb.setSbDate(localDateTime);
-//			  sb.setsId(seat);
-//			  String code = adminService.generateQrCode(eId);
-//			  sb.setCode(code);
-//			  sb.setNotifStatus(false);
-//			  sb.setCurrent(true);
-//			  seatsBookedRepo.save(sb);
-//				}
-//		  return ResponseEntity.ok("Seats booked successfully " ); 
-//	}
 }
 
