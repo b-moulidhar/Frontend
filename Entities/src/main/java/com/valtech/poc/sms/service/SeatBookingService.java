@@ -57,9 +57,9 @@ public interface SeatBookingService {
 
 	boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
 
-	String createSeatsBookedDaily(int eId, int sId, String from, String to);
+	String createSeatsBookedDaily(int eId, int sId,int stId,  String from, String to);
 
-	String createSeatsBookedWeekly(int eId, int sId, String from, String to);
+	String createSeatsBookedWeekly(int eId, int sId,int stId,  String from, String to);
 
 	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime);
 

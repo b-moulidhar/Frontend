@@ -62,5 +62,11 @@ public class AdminDaoImpl implements AdminDao {
 		String query="select st_end from shift_timings";
 		return jdbcTemplate.queryForList(query, String.class);
 	}
+
+	@Override
+	public int getCountOfFoodOpt(LocalDateTime dateTime) {
+		String query="select count(*) from seats_booked where sb_date=? and food=true"; 
+	    return jdbcTemplate.queryForObject(query, Integer.class, dateTime);
+	}
 	
 }

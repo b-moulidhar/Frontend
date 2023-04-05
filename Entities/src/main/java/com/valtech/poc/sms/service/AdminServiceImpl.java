@@ -140,4 +140,11 @@ public class AdminServiceImpl implements AdminService{
 		return false;
 	}
 
+	@Override
+	public int getCountOfFoodOpt(String seatDate) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime dateTime = LocalDateTime.parse(seatDate, formatter);
+		return adminDao.getCountOfFoodOpt(dateTime);
+	}
+
 }

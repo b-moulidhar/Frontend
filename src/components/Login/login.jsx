@@ -14,7 +14,7 @@ export default function Login(){
     e.preventDefault()
     console.log("hello");
     try {
-      const response = axios.post("http://10.191.80.73:7001/api/login", { empId, pass })
+      const response = axios.post("http://10.191.80.104:7001/api/login", { empId, pass })
       .then((res)=>{
         
         const { token, EId, role } = res.data;
@@ -28,7 +28,7 @@ export default function Login(){
           }else if(localStorage.getItem("role")==="Employee"){
 
             window.location="/dashboard/"+EId;
-          }else if(localStorage.getItem("role")==="admin"){
+          }else if(localStorage.getItem("role")==="Admin"){
             window.location="/admin/"+EId;
 
           }

@@ -1,6 +1,5 @@
 package com.valtech.poc.sms.service;
 
-import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,13 +10,16 @@ import org.springframework.stereotype.Service;
 
 import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.dao.SeatBookingDao;
+import com.valtech.poc.sms.entities.CalendarUtil;
 import com.valtech.poc.sms.entities.DateUtil;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
+import com.valtech.poc.sms.entities.ShiftTimings;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.repo.SeatsBookedRepo;
+import com.valtech.poc.sms.repo.ShiftTimingsRepo;
 
 @Service
 
@@ -33,6 +35,9 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	EmployeeRepo employeeRepo;
 
 	@Autowired
+	ShiftTimingsRepo shiftTimingsRepo;
+	
+	@Autowired
 	AdminService adminService;
 
 	@Autowired
@@ -40,6 +45,9 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	
 	@Autowired
 	ScheduledTask scheduledTask;
+	
+	@Autowired
+	private HolidayService holidayService;
 	
 	@Autowired
 	MailContent mailContent;
@@ -154,18 +162,25 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 
 
 	@Override
-	public String createSeatsBookedDaily(int eId, int sId, String from, String to) {
+	public String createSeatsBookedDaily(int eId, int sId,int stId, String from, String to) {
 		Employee emp = employeeRepo.findById(eId).get();
 		Seat seat = seatRepo.findById(sId).get();
+		ShiftTimings st=shiftTimingsRepo.findById(stId).get();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
 		LocalDate fromDate = fromDateTime.toLocalDate();
 
 		// check if the seat is already booked
 		if (checkIftheSeatIsCurrentlyBookedDaily(eId, fromDateTime)) {
 			return "This employee has already booked the seat.";
 		} else {
+			if(CalendarUtil.isDateDisabled(fromDate)) {
+			System.out.println("The date falls on sunday or saturday");
+			}
+			else if (holidayService.isHoliday(fromDate)) {
+		    System.out.println("Seat Booking not allowed on holidays");
+		}
+			else {
 			String code = adminService.generateQrCode(eId);
 			LocalDateTime localDateTime = fromDate.atStartOfDay();
 			//LocalDateTime dateTime = LocalDateTime.parse(formatter.format(localDateTime), formatter);
@@ -173,14 +188,22 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 			// check for recurring seats
 			if (CheckIfTheSameSeatBookingRecurring(eId)) {
 				Seat recSeat = getSeatById(sId);
-				SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, recSeat, emp, false, false, false, null);
+
+				//SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, recSeat, emp, false, false, false, null);
+
+				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, recSeat, emp, false, false,false,st);
+
 				SeatsBooked savedSeatsBooked = saveSeatsBookedDetails(sb);
 				scheduledTask.scheduleTask(limit, savedSeatsBooked);
 				//mailContent.dailyNotification(emp);
 				return "The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: "
 						+ savedSeatsBooked.getSbId();
 			} else {
-				SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, seat, emp, false, false, false, null);
+
+				//SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, seat, emp, false, false, false, null);
+
+				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false,false,st);
+
 				SeatsBooked savedSeatsBooked = saveSeatsBookedDetails(sb);
 				scheduledTask.scheduleTask(limit, savedSeatsBooked);
 //				mailContent.dailyNotification(emp);
@@ -190,30 +213,44 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 //			    }
 				return "Seats booked created successfully with ID: " + savedSeatsBooked.getSbId();
 			}
+			}
+			return "Seat Booked Succesfully";
 
 		}
 
 	}
 
 	@Override
-	public String createSeatsBookedWeekly(int eId, int sId, String from, String to) {
+	public String createSeatsBookedWeekly(int eId, int sId,int stId, String from, String to) {
 		Employee emp = employeeRepo.findById(eId).get();
 		Seat seat = seatRepo.findById(sId).get();
-
+		ShiftTimings st=shiftTimingsRepo.findById(stId).get();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
 		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-		LocalDate fromDate = fromDateTime.toLocalDate();
-		LocalDate toDate = toDateTime.toLocalDate();
-		List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
 		if (checkIftheSeatIsCurrentlyBooked(eId, fromDateTime, toDateTime)) {
 			return "This employee has already booked.";
 		} else {
+			LocalDate fromDate = fromDateTime.toLocalDate();
+			LocalDate toDate = toDateTime.toLocalDate();
+			List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
 		for (LocalDate date : dates) {
+					if(CalendarUtil.isDateDisabled(date)) {
+					System.out.println("The date falls on sunday or saturday");
+					}
+					else if (holidayService.isHoliday(date)) {
+				    System.out.println("Seat Booking not allowed on holidays");
+				}
+					else {
 			LocalDateTime localDateTime = date.atStartOfDay();
 			String code = adminService.generateQrCode(eId);
-			SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, seat, emp, false, false, false, null);
+
+			//SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, seat, emp, false, false, false, null);
+
+			SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false,false,st);
+
 			seatsBookedRepo.save(sb);
+		}
 		}
 		return "Seats booked successfully ";
 	}
@@ -228,5 +265,4 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 
 
 }
-
 
