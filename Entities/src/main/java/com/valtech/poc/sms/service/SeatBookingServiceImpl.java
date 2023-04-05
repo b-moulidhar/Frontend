@@ -173,14 +173,14 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 			// check for recurring seats
 			if (CheckIfTheSameSeatBookingRecurring(eId)) {
 				Seat recSeat = getSeatById(sId);
-				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, recSeat, emp, false, false);
+				SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, recSeat, emp, false, false, false, null);
 				SeatsBooked savedSeatsBooked = saveSeatsBookedDetails(sb);
 				scheduledTask.scheduleTask(limit, savedSeatsBooked);
 				//mailContent.dailyNotification(emp);
 				return "The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: "
 						+ savedSeatsBooked.getSbId();
 			} else {
-				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false);
+				SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, seat, emp, false, false, false, null);
 				SeatsBooked savedSeatsBooked = saveSeatsBookedDetails(sb);
 				scheduledTask.scheduleTask(limit, savedSeatsBooked);
 //				mailContent.dailyNotification(emp);
@@ -212,7 +212,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		for (LocalDate date : dates) {
 			LocalDateTime localDateTime = date.atStartOfDay();
 			String code = adminService.generateQrCode(eId);
-			SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false);
+			SeatsBooked sb = new SeatsBooked( localDateTime, null, null, true, code, seat, emp, false, false, false, null);
 			seatsBookedRepo.save(sb);
 		}
 		return "Seats booked successfully ";
