@@ -18,11 +18,19 @@ export default function Login(){
   //   }
   // };
 
+  // const setAuthToken = token => {
+  //   if (token) {
+  //     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  //   } else {
+  //     delete axios.defaults.headers.common['Authorization'];
+  //   }
+  // };
+
   const handleLogin = (e) => {
     e.preventDefault()
     // console.log("hello");
     try {
-      const response = axios.post("http://localhost:7001/api/login", { empId, pass })
+      const res = axios.post("http://localhost:7001/api/login", { empId, pass })
       .then((res)=>{
         
         const { token, EId, role } = res.data;
