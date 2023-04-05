@@ -189,6 +189,9 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 			SeatsBooked sb = new SeatsBooked();
 			sb.setSbId(resultSet.getInt("sb_id"));
 			sb.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
+			sb.setPunchIn(resultSet.getObject("punch_in", LocalDateTime.class));
+            sb.setPunchOut(resultSet.getObject("punch_out", LocalDateTime.class));
+            sb.setCode(resultSet.getString("code"));
 			sb.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
 			sb.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
 
@@ -333,7 +336,6 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Override
 	public byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception {
-		// Create a new PDF document
 		// Create a new PDF document
 		Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 
