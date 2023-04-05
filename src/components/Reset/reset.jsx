@@ -1,4 +1,5 @@
 import React from 'react';
+import "./reset.css"
   
 class SignIn extends React.Component {
     constructor() {
@@ -28,7 +29,7 @@ class SignIn extends React.Component {
         console.log(this.state);
   
         let input = {};
-        input["username"] = "";
+        input["otp"] = "";
         input["email"] = "";
         input["password"] = "";
         input["confirm_password"] = "";
@@ -83,6 +84,10 @@ class SignIn extends React.Component {
         isValid = false;
         errors["password"] = "Please enter your password.";
       }
+      if (!input["otp"]) {
+        isValid = false;
+        errors["otp"] = "Please enter your otp.";
+      }
   
       if (!input["confirm_password"]) {
         isValid = false;
@@ -120,6 +125,20 @@ class SignIn extends React.Component {
           <h3 className="Auth-form-title">Sign In</h3>
   
           <div class="form-group mt-3">
+            <label for="password">OTP</label>
+            <input 
+              type="text" 
+              name="otp" 
+              value={this.state.input.otp}
+              onChange={this.handleChange}
+      
+              className="form-control mt-1" 
+              placeholder="Enter otp" 
+              id="password" />
+  
+              <div className="text-danger">{this.state.errors.otp}</div>
+          </div>
+          <div class="form-group mt-3">
             <label for="password">Password:</label>
             <input 
               type="password" 
@@ -148,7 +167,7 @@ class SignIn extends React.Component {
               <div className="text-danger">{this.state.errors.password}</div>
           </div>
           <div className="d-grid gap-2 mt-3">
-            <button type="submit"  className="btn btn-primary">Submit</button>
+            <button type="submit"  className="btn btn-primary">reset</button>
           </div>
           </div>
         </form>

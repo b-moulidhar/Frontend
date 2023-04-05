@@ -78,7 +78,6 @@ public class MailContentImpl implements MailContent {
 	public void attendanceApprovalRequest(AttendanceTable attendanceTable) {
 		String email = attendanceTable.geteId().getManagerDetails().getManagerDetails().getMailId();
 		String subject = "Approval Request recieved";
-		System.out.println("test data: " + attendanceTable);
 		String body = "Hello, \nYour Attendance Request form is received, "
 				+ " You will be notified regarding the approval soon. \n-admin";
 		sendMail.sendMail(email, subject, body);

@@ -40,7 +40,7 @@ import com.valtech.poc.sms.service.ShiftTimingsService;
 @Component
 @ComponentScan
 
-public class SeatBookingDaoImpl implements SeatBookingDao {
+public  class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -245,13 +245,15 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public SeatsBooked findCurrentSeat(Employee emp) {
+	public List<SeatsBooked> findCurrentSeat(Employee emp) {
 		int empId = emp.geteId();
 		System.out.println(empId);
 		System.out.println(emp.getEmpName());
-		List<SeatsBooked> sb1= seatsBookedRepo.findAllByeId(emp);
-		System.out.println(sb1);
-		return null;
+		List<SeatsBooked> sb1= seatsBookedRepo.findAllByeIdAndCurrentTrue(emp);
+//		SeatsBooked sb = seatsBookedRepo.findByeId(emp);
+//		System.out.println(sb1);
+//		System.out.println(sb);
+		return sb1;
 //		String query = "select * from seats_booked where current = 1 and e_id = ?";
 //		return jdbcTemplate.queryForObject(query, new Object[] { empId }, BeanPropertyRowMapper.newInstance(SeatsBooked.class));
 //		return jdbcTemplate.queryForObject(query, new Object[] { empId }, new RowMapper<SeatsBooked>() {
@@ -299,6 +301,12 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 				new BeanPropertyRowMapper<>(Seat.class));
 		return availableSeats;
 	}
+	
+//	public List<SeatsBooked> findSBByShiftTimingsAndDate() { 
+//		String query = "SELECT sb. FROM seats_booked sb JOIN shift_timings stt ON sb.st_id = stt.st_id WHERE stt.st_start = ? "
+//				+ " AND DATE_FORMAT(sb.sb_date, '%Y-%m-%d') = ?";
+//		List<SeatsBooked> sb = jdbcTemplate.queryForList(query, new Object[] { }, null)
+//	}
 
 	@Override
 	public void bookSeat(SeatsBooked seatsBooked) {
@@ -314,12 +322,15 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
-	public boolean checkIfEmployeeAlredyBookTheSeat(int eId, LocalDateTime from, LocalDateTime to)
+	public boolean checkIfEmployeeAlreadyBookTheSeat(int eId, int sId,LocalDateTime from, LocalDateTime to)
 			throws DataAccessException {
-		String sql = "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ? AND current = true";
-
+		
+		   String sql = "SELECT COUNT(*) \r\n"
+		    		+ "FROM seats_booked\r\n"
+		    		+ "WHERE (e_id = ? AND s_id = ? AND sb_date BETWEEN ? AND ?)\r\n"
+		    		+ "   OR (e_id != ? AND s_id = ? AND sb_date BETWEEN ? AND ?);";
 		try {
-			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { eId, from, to }, Integer.class);
+			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { sId,from,to,eId,sId ,from, to,eId }, Integer.class);
 
 			if (cnt > 0)
 				return true;
@@ -329,20 +340,26 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 		}
 	}
 	
+	
 	@Override
-	public boolean checkIfEmployeeAlredyBookTheSeatDaily(int eId,LocalDateTime from) throws DataAccessException{
-		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=from AND current = true";
-       
-		try {
-			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,from }, Integer.class);
-		
-        if(cnt>0)
-        	return true;
-        return false;
-		}catch (DataAccessException e) {
-			return false;
-		}
+	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, int sId, LocalDateTime from) throws DataAccessException {
+	    String sql = "SELECT COUNT(*) \r\n"
+	    		+ "FROM seats_booked\r\n"
+	    		+ "WHERE (e_id = ? AND s_id = ? AND sb_date =?)\r\n"
+	    		+ "   OR (e_id != ? AND s_id = ? AND sb_date = ?);";
+
+	    try {
+	        int cnt = jdbcTemplate.queryForObject(sql, new Object[]{eId,sId, from,eId, sId, from}, Integer.class);
+
+	        if(cnt>0)
+	        	return true;
+	        return false;
+	    } catch (DataAccessException e) {
+	        throw e;
+	    }
 	}
+	
+
 	
 
 	@Override
@@ -375,6 +392,20 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 			return false;
 		}
 	}
+	
+	
+	@Override
+    public List<Seat> getTopFivePopularSeats() {
+        String query = "SELECT s.* " +
+                       "FROM seats_booked sb " +
+                       "INNER JOIN seat s ON s.s_id = sb.s_id " +
+                       "GROUP BY s.s_id " +
+                       "ORDER BY COUNT(*) DESC " +
+                       "LIMIT 5";
+        List<Seat> seats = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Seat.class));
+        return seats;
+    }
+	
 
 	@Override
 	public byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception {
