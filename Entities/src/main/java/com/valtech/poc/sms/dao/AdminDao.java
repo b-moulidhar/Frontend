@@ -23,4 +23,6 @@ public interface AdminDao {
 
 	List<String> findShiftEndTimings();
 
+	int getCountOfFoodOpt(LocalDateTime dateTime);
+
 }

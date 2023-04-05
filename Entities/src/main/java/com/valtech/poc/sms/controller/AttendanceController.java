@@ -1,8 +1,5 @@
 package com.valtech.poc.sms.controller;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,18 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.valtech.poc.sms.entities.AttendanceTable;
-import com.valtech.poc.sms.entities.DateUtil;
 import com.valtech.poc.sms.entities.Employee;
-import com.valtech.poc.sms.entities.Seat;
-import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.AttendanceRepository;
-import com.valtech.poc.sms.repo.EmployeeRepo;
-import com.valtech.poc.sms.repo.SeatRepo;
-import com.valtech.poc.sms.repo.SeatsBookedRepo;
-import com.valtech.poc.sms.service.AdminService;
 import com.valtech.poc.sms.service.AttendanceService;
 import com.valtech.poc.sms.service.MailContent;
-import com.valtech.poc.sms.service.SeatBookingService;
 
 @Controller
 public class AttendanceController {
@@ -47,19 +35,7 @@ public class AttendanceController {
 	private AttendanceRepository attendanceRepository;
 
 	@Autowired
-	private EmployeeRepo employeeRepo;
-	
-	@Autowired
-	private SeatRepo seatRepo;
-	
-	@Autowired
-	private SeatsBookedRepo seatsBookedRepo;
-
-	@Autowired
 	private MailContent mailContent;
-	
-	@Autowired
-	private AdminService adminService;
 
 	private final Logger logger = LoggerFactory.getLogger(AdminController.class);
 

@@ -187,4 +187,13 @@ public class AdminController {
         return employeeService.getEmployeeByeId(eId);
     }
 	
+	
+	@ResponseBody
+	@GetMapping("/foodCountBasedOnDates")
+	public int getCountByDate(@RequestParam("sbDate")String sbDate) {
+		String SeatDate = sbDate + " 00:00:00";
+		int count = adminService.getCountOfFoodOpt(SeatDate);
+		return count;
+	}
+	
 }
