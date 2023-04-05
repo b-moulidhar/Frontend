@@ -2,19 +2,13 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import './admin_dashboard.css';
 
-
 function AdminDashboard(){
     const [count,setCount] = useState(0)
-    const [foodCount,setFoodCount] = useState(0)
-    // const currentDate = new Date().toLocaleDateString();
-    const dateObj = new Date();
-    const year = dateObj.getFullYear();
-    const month = dateObj.getMonth() + 1;
-    const day = dateObj.getDate();
-  
-    const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    
-    // const [foodcount,setFoodCount]=useState(0)
+    // useEffect(() => {
+    //   axios.get("http://10.191.80.104:7001/seats/total").then((response) => {
+    //     setCount(response.data);alert(typeof response.url);
+    //   }); 
+    // }, []);
     useEffect(() => {
       // Fetch data from API
       axios.get('http://10.191.80.73:7001/seats/available',{
@@ -32,8 +26,20 @@ function AdminDashboard(){
           // console.log(response.data)
   // alert(response.data.length);
         })
-        }, []);
-    
+        .catch(error => {
+          console.log(error);
+        });
+    }, []);
+    // useEffect(()=>{
+    //     axios.get("http://10.191.80.104:7001/seats/total").then((res)=>{
+    //             setCount({
+    //                 ...count,counts:res.data.length
+    //             }
+    //             )
+    //             console.log(res.data)
+    //             alert(res.data);
+    //     })
+    // },[])
 
     function reportGen(evt){
         if(evt=="weekly"){
@@ -78,7 +84,7 @@ function AdminDashboard(){
                        Food count
                      </h6>
                      <p className="card-text">
-                       {foodCount}
+                       {count.counts}
                      </p>
                    </div>
                  </div>
