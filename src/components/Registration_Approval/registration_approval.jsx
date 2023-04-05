@@ -7,7 +7,7 @@ function Registration_Approval(){
     const [users,setUser] = useState([])
 
     useEffect(()=>{
-        axios.get("http://10.191.80.104:7001/registrationApprovalList",{
+        axios.get("http://10.191.80.73:7001/registrationApprovalList",{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role":localStorage.getItem("role"),
@@ -21,74 +21,52 @@ function Registration_Approval(){
             console.log(err)
         })
       },[])
-//     function approve(empid){
-//         axios.put("http://10.191.80.104:7001/registrationApproval/"+empid,{
-//             headers:{
-//                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-//                 "X-Role":localStorage.getItem("role"),
-//                 "X-Eid":localStorage.getItem("eid")
-//             }
-//         }).then(Response => {
-//            console.log(Response.data)
-               
-//                 // window.location.reload();
+      function approve(empid) {
+        axios
+          .post(
+            `http://10.191.80.73:7001/registrationApproval/${empid}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Role": localStorage.getItem("role"),
+                "X-Eid": localStorage.getItem("eid"),
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response.data);
+            // window.location.reload();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
 
-//     })
-// }
-function approve(empid){
-    axios.put(`http://10.191.80.104:7001/registrationApproval/${empid}`, {}, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role": localStorage.getItem("role"),
-            "X-Eid": localStorage.getItem("eid")
-        }
-    })
-    .then(response => {
-        console.log(response.data);
-        // window.location.reload();
-    })
-    .catch(error => {
-        console.error(error);
-    });
-}
-function disapprove(empid){
-    alert(empid)
-    axios.put(`http://10.191.80.104:7001/registrationDisapproval/${empid}`, {}, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role": localStorage.getItem("role"),
-            "X-Eid": localStorage.getItem("eid")
-        }
-    })
-    .then(response => {
-        console.log(response.data);
-        // window.location.reload();
-    })
-    .catch(error => {
-        console.error(error);
-    });
-}
-// function disapprove(emp_id){
-//     alert(emp_id)
-//     axios.put(`http://localhost:7001/registrationDisapproval/${emp_id}`, {},{
-//         headers:{
-//             Authorization: `Bearer ${localStorage.getItem("token")}`,
-//             "X-Role":localStorage.getItem("role"),
-//             "X-Eid":localStorage.getItem("eid")
-//         }
-//     }).then(Response => {
-       
-//         console.log(Response.data)
-//             // alert(Response.data);
-           
-//             // window.location.reload();
+      function disapprove(empid) {
+        // alert(empid);
 
-// })
-// }
-
-   
-
-     
+        axios
+          .post(
+            `http://10.191.80.73:7001/registrationDisapproval/${empid}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Role": localStorage.getItem("role"),
+                "X-Eid": localStorage.getItem("eid"),
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response.data);
+            // window.location.reload();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+ 
     return(
         
         <div className='manager'>

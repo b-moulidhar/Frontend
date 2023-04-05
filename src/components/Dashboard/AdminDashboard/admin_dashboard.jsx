@@ -16,36 +16,21 @@ function AdminDashboard(){
     
     // const [foodcount,setFoodCount]=useState(0)
     useEffect(() => {
-      const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      // Fetch data from API
+      axios.get('http://10.191.80.73:7001/seats/available',{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "X-Role": localStorage.getItem("role"),
+          "X-Eid": localStorage.getItem("eid"),
+        },
 
-      axios.get("http://10.191.80.103:7001/seatCount/"+currentDate,{
-        headers:{
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role":localStorage.getItem("role"),
-            "X-Eid":localStorage.getItem("eid")
-        }
-    }).then((response)=>{  
-        setCount(response.data);
-
-        console.log(response.data);
-        // alert(typeof response.url);
-      }).catch((err)=>{
-        console.log(err);
+        responseType: "json",
       })
-      }, []);
-      useEffect(() => {
- 
-        axios.get("http://10.191.80.103:7001/foodCount/"+currentDate,{
-          headers:{
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "X-Role":localStorage.getItem("role"),
-              "X-Eid":localStorage.getItem("eid")
-          }
-      }).then((response) => {
-          setFoodCount(response.data);
-  
-          console.log();
-          // alert(typeof response.url);
+        .then(response => {
+          // Update state with data count
+          setCount(response.data.length);
+          // console.log(response.data)
+  // alert(response.data.length);
         })
         }, []);
     
