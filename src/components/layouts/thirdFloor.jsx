@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ground.css"
 
-const GroundFloor = () => {
+const ThirdFloor = () => {
   const [seats,setSeats]= useState([
     { id: 1, name: "3001", booked: false, selected:false},
     { id: 2, name: "3002", booked: false, selected:false},
@@ -126,4 +126,4 @@ const GroundFloor = () => {
   );
 };
 
-export default GroundFloor;
+export default ThirdFloor;

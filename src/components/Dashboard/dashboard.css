@@ -1,358 +1,294 @@
-.mainpage {
-    display: flex;
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    /* background-color: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
-    /* background-color: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
-    /* background-color: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
-}
 
 .dashboard_head{
-    margin-left: 100px;
-    margin-top: 20px;
-    background-color: rgb(27, 3, 55);
-    border-radius: 10px;
-    text-align: center;
-    color: white;
-    /* border: 1px solid black; */
-    box-shadow: 10px 5px 5px grey;
+  /* margin-left: 100px;
+  margin-top: 20px; */
+  background-color: rgb(27, 3, 55);
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  box-shadow: 10px 5px 5px grey;
 }
- .dashboard_container{
-    /* background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
-     
-<<<<<<< HEAD
-     /* background-image: url('D:/sindhu/SMS/src/assets/valtech.png'); */
-     /* background-position: center ; */
-     /* background-repeat: no-repeat; */
-=======
-     background-image: url('D:/sms_frontend/sms_frontend/src/assets/valtech.png');
-     background-position: center ;
-     background-repeat: no-repeat;
-     /* background-attachment: fixed; */
-     background-size: cover;
-     /* width: 100%;
-     height: 100%; */
+.dashboard_container{     
+   background-image: url('https://media.glassdoor.com/l/ef/9a/d9/3f/valtech-india.jpg');
+   background-position: center ;
+   background-repeat: no-repeat;
+   background-size: cover;
+   display: flex;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
 } 
-.dashboard_head{
-    margin-left: 100px;
-    margin-top: 20px;
-    background-color: rgb(27, 3, 55);
-    border-radius: 10px;
-    text-align: center;
-    color: white;
-    /* border: 1px solid black; */
-    box-shadow: 10px 5px 5px grey;
-}
- .dashboard_container{
-    /* background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
-     
-     background-image: url('D:/PoC/SMS/sms/sms_frontend/src/assets/valtech.png');
-     background-position: center ;
-     background-repeat: no-repeat;
->>>>>>> e83fe7c45f977d5360997632009e281ece91c17b
-     /* background-attachment: fixed; */
-     /* background-size: cover; */
-     /* width: 100%;
-     height: 100%; */
-} 
- 
+
 .dashboard{
-    display: flex;
-    justify-content: space-evenly;
-    margin: auto;
-    margin-top: 100px;
+  display: flex;
+  justify-content: space-evenly;
+  margin: auto;
+  margin-top: 100px;
 }
 
 .dashboard_bottom{
-    display: flex;
-    justify-content: space-evenly;
-    margin-left: 200px;
-    margin-right: 200px;
-    margin-top: 50px;
-    border-radius: 10px;
-    text-align: center;
-    background-color: rgb(27, 3, 55);
-    /* border: 1px solid black; */
-    box-shadow: 10px 5px 5px grey;
-    color: white;
-    
+  display: flex;
+  justify-content: space-evenly;
+  margin-left: 200px;
+  margin-right: 200px;
+  margin-top: 50px;
+  border-radius: 10px;
+  text-align: center;
+  background-color: rgb(27, 3, 55);
+  box-shadow: 10px 5px 5px grey;
+  color: white;
+  
 }
-/* .top {
-    text-align: center;
-    justify-content: center;
-} */
 
 ul li {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 .seat {
-    width: 200px;
-    height: 100px;
-    /* border-radius: 100px; */
-    /* box-shadow: inset 0px 0px 25px 0px #f18686; */
-    border: none;
-    outline: none;
-    background-color: #592cb9;
-    color: black;
-    margin: auto;
-    padding: 50px;
-    box-shadow: 10px 5px 5px grey;
-
-    /* justify-content: space-between; */
-
+  width: 200px;
+  height: 100px;
+  border: none;
+  outline: none;
+  background-color: #592cb9;
+  color: black;
+  margin: auto;
+  padding: 50px;
+  box-shadow: 10px 5px 5px grey;
 }
 
-
-
-/* .status{
-    text-align: center;
-    justify-content: center;
-    background-color: rgb(69, 3, 69);
-    border-radius: 10px;
-    box-shadow: inset 0px 0px 25px 0px #fadfdf; 
-    color: white;
-} */
-
-.atten{
-    display: flex;
-    padding: 10px;
-    margin: auto;
+/* .atten{
+  display: flex;
+  padding: 10px;
+  margin: auto;
 }
 
 .attenstatus{
-    flex: 1;
+  flex: 1;
     
-    
-}
+} */
 
-.statusbtn{
-    width: 250px;
-    height: 150px;
-    /* justify-content: center; */
-    margin: 0 100px;
-    color: white;
-    box-shadow: 10px 5px 5px grey;
-
-
-    /* box-shadow: inset 0px 0px 25px 0px #fadfdf; */
-}
+/* .statusbtn{
+  width: 250px;
+  height: 150px;
+  margin: 0 100px;
+  color: white;
+  box-shadow: 10px 5px 5px grey;
+} */
 
 .sidebar{
-    background-color: rgb(255, 165, 165);
-    color: rgb(0, 0, 0);
-    height: 100vh;
-    width: 200px;
-    transition: all 0.5s;
+  background-color: rgb(255, 165, 165);
+  color: rgb(0, 0, 0);
+  height: 100vh;
+  width: 200px;
+  transition: all 0.5s;
 }
 
 .top_section{
-    display: flex;
-    align-items: center;
-    padding: 20px 15px;
+  display: flex;
+  align-items: center;
+  padding: 20px 15px;
 }
 
 .logo{
-    font-size: 25px;
+  font-size: 25px;
 }
 
 .bars{
-    display: flex;
-    font-size: 25px;
-    margin-left: 50px;
+  display: flex;
+  font-size: 25px;
+  margin-left: 50px;
 }
 
 .link{
-    display: flex;
-    color: black;
-    padding: 10px 15px;
-    gap: 15px;
-    transition: all 0.5s;
-    text-decoration: none;
+  display: flex;
+  color: black;
+  padding: 10px 15px;
+  gap: 15px;
+  transition: all 0.5s;
+  text-decoration: none;
 }
 
 .link:hover{
-    background-color: crimson;
-    color: white;
-    transition: all 0.5s;
+  background-color: crimson;
+  color: white;
+  transition: all 0.5s;
 }
 
 .active{
-    background-color: crimson;
-    color: white;
+  background-color: crimson;
+  color: white;
 }
 
 .icon, .link_text{
-    font-size: 20px;
+  font-size: 20px;
 }
 
 /* Styles for screens smaller than 768px */
 @media screen and (max-width: 768px) {
-    .dashboard {
-      flex-direction: column;
-    }
-    .dashboard_head {
-      margin-left: 20px;
-    }
-    .dashboard_bottom {
-      margin-left: 20px;
-      margin-right: 20px;
-    }
+  .dashboard {
+    flex-direction: column;
   }
-  
-  /* Styles for screens smaller than 480px */
-  @media screen and (max-width: 480px) {
-    .dashboard_head {
-      font-size: 14px;
-    }
-    .dashboard_container {
-      background-size: contain;
-    }
-    .seat {
-      width: 100px;
-      height: 50px;
-      padding: 20px;
-    }
-    .statusbtn {
-      width: 150px;
-      height: 100px;
-      margin: 0 50px;
-    }
-    .sidebar {
-      width: 100px;
-    }
-    .bars {
-      margin-left: 20px;
-    }
-    .link {
-      padding: 5px 10px;
-      gap: 10px;
-    }
-    .icon,
-    .link_text {
-      font-size: 16px;
-    }
+  .dashboard_head {
+    margin-left: 20px;
   }
-  
+  .dashboard_bottom {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
 
-  .middle-row{
-    /* position: relative; */
-    flex-direction: row;
-    display: flex;
-    justify-content: space-between;
-    /* margin-top: 100%; */
-    margin: 0 auto;
+/* Styles for screens smaller than 480px */
+@media screen and (max-width: 480px) {
+  .dashboard_head {
+    font-size: 14px;
+  }
+  .dashboard_container {
+    background-size: contain;
+  }
+  .seat {
+    width: 100px;
+    height: 50px;
+    padding: 20px;
+  }
+  .statusbtn {
+    width: 150px;
+    height: 100px;
+    margin: 0 50px;
+  }
+  .sidebar {
+    width: 100px;
+  }
+  .bars {
+    margin-left: 20px;
+  }
+  .link {
+    padding: 5px 10px;
+    gap: 10px;
+  }
+  .icon,
+  .link_text {
+    font-size: 16px;
+  }
+}
+
+
+.middle-row{
+  /* position: relative; */
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  /* margin-top: 100%; */
+  margin: 0 auto;
 
 }
 
 .middle-row div{
-    background: rgba(234, 210, 239, 0.9);
-    /* height: 200px; */
-    /* width: 200px; */
-    margin: 100px;
-    border-radius: 10px;
-    flex-direction: column;
-    justify-content: space-between;
-    display:flex;
+  background: rgba(234, 210, 239, 0.9);
+  /* height: 200px; */
+  /* width: 200px; */
+  margin: 100px;
+  border-radius: 10px;
+  flex-direction: column;
+  justify-content: space-between;
+  display:flex;
 }
 
 .shadow{
-    margin: 100px;
+  margin: 100px;
 }
 
 .numb{
-    font-size: 70px;
-    color: #1d1344;
+  font-size: 70px;
+  color: #1d1344;
 }
 
 .char{
-    font-size: 20px;
-    padding: 20px;
-    
+  font-size: 20px;
+  padding: 20px;
+  
 }
 
 /* Styles for screens smaller than 768px */
 @media screen and (max-width: 768px) {
-    .dashboard {
-      flex-direction: column;
-    }
-    .dashboard_head {
-      margin-left: 20px;
-    }
-    .dashboard_bottom {
-      margin-left: 20px;
-      margin-right: 20px;
-    }
+  .dashboard {
+    flex-direction: column;
   }
-  
-  /* Styles for screens smaller than 480px */
-  @media screen and (max-width: 480px) {
-    .dashboard_head {
-      font-size: 14px;
-    }
-    .dashboard_container {
-      background-size: contain;
-    }
-    .seat {
-      width: 100px;
-      height: 50px;
-      padding: 20px;
-    }
-    .statusbtn {
-      width: 150px;
-      height: 100px;
-      margin: 0 50px;
-    }
-    .sidebar {
-      width: 100px;
-    }
-    .bars {
-      margin-left: 20px;
-    }
-    .link {
-      padding: 5px 10px;
-      gap: 10px;
-    }
-    .icon,
-    .link_text {
-      font-size: 16px;
-    }
+  .dashboard_head {
+    margin-left: 20px;
   }
-  
+  .dashboard_bottom {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
 
-  .middle-row{
-    /* position: relative; */
-    flex-direction: row;
-    display: flex;
-    justify-content: space-between;
-    /* margin-top: 100%; */
-    margin: 0 auto;
+/* Styles for screens smaller than 480px */
+@media screen and (max-width: 480px) {
+  .dashboard_head {
+    font-size: 14px;
+  }
+  .dashboard_container {
+    background-size: contain;
+  }
+  .seat {
+    width: 100px;
+    height: 50px;
+    padding: 20px;
+  }
+  .statusbtn {
+    width: 150px;
+    height: 100px;
+    margin: 0 50px;
+  }
+  .sidebar {
+    width: 100px;
+  }
+  .bars {
+    margin-left: 20px;
+  }
+  .link {
+    padding: 5px 10px;
+    gap: 10px;
+  }
+  .icon,
+  .link_text {
+    font-size: 16px;
+  }
+}
+
+
+.middle-row{
+  /* position: relative; */
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  /* margin-top: 100%; */
+  margin: 0 auto;
 
 }
 
 .middle-row div{
-    background: rgba(234, 210, 239, 0.9);
-    /* height: 200px; */
-    /* width: 200px; */
-    margin: 100px;
-    border-radius: 10px;
-    flex-direction: column;
-    justify-content: space-between;
-    display:flex;
+  background: rgba(234, 210, 239, 0.9);
+  /* height: 200px; */
+  /* width: 200px; */
+  margin: 100px;
+  border-radius: 10px;
+  flex-direction: column;
+  justify-content: space-between;
+  display:flex;
 }
 
 .shadow{
-    margin: 100px;
+  margin: 100px;
 }
 
 .numb{
-    font-size: 70px;
-    color: #1d1344;
+  font-size: 70px;
+  color: #1d1344;
 }
 
 .char{
-    font-size: 20px;
-    padding: 20px;
-    
+  font-size: 20px;
+  padding: 20px;
+  
 }
