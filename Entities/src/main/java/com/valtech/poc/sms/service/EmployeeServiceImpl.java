@@ -51,5 +51,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return empRepo.save(employee);
 	}
 
+	@Override
+	public int findeIdByMailId(String email) {
+		// TODO Auto-generated method stub
+		return empRepo.findByMailId(email).geteId();
+	}
+
 	
 }

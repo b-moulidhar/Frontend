@@ -16,5 +16,7 @@ public interface EmployeeService {
 
 	Employee saveEmployee(Employee employee);
 
+	int findeIdByMailId(String email);
+
 
 }

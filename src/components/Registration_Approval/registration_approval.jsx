@@ -21,52 +21,41 @@ function Registration_Approval(){
             console.log(err)
         })
       },[])
-      function approve(empid) {
-        axios
-          .post(
-            `http://10.191.80.73:7001/registrationApproval/${empid}`,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Role": localStorage.getItem("role"),
-                "X-Eid": localStorage.getItem("eid"),
-              },
-            }
-          )
-          .then((response) => {
-            console.log(response.data);
-            // window.location.reload();
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
 
-      function disapprove(empid) {
-        // alert(empid);
-
-        axios
-          .post(
-            `http://10.191.80.73:7001/registrationDisapproval/${empid}`,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Role": localStorage.getItem("role"),
-                "X-Eid": localStorage.getItem("eid"),
-              },
-            }
-          )
-          .then((response) => {
-            console.log(response.data);
-            // window.location.reload();
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
- 
+function approve(empid){
+    axios.put(`http://10.191.80.104:7001/registrationApproval/${empid}`, {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role": localStorage.getItem("role"),
+            "X-Eid": localStorage.getItem("eid")
+        }
+    })
+    .then(response => {
+        console.log(response.data);
+        // window.location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+function disapprove(empid){
+    alert(empid)
+    axios.put(`http://10.191.80.104:7001/registrationDisapproval/${empid}`, {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role": localStorage.getItem("role"),
+            "X-Eid": localStorage.getItem("eid")
+        }
+    })
+    .then(response => {
+        console.log(response.data);
+        // window.location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+     
     return(
         
         <div className='manager'>

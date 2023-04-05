@@ -1,11 +1,9 @@
 import axios from "axios";
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 
 export default function Forget(){
 
       const [email,setEmail]=useState({email:''})
-      const nav = useNavigate()
 
       // function changeEmail(event){
       //   setEmail({
@@ -29,8 +27,10 @@ export default function Forget(){
       }
 
     return(
+        <>
         <form onSubmit={handleSubmit}>
         <div className="main">
+              <div>
                 <div>
                   <h1>Reset Password</h1>
                   <div className="second-input">
@@ -42,11 +42,11 @@ export default function Forget(){
                  <button  type="submit" className="login">submit</button>
                  <br></br>
                  </div>
-                  <br></br>
-                 
                 </div>
            </div> 
+           </div>
         </form>
+        </>
 
     )
 }

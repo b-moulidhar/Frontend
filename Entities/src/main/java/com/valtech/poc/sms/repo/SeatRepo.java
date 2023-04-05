@@ -8,5 +8,7 @@ import com.valtech.poc.sms.entities.Seat;
 @Repository
 public interface SeatRepo extends JpaRepository<Seat, Integer>{
 
+	int findIdBysName(String sName);
+
 	
 }
