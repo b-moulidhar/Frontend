@@ -74,7 +74,9 @@ public interface SeatBookingService {
 
 	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
 
-	List<Object[]> getTopFivePopularSeats();
+	List<Seat> getTopFivePopularSeats();
+
+	//List<Object[]> getTopFivePopularSeats();
 
 
 	//void updateNotifStatus(int sbId, Connection connection);

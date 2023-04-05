@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'https://example.com/api',
+const Api = axios.create({
+  baseURL: 'https://10.191.80.73:7001',
 });
 
-api.interceptors.request.use(
+Api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -17,4 +17,21 @@ api.interceptors.request.use(
   }
 );
 
-export default api;
+Api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Handle unauthorized error
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    } else if (!error.response) {
+      // Handle network error
+      console.log('Network Error');
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default Api;

@@ -47,11 +47,11 @@ public class MailController {
 	}
 
 	@ResponseBody
-	@PostMapping("/reset/newPass/{id}")
-	public String newPass(@PathVariable("id") int id, @RequestParam String otpKey, @RequestParam String newPassword) {
-
+	@PostMapping("/reset/newPass/{email}")
+	public String newPass(@PathVariable("email") String email, @RequestParam String otpKey, @RequestParam String newPassword) {
+		int id=empService.findeIdByMailId(email);
 		Employee emp = empService.findById(id);
-		String email = emp.getMailId();
+//		String email = emp.getMailId();
 		System.out.println("test mail= " + email);
 		boolean b = resetPassword.newPasswod(email, otpKey, newPassword);
 		System.out.println(b);

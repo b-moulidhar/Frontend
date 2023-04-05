@@ -56,6 +56,8 @@ public interface SeatBookingDao {
 
 	byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception;
 
+	List<Seat> getTopFivePopularSeats();
+
 
 
 

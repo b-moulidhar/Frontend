@@ -1,5 +1,5 @@
 .admin_body{
-    /* background: rgb(2,0,36); */
+    background: rgb(2,0,36);
     background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,64,121,1) 35%, rgba(0,212,255,1) 100%);
     color:white;
     /* background-image: url('D:/PoC/SMS/sms/sms_frontend/src/assets/logo.png'); */
@@ -36,9 +36,9 @@
  .dashboard_container{
     /* background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
      
-     /* background-image: url('https://media.glassdoor.com/l/ef/9a/d9/3f/valtech-india.jpg'); */
-    background-color: aquamarine;
-     /* background-position: center ; */
+     background-image: url('https://media.glassdoor.com/l/ef/9a/d9/3f/valtech-india.jpg');
+
+     background-position: center ;
      background-repeat: no-repeat;
      /* background-attachment: fixed; */
      background-size: cover;

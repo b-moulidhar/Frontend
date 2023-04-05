@@ -1,11 +1,9 @@
-import Sidebar from "../Sidebar/sidebar";
-import './manager.css';
-import { useParams } from "react-router";
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-
-function Manager(){
+function Manager_Approval(){
     const [managerEmp, setManagerEmp] = useState([])
-    const [employees, setEmployees] = useState([])
     let id=useParams()
 
     useEffect(()=>{
@@ -18,8 +16,8 @@ function Manager(){
             }
             })
         .then((response) => {
-            setManagerEmp(response.data.data)
-            console.log(response.data.data)
+            setManagerEmp(response.data)
+            console.log(response.data)
         })
         .catch(err => console.log("Error ", err))
     },[])
@@ -57,26 +55,9 @@ function Manager(){
             console.error(error);
         });
     }
-    
-    // useEffect(()=>{
-    //     axios.get("https://example.com/employees")
-    //     .then((response) => {
-    //         setEmployees(response.data)
-    //     })
-    //     .catch(err => console.log("Error ", err))
-    // },[])
-
-    
-
     return(
-        
-        <div className='manager'>
         <div>
-        <Sidebar/>
-        </div>
-        <div>
-        <h2>Manager Dashboard</h2>
-        <table className="table1">
+            <table className="table1">
         <thead>
             <tr>
             <th scope="col">Attendence ID</th>
@@ -90,14 +71,14 @@ function Manager(){
             </tr>
         </thead>
         <tbody>
-            {/* <tr> */}
-            {/* <th scope="row">1</th>
+            {/* <tr>
+            <th scope="row">1</th>
             <td>Mark</td>
             <td>12</td>
             <td>22</td>
             <td>09:00am</td>
             <td>18:00pm</td>
-    // </tr>   } */}
+        </tr>    */}
             {managerEmp.map((emp,idx)=>(
                 <tr key={idx}>
                     <th scope="row">{emp.atid}</th>
@@ -129,11 +110,8 @@ function Manager(){
             ))}
         </tbody>
         </table>
-        
-
         </div>
-    </div>
-    
     )
 }
-export default Manager;
+
+export default Manager_Approval;

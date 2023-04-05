@@ -263,10 +263,15 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	    return pdf;
 	}
 	
-    @Override
-    public List<Object[]> getTopFivePopularSeats() {
-        return seatsBookedRepo.findTopFivePopularSeats();
-
-}
+	 @Override
+	   public List<Seat> getTopFivePopularSeats() {
+	        return seatBookingDao.getTopFivePopularSeats();
+	    }
+	
+//    @Override
+//    public List<Object[]> getTopFivePopularSeats() {
+//        return seatRepo.findTopFivePopularSeats();
+//
+//}
 }
 

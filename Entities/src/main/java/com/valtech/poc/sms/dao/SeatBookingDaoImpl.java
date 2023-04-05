@@ -39,7 +39,7 @@ import com.valtech.poc.sms.repo.SeatsBookedRepo;
 @Component
 @ComponentScan
 
-public class SeatBookingDaoImpl implements SeatBookingDao {
+public  class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -333,6 +333,20 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 			return false;
 		}
 	}
+	
+	
+	@Override
+    public List<Seat> getTopFivePopularSeats() {
+        String query = "SELECT s.* " +
+                       "FROM seats_booked sb " +
+                       "INNER JOIN seat s ON s.s_id = sb.s_id " +
+                       "GROUP BY s.s_id " +
+                       "ORDER BY COUNT(*) DESC " +
+                       "LIMIT 5";
+        List<Seat> seats = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Seat.class));
+        return seats;
+    }
+	
 
 	@Override
 	public byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception {
