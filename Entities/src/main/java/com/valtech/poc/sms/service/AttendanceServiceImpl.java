@@ -36,7 +36,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Autowired
 	private EmployeeRepo employeeRepo;
-	
+
 	@Autowired
 	private HolidayService holidayService;
 
@@ -70,98 +70,94 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public void saveAttendance(int eId, String startDate, String endDate, String shiftStart, String shiftEnd) {
+	public String saveAttendance(int eId, String startDate, String endDate, String shiftStart, String shiftEnd) {
 		logger.info("Fetching employee by id");
 		logger.debug("Fetching employee by id" + eId);
 		Employee emp = employeeRepo.findById(eId).get();
 		logger.info("setting the values for attendance");
-		verifyDates(startDate,endDate);
-		if (attendanceDao.checkIfTheAttendanceIsRegularized(eId, startDate, endDate)) {
-			System.out.println("Already Regularized");
+		String StDate = startDate + " 00:00:00";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+		LocalDateTime fromDateTime = LocalDateTime.parse(StDate, formatter);
+		LocalDate fromDate = fromDateTime.toLocalDate();
+		if (attendanceDao.checkIfTheAttendanceIsRegularized(eId, startDate)) {
+			return "Already Regularized";
+		} else if (CalendarUtil.isDateDisabled(fromDate)) {
+			return "The date falls on sunday or saturday";
+		} else if (holidayService.isHoliday(fromDate)) {
+			return "Seat Booking not allowed on holidays";
+		} else if (verifyDates(startDate, endDate)) {
+			return "Start or end date is outside allowable range or in future";
 		} else {
-			LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
-			if(CalendarUtil.isDateDisabled(date)) {
-			System.out.println("The date falls on sunday or saturday");
-			}
-			else if (holidayService.isHoliday(date)) {
-		    System.out.println("Seat Booking not allowed on holidays");
-		}
-			else {
 			AttendanceTable attendance = new AttendanceTable();
-			saveAtt(attendance,emp,startDate,endDate,shiftStart,shiftEnd);
+			saveAtt(attendance, emp, fromDate, shiftStart, shiftEnd);
 			System.out.println("saved");
 			mailContent.attendanceApprovalRequest(attendance);
-			}
+			return "saved";
 		}
 	}
 
-	private void saveAtt(AttendanceTable attendance, Employee emp, String startDate, String endDate, String shiftStart,
+	private void saveAtt(AttendanceTable attendance, Employee emp, LocalDate fromDate, String shiftStart,
 			String shiftEnd) {
 		attendance.seteId(emp);
-		attendance.setStartDate("" + startDate);
-		attendance.setEndDate("" + endDate);
-		attendance.setShiftStart("" +shiftStart );
+		attendance.setStartDate("" + fromDate);
+		attendance.setEndDate("" + fromDate);
+		attendance.setShiftStart("" + shiftStart);
 		attendance.setShiftEnd("" + shiftEnd);
 		attendance.setApproval(false);
 		attendanceRepository.save(attendance);
-		
+
 	}
 
-
-
-	private void verifyDates(String startDate, String endDate) {
+	private boolean verifyDates(String startDate, String endDate) {
 		LocalDate currentDate = LocalDate.now();
 		LocalDate minDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth().minus(1), 15);
 		LocalDate maxDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth().plus(1), 15);
 		LocalDate startLocalDate = LocalDate.parse(startDate);
 		LocalDate endLocalDate = LocalDate.parse(endDate);
 
-		if (startLocalDate.isBefore(minDate) || endLocalDate.isAfter(maxDate)) {
-			throw new IllegalArgumentException("Start or end date is outside allowable range");
+		if (startLocalDate.isBefore(minDate) || endLocalDate.isAfter(maxDate) || startLocalDate.isAfter(currentDate)
+				|| endLocalDate.isAfter(currentDate)) {
+			System.out.println("Start or end date is outside allowable range or in future");
+			return true;
 		}
+		return false;
 
-		if (startLocalDate.isAfter(currentDate) || endLocalDate.isAfter(currentDate)) {
-			throw new IllegalArgumentException("Start or end date is in the future");
-		}
-		
 	}
 
 	@Override
-	public void saveAttendanceForMultipleDays(int eId, String startDate, String endDate, String shiftStart,
+	public String saveAttendanceForMultipleDays(int eId, String startDate, String endDate, String shiftStart,
 			String shiftEnd) {
 		Employee emp = employeeRepo.findById(eId).get();
 		AttendanceTable attendance1 = new AttendanceTable();
 		attendance1.seteId(emp);
-		verifyDates(startDate,endDate);
-		if (attendanceDao.checkIfTheAttendanceIsRegularised(eId, startDate, endDate)) {
-			System.out.println("Already Regularized");
+		String StDate = startDate + " 00:00:00";
+		String edDate = endDate + " 00:00:00";
+		if (attendanceDao.checkIfTheAttendanceIsRegularised(eId, StDate, edDate)) {
+			return "Already Regularized";
 		} else {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-			LocalDateTime fromDateTime = LocalDateTime.parse(startDate, formatter);
-			LocalDateTime toDateTime = LocalDateTime.parse(endDate, formatter);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			LocalDateTime fromDateTime = LocalDateTime.parse(StDate, formatter);
+			LocalDateTime toDateTime = LocalDateTime.parse(edDate, formatter);
 			LocalDate fromDate = fromDateTime.toLocalDate();
 			LocalDate toDate = toDateTime.toLocalDate();
 			List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
 			for (LocalDate date : dates) {
-				if(CalendarUtil.isDateDisabled(date)) {
-				System.out.println("The date falls on sunday or saturday");
+				if (CalendarUtil.isDateDisabled(date)) {
+					System.out.println("The date falls on sunday or saturday");
+				} else if (holidayService.isHoliday(date)) {
+					System.out.println("Seat Booking not allowed on holidays");
+				} else if (verifyDates(startDate, endDate)) {
+					System.out.println("Start or end date is outside allowable range or in future");
+				} else {
+					AttendanceTable attendance = new AttendanceTable();
+					saveAtt(attendance, emp, date, shiftStart, shiftEnd);
 				}
-				else if (holidayService.isHoliday(date)) {
-			    System.out.println("Seat Booking not allowed on holidays");
-			}
-				else {
-				AttendanceTable attendance = new AttendanceTable();
-				attendance.seteId(emp);
-				attendance.setStartDate("" + date);
-				attendance.setEndDate("" + date);
-				attendance.setShiftStart("" + shiftStart);
-				attendance.setShiftEnd("" + shiftEnd);
-				attendance.setApproval(false);
-				attendanceRepository.save(attendance);
-			}
+
 			}
 			mailContent.attendanceApprovalRequest(attendance1);
+			return "saved";
 		}
 	}
 
@@ -195,6 +191,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Override
 	public List<Map<String, Object>> getAttendanceListForApproval(int eId) {
+//		Employee e = employeeRepo.findById(eId).get();
+//		int employeeId = e.getManagerDetails().getManagerDetails().geteId();
 		return attendanceDao.getAttendanceListForApproval(eId);
 	}
 

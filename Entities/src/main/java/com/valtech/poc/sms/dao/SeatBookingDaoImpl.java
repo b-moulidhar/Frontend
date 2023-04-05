@@ -272,12 +272,15 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
-	public boolean checkIfEmployeeAlredyBookTheSeat(int eId, LocalDateTime from, LocalDateTime to)
+	public boolean checkIfEmployeeAlreadyBookTheSeat(int eId, int sId,LocalDateTime from, LocalDateTime to)
 			throws DataAccessException {
-		String sql = "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ? AND current = true";
-
+		
+		   String sql = "SELECT COUNT(*) \r\n"
+		    		+ "FROM seats_booked\r\n"
+		    		+ "WHERE (e_id = ? AND s_id = ? AND sb_date BETWEEN ? AND ?)\r\n"
+		    		+ "   OR (e_id != ? AND s_id = ? AND sb_date BETWEEN ? AND ?);";
 		try {
-			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { eId, from, to }, Integer.class);
+			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { sId,from,to,eId,sId ,from, to,eId }, Integer.class);
 
 			if (cnt > 0)
 				return true;
@@ -287,20 +290,26 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 		}
 	}
 	
+	
 	@Override
-	public boolean checkIfEmployeeAlredyBookTheSeatDaily(int eId,LocalDateTime from) throws DataAccessException{
-		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=from AND current = true";
-       
-		try {
-			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,from }, Integer.class);
-		
-        if(cnt>0)
-        	return true;
-        return false;
-		}catch (DataAccessException e) {
-			return false;
-		}
+	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, int sId, LocalDateTime from) throws DataAccessException {
+	    String sql = "SELECT COUNT(*) \r\n"
+	    		+ "FROM seats_booked\r\n"
+	    		+ "WHERE (e_id = ? AND s_id = ? AND sb_date =?)\r\n"
+	    		+ "   OR (e_id != ? AND s_id = ? AND sb_date = ?);";
+
+	    try {
+	        int cnt = jdbcTemplate.queryForObject(sql, new Object[]{eId,sId, from,eId, sId, from}, Integer.class);
+
+	        if(cnt>0)
+	        	return true;
+	        return false;
+	    } catch (DataAccessException e) {
+	        throw e;
+	    }
 	}
+	
+
 	
 
 	@Override

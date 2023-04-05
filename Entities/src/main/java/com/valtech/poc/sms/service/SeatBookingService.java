@@ -15,7 +15,7 @@ public interface SeatBookingService {
 
 	List<Integer> getAllSeats();
 
-	//List<Seat> findAvailableSeats();
+	// List<Seat> findAvailableSeats();
 
 	List<Integer> availableSeats();
 //
@@ -23,7 +23,7 @@ public interface SeatBookingService {
 
 	List<Integer> countTotalSeats();
 
-	//List<Integer> getSeatById();
+	// List<Integer> getSeatById();
 
 //	List<SeatsBooked> findEmployeeWiseSeatsBooked(Employee emp);
 
@@ -39,47 +39,41 @@ public interface SeatBookingService {
 
 	SeatsBooked saveSeatsBookedDetails(SeatsBooked seatsBooked);
 
-	//void updateNotifStatus(int sbId);
+	// void updateNotifStatus(int sbId);
 
 	void notifStatus(int sbId);
 
-
-	//List<SeatsBooked> getSeatBookingsByEId(int eId);
-
-
-
+	// List<SeatsBooked> getSeatBookingsByEId(int eId);
 
 	boolean CheckIfTheSameSeatBookingRecurring(int eId);
 
 	Seat getSeatById(int sId);
 
-	//boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
+	// boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws
+	// ServiceException;
 
-	boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+	String createSeatsBookedDaily(int eId, int sId, int stId, String from, String to);
 
-	String createSeatsBookedDaily(int eId, int sId,int stId,  String from, String to);
-
-	String createSeatsBookedWeekly(int eId, int sId,int stId,  String from, String to);
-
-	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime);
-
-
+	String createSeatsBookedWeekly(int eId, int sId, int stId, String from, String to);
 
 	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);
-
-
-
 
 	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
 
 	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
+
 
 	List<Seat> getTopFivePopularSeats();
 
 	//List<Object[]> getTopFivePopularSeats();
 
 
-	//void updateNotifStatus(int sbId, Connection connection);
+	boolean checkIftheSeatIsCurrentlyBooked(int eId, int sId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+
+
+	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId, LocalDateTime fromDateTime);
+
+	// void updateNotifStatus(int sbId, Connection connection);
 
 //	void bookSeat();
 

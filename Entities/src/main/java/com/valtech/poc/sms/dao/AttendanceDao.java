@@ -1,6 +1,5 @@
 package com.valtech.poc.sms.dao;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public interface AttendanceDao {
 	
 	String getMailIdByAtId(int atId);
 
-	boolean checkIfTheAttendanceIsRegularized(int eId, String startDate, String endDate);
+	boolean checkIfTheAttendanceIsRegularized(int eId, String startDate);
 
 	boolean checkIfTheAttendanceIsRegularised(int eId, String startDate, String endDate);
 }
