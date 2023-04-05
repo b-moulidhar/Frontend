@@ -1,7 +1,10 @@
 package com.valtech.poc.sms.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,7 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.valtech.poc.sms.entities.Employee;
+import com.valtech.poc.sms.entities.Mail;
+import com.valtech.poc.sms.repo.MailRepo;
 import com.valtech.poc.sms.service.EmployeeService;
+import com.valtech.poc.sms.service.MailService;
 import com.valtech.poc.sms.service.ResetPassword;
 
 @RestController
@@ -20,6 +26,9 @@ public class MailController {
 
 	@Autowired
 	ResetPassword resetPassword;
+	
+	@Autowired
+	MailService mailService;
 	
 
 	@ResponseBody
@@ -37,6 +46,7 @@ public class MailController {
 		return s2;
 	}
 
+	@ResponseBody
 	@PostMapping("/reset/newPass/{id}")
 	public String newPass(@PathVariable("id") int id, @RequestParam String otpKey, @RequestParam String newPassword) {
 
@@ -49,6 +59,12 @@ public class MailController {
 			return "changed";
 		}
 		return "fail";
+	}
+	
+	@ResponseBody
+	@GetMapping("/unsent/all")
+	public List<Mail> getAllUnsentMail(){
+		return mailService.getAllUnsentMail();
 	}
 	
 //	@PostMapping("/reset/{email}")

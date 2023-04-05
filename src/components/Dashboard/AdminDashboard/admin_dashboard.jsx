@@ -2,37 +2,53 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import './admin_dashboard.css';
 
+
 function AdminDashboard(){
     const [count,setCount] = useState(0)
-    // useEffect(() => {
-    //   axios.get("http://10.191.80.104:7001/seats/total").then((response) => {
-    //     setCount(response.data);alert(typeof response.url);
-    //   }); 
-    // }, []);
+    const [foodCount,setFoodCount] = useState(0)
+    // const currentDate = new Date().toLocaleDateString();
+    const dateObj = new Date();
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+  
+    const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    
+    // const [foodcount,setFoodCount]=useState(0)
     useEffect(() => {
-      // Fetch data from API
-      axios.get('http://10.191.80.103:7001/seats/total',{headers: {Accept: 'application/json'
-       }})
-        .then(response => {
-          // Update state with data count
-          setCount(response.data.length);
-          console.log(response.data)
-  alert(response.data.length);
+      const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+      axios.get("http://10.191.80.103:7001/seatCount/"+currentDate,{
+        headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role":localStorage.getItem("role"),
+            "X-Eid":localStorage.getItem("eid")
+        }
+    }).then((response)=>{  
+        setCount(response.data);
+
+        console.log(response.data);
+        // alert(typeof response.url);
+      }).catch((err)=>{
+        console.log(err);
+      })
+      }, []);
+      useEffect(() => {
+ 
+        axios.get("http://10.191.80.103:7001/foodCount/"+currentDate,{
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+      }).then((response) => {
+          setFoodCount(response.data);
+  
+          console.log();
+          // alert(typeof response.url);
         })
-        .catch(error => {
-          console.log(error);
-        });
-    }, []);
-    // useEffect(()=>{
-    //     axios.get("http://10.191.80.104:7001/seats/total").then((res)=>{
-    //             setCount({
-    //                 ...count,counts:res.data.length
-    //             }
-    //             )
-    //             console.log(res.data)
-    //             alert(res.data);
-    //     })
-    // },[])
+        }, []);
+    
 
     function reportGen(evt){
         if(evt=="weekly"){
@@ -77,7 +93,7 @@ function AdminDashboard(){
                        Food count
                      </h6>
                      <p className="card-text">
-                       {count.counts}
+                       {foodCount}
                      </p>
                    </div>
                  </div>
@@ -90,7 +106,7 @@ function AdminDashboard(){
                        Employee count
                      </h6>
                      <p className="card-text">
-                       {count.counts}
+                       {count}
                      </p>
                    </div>
                 </div>

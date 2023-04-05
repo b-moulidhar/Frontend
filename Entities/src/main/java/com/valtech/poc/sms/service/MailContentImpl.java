@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.valtech.poc.sms.entities.AttendanceTable;
 import com.valtech.poc.sms.entities.Employee;
+import com.valtech.poc.sms.entities.Mail;
+import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.entities.User;
 
 @Service
@@ -18,6 +20,9 @@ public class MailContentImpl implements MailContent {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	SeatBookingService seatBookingService;
 
 	@Override
 	public void registeredSuccessfully(User user) {
@@ -32,7 +37,7 @@ public class MailContentImpl implements MailContent {
 	public void registerationFailure(User user) {
 		String email = user.getEmpDetails().getMailId();
 		String subject = "SequreMySeat ";
-		String body = "Hello, We regret to inform you that your registration request was not successful "  
+		String body = "Hello, We regret to inform you that your registration request was not successful "
 				+ " . This might have occured due to various reasons. Please contact us for more info. Thank you for understanding, you can try registering again if you think there was a mistake  -admin";
 		sendMail.sendMail(email, subject, body);
 	}
@@ -40,8 +45,8 @@ public class MailContentImpl implements MailContent {
 	@Override
 	public void sendOTP(String email, String pass) {
 		String subject = "OTP to reset password ";
-		String body = "Hello, Please use this OTP to reset your account password: " + pass
-				+ " DO NOT SHARE THIS OTP WITH ANYONE!!. -admin";
+		String body = "Hello, \nPlease use this OTP to reset your account password: " + pass
+				+ " \nDO NOT SHARE THIS OTP WITH ANYONE!!. -admin";
 		try {
 			sendMail.sendMail(email, subject, body);
 //			mailData.saveMail(email, subject, body, true);
@@ -56,7 +61,7 @@ public class MailContentImpl implements MailContent {
 		String email = user.getEmpDetails().getMailId();
 		String subject = "Password Changed Successfully ";
 		String body = "Congratulations " + user.getEmpDetails().getEmpName()
-				+ ", your password has been changed successfully. You can now log in to your account through the website using your registered email id and new password. -admin";
+				+ ", \nYour password has been changed successfully. \nYou can now log in to your account through the website using your registered email id and new password. \n-admin";
 		sendMail.sendMail(email, subject, body);
 	}
 
@@ -64,26 +69,26 @@ public class MailContentImpl implements MailContent {
 	public void notifyRegisteration(User user) {
 		String email = user.getEmpDetails().getMailId();
 		String subject = "Registeration form recieved";
-		String body = "Hello, Your registeration form is received "
-				+ " You will be notified regarding the approval soon. -admin";
+		String body = "Hello, \nYour registeration form is received, "
+				+ " You will be notified regarding the approval soon. \n-admin";
 		sendMail.sendMail(email, subject, body);
 	}
-	
+
 	@Override
 	public void attendanceApprovalRequest(AttendanceTable attendanceTable) {
 		String email = attendanceTable.geteId().getManagerDetails().getManagerDetails().getMailId();
 		String subject = "Approval Request recieved";
-		System.out.println("test data: "+attendanceTable);
-		String body = "Hello, Your Attendance Request form is received "
-				+ " You will be notified regarding the approval soon. -admin";
+		System.out.println("test data: " + attendanceTable);
+		String body = "Hello, \nYour Attendance Request form is received, "
+				+ " You will be notified regarding the approval soon. \n-admin";
 		sendMail.sendMail(email, subject, body);
 	}
 
 	@Override
 	public void attendanceApproved(String mail) {
 		String email = mail;
-		String subject = "Attendance Request is been approved";
-		String body = "Hello, Your Attendance Request approved  -admin";
+		String subject = "Attendance Request has been approved";
+		String body = "Hello, \nYour Attendance Request has been approved by your manager  \n-admin";
 		sendMail.sendMail(email, subject, body);
 	}
 
@@ -91,10 +96,28 @@ public class MailContentImpl implements MailContent {
 	public void attendanceDisApproved(String mail) {
 		String email = mail;
 		String subject = "Attendance Request is been disapproved";
-		String body = "Hello, Your Attendance Request disapproved  -admin";
+		String body = "Hello, \nYour Attendance Request disapproved  \n-admin";
+		sendMail.sendMail(email, subject, body);
+	}
+
+	@Override
+	public void dailyNotification(Employee emp) {
+		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
+		String email = sb.geteId().getMailId();
+		String subject = "You have a seat booked for today";
+		String body = "Hello, \n You have a seat booked for today, please find the booking details below. "
+				+ "\n Seat booked: " + sb.getsId().getsName() + " \n Seat reserved for : " + sb.getSbDate();
 		sendMail.sendMail(email, subject, body);
 	}
 	
+	@Override
+	public void unsentMails(Mail mail) {
+		String email = mail.getEmail();
+		String subject = mail.getSubject();
+		String body = mail.getBody();
+		sendMail.sendMail(email, subject, body);
+		mail.setStatus(true);
+	}
 	
 	
 

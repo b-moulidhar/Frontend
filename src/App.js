@@ -35,7 +35,13 @@ function App() {
     <Route path="/forget" element={<Forget/>}/>    
     <Route path="/forget/reset" element={<Reset/>}/>    
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
-    <Route path="/admin" element={<AdminDashboard/>}/>     
+<<<<<<< HEAD
+    <Route path="/admin/:id" element={<AdminDashboard/>}/>    
+=======
+    <Route path="/admin" element={<AdminDashboard/>}/>    
+    <Route path="/dashboard/:id" element={<Dashboard/>}/>    
+    <Route path="/admin" element={<AdminDashboard/>}/>    
+>>>>>>> e83fe7c45f977d5360997632009e281ece91c17b
     <Route path="/navbar" element={<Navbar/>}/>    
     <Route path="/profile/:id" element={<Profile/>}/>    
     {/* <Route path="/sidebar" element={<Sidebar/>}/>     */}
