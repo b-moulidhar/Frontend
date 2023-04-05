@@ -4,23 +4,23 @@ import './manager.css';
 import axios from 'axios';
 import EmployeeList from "./EmployeeList/EmployeeList";
 import Navbar from "../Navbar/navbar";
+import { useParams } from "react-router";
 
 
 function Manager(){
     const [managerEmp, setManagerEmp] = useState([])
     const [employees, setEmployees] = useState([])
-    // const [managerEmp, setManagerEmp] = useState({
-    //     empId:Number,
-    //     empName:"",
-    //     startdate:Date,
-    //     endDate:Date,
-    //     shiftStart:"",
-    //     shiftEnd:""
-    // })
+    let id=useParams()
 
     useEffect(()=>{
         //axios.get("http://10.191.80.104:7001/seats/total")
-        axios.get("https://reqres.in/api/users")
+        axios.get(`http://10.191.80.104:7001/attendanceApprovalList/${id}`, {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Role": localStorage.getItem("role"),
+                "X-Eid": localStorage.getItem("eid")
+            }
+            })
         .then((response) => {
             setManagerEmp(response.data.data)
             console.log(response.data.data)
@@ -28,44 +28,49 @@ function Manager(){
         .catch(err => console.log("Error ", err))
     },[])
 
-    const handleApprove = (emp) => {
-        // Send the data to the backend using axios.post
-        axios.post("https://example.com/approve", emp)
-            .then(response => {
-                // Update the state to reflect the approved employee
-                setManagerEmp(prevEmps => prevEmps.map(prevEmp => {
-                    if (prevEmp.id === emp.id) {
-                        return {
-                            ...prevEmp,
-                            approved: true
-                        };
-                    } else {
-                        return prevEmp;
-                    }
-                }));
-            })
-            .catch(err => console.log("Error ", err))
-    };
-
-    const handleDecline = (emp) => {
-        // Remove the employee from the state
-        setManagerEmp(prevEmps => prevEmps.filter(prevEmp => prevEmp.id !== emp.id));
-    };
-    
-    useEffect(()=>{
-        axios.get("https://example.com/employees")
-        .then((response) => {
-            setEmployees(response.data)
+    function approve(atid){
+        axios.put(`http://10.191.80.104:7001/attendanceApproval/${atid}`, {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Role": localStorage.getItem("role"),
+                "X-Eid": localStorage.getItem("eid")
+            }
         })
-        .catch(err => console.log("Error ", err))
-    },[])
+        .then(response => {
+            console.log(response.data);
+            // window.location.reload();
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+    function disapprove(atid){
+        alert(atid)
+        axios.put(`http://10.191.80.104:7001/disapproveAttendance/${atid}`, {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Role": localStorage.getItem("role"),
+                "X-Eid": localStorage.getItem("eid")
+            }
+        })
+        .then(response => {
+            console.log(response.data);
+            // window.location.reload();
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+    
+    // useEffect(()=>{
+    //     axios.get("https://example.com/employees")
+    //     .then((response) => {
+    //         setEmployees(response.data)
+    //     })
+    //     .catch(err => console.log("Error ", err))
+    // },[])
 
-    // const employees = [
-    //     { id: 1, name: 'John Abc' },
-    //     { id: 2, name: 'James Smith' },
-    //     { id: 3, name: 'Bosss Johnson' },
-    //     
-    //   ];
+    
 
     return(
        
@@ -82,8 +87,7 @@ function Manager(){
         <table className="table1">
         <thead>
             <tr>
-            <th scope="col">Employee ID</th>
-            <th scope="col">Name</th>
+            <th scope="col">Attendence ID</th>
             <th scope="col">Start Date</th>
             <th scope="col">End Date</th>
             <th scope="col">Shift Start</th>
@@ -104,18 +108,17 @@ function Manager(){
         </tr>    */}
             {managerEmp.map((emp,idx)=>(
                 <tr key={idx}>
-                    <th scope="row">{idx+1}</th>
-                    <td>{emp.first_name}</td>
-                    <td>{emp.last_name}</td>
-                    <td>{emp.avatar}</td>
-                    <td>{emp.email}</td>
+                    <th scope="row">{emp.atid}</th>
+                    <td>{emp.startdate}</td>
+                    <td>{emp.endDate}</td>
+                    <td>{emp.shiftStart}</td>
                     <td>{emp.shiftEnd}</td>
                     <td>
                         {!emp.approved && (
                             <button 
                                 type="button" 
                                 className="btn btn-success manager_approve" 
-                                onClick={() => handleApprove(emp)}>
+                                onClick={() => approve(emp.atid)}>
                                     Approve
                                 </button>
                         )}
@@ -125,7 +128,7 @@ function Manager(){
                             <button 
                                 type="button" 
                                 className="btn btn-danger manager_approve" 
-                                onClick={() => handleDecline(emp)}>
+                                onClick={() => disapprove(emp.atid)}>
                                     Decline
                             </button>
                         )}

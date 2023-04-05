@@ -18,7 +18,7 @@ function AdminDashboard(){
     useEffect(() => {
       const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-      axios.get("http://10.191.80.103:7001/seatCount/"+currentDate,{
+      axios.get("http://10.191.80.104:7001/seatCount/"+currentDate,{
         headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "X-Role":localStorage.getItem("role"),
@@ -35,7 +35,7 @@ function AdminDashboard(){
       }, []);
       useEffect(() => {
  
-        axios.get("http://10.191.80.103:7001/foodCount/"+currentDate,{
+        axios.get("http://10.191.80.104:7001/foodCount/"+currentDate,{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),

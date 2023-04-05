@@ -173,8 +173,8 @@ function Register(){
   </div>
   </div>
 </form>
+</>
 
-        </div>
     )
 }
 export default Register;

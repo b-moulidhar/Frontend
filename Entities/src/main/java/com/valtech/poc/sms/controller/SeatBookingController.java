@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.entities.Seat;
+import com.valtech.poc.sms.entities.SeatBookingTempOne;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
@@ -159,7 +161,19 @@ public class SeatBookingController {
 	    return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
 	}
 
-
+	@ResponseBody
+	@PostMapping("/GetDatatoBookSeat")
+	public String storeDataToSeatBookingTempOne(@RequestBody SeatBookingTempOne seatBookingTempOne) {
+		
+		return "Success";
+	}
+	
+	@ResponseBody
+	@PostMapping("/GetSeatId")
+	public int GetSidBySname(@RequestBody String sName) {
+		return seatRepo.findIdBysName(sName);
+	}
+	
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
 //			List<SeatsBooked> booking = seatService.getSeatBookingsByEId(eId);
