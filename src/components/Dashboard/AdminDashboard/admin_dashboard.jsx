@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import './admin_dashboard.css';
 
+
 function AdminDashboard(){
     const [count,setCount] = useState(0)
     const [foodCount,setFoodCount] = useState(0)
@@ -17,7 +18,13 @@ function AdminDashboard(){
     useEffect(() => {
       const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-      axios.get("http://10.191.80.103:7001/seatCount/2023-04-03").then((response)=>{  
+      axios.get("http://10.191.80.103:7001/seatCount/"+currentDate,{
+        headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role":localStorage.getItem("role"),
+            "X-Eid":localStorage.getItem("eid")
+        }
+    }).then((response)=>{  
         setCount(response.data);
 
         console.log(response.data);
@@ -26,42 +33,22 @@ function AdminDashboard(){
         console.log(err);
       })
       }, []);
-    //   useEffect(() => {
+      useEffect(() => {
  
-    //     axios.get("http://10.191.80.103:7001/seatCount/"+currentDate).then((response) => (response.data))
-    //     .then((data)=>{setCount(data)
-    //       // setCount(response.data);
+        axios.get("http://10.191.80.103:7001/foodCount/"+currentDate,{
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+      }).then((response) => {
+          setFoodCount(response.data);
   
-    //       console.log();
-    //       // alert(typeof response.url);
-    //     })
-    //     }, );
-    // console.log(count)
-    // alert(currentDate);
-  //   useEffect(() => {
-  //     // Fetch data from API
-  //     axios.get('http://10.191.80.103:7001/seats/total',{headers: {Accept: 'application/json'
-  //      }})
-  //       .then(response => {
-  //         // Update state with data count
-  //         setCount(response.data.length);
-  //         console.log(response.data)
-  // alert(response.data.length);
-  //       })
-  //       .catch(error => {
-  //         console.log(error);
-  //       });
-  //   }, []);
-    // useEffect(()=>{
-    //     axios.get("http://10.191.80.104:7001/seats/total").then((res)=>{
-    //             setCount({
-    //                 ...count,counts:res.data.length
-    //             }
-    //             )
-    //             console.log(res.data)
-    //             alert(res.data);
-    //     })
-    // },[])
+          console.log();
+          // alert(typeof response.url);
+        })
+        }, []);
+    
 
     function reportGen(evt){
         if(evt=="weekly"){
@@ -106,7 +93,7 @@ function AdminDashboard(){
                        Food count
                      </h6>
                      <p className="card-text">
-                       {count.counts}
+                       {foodCount}
                      </p>
                    </div>
                  </div>
@@ -119,7 +106,7 @@ function AdminDashboard(){
                        Employee count
                      </h6>
                      <p className="card-text">
-                       {count.counts}
+                       {count}
                      </p>
                    </div>
                 </div>
