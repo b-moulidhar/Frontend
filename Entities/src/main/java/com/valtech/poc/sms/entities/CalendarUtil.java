@@ -5,12 +5,12 @@ import java.time.LocalDate;
 
 public class CalendarUtil {
 
-   public static boolean isDateDisabled(LocalDate date) {
-      DayOfWeek dayOfWeek = date.getDayOfWeek();
-      if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-         return true;
-      }
-      return false;
-   }
+	public static boolean isDateDisabled(LocalDate date) {
+		DayOfWeek dayOfWeek = date.getDayOfWeek();
+		if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+			return true;
+		}
+		return false;
+	}
 
 }

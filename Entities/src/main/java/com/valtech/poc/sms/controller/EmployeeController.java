@@ -28,7 +28,7 @@ public class EmployeeController {
     }
 	
 	@ResponseBody
-	@GetMapping("/getAllEmployees/{eId}")
+	@GetMapping("/getAllManagers/{eId}")
 	public  List<Employee> getAllEmployees(@PathVariable ("eId") int eId) {
 		return employeeService.getAllEmployees(eId);
 		
