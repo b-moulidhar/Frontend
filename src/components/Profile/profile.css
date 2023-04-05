@@ -1,21 +1,25 @@
-.profilepage{
-    display: flex;
-    gap: 8rem;
-    background-image:url('D:/sms_frontend/sms_frontend/src/assets/valtech.png');
-    background-position: center ;
-    background-repeat: no-repeat;
-    background-size: cover;
+/* .profilepage {
+  display: flex;
+
+  gap: 8rem;
+
+  background-image: url("https://media.glassdoor.com/l/ef/9a/d9/3f/valtech-india.jpg");
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+  background-size: cover;
 }
 
-/* .profile_side{
-    flex: 1;
-}
+.details_profile {
+  margin: 100px auto;
 
-.profile_contents{
-    flex: 10;
+  background-color: white;
 } */
 
-/* .details_profile{
-    margin: 100px auto;
-    background-color: white;
-} */
+.gradient-custom {
+  background: #779be3;
+  background: -webkit-linear-gradient(to right bottom, rgb(56, 59, 228), rgb(132, 46, 213));
+  background: linear-gradient(to right bottom, rgb(4, 6, 93), rgb(132, 46, 213))
+  }
