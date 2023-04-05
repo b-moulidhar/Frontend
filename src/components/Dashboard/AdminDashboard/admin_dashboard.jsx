@@ -11,13 +11,20 @@ function AdminDashboard(){
     // }, []);
     useEffect(() => {
       // Fetch data from API
-      axios.get('http://10.191.80.103:7001/seats/total',{headers: {Accept: 'application/json'
-       }})
+      axios.get('http://10.191.80.73:7001/seats/available',{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "X-Role": localStorage.getItem("role"),
+          "X-Eid": localStorage.getItem("eid"),
+        },
+
+        responseType: "json",
+      })
         .then(response => {
           // Update state with data count
           setCount(response.data.length);
-          console.log(response.data)
-  alert(response.data.length);
+          // console.log(response.data)
+  // alert(response.data.length);
         })
         .catch(error => {
           console.log(error);
@@ -90,7 +97,7 @@ function AdminDashboard(){
                        Employee count
                      </h6>
                      <p className="card-text">
-                       {count.counts}
+                       {count}
                      </p>
                    </div>
                 </div>

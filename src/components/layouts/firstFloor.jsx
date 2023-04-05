@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./ground.css"
+import axios from "axios";
 
-const GroundFloor = () => {
+const FirstFloor = () => {
   const [seats,setSeats]= useState([
     { id: 1, name: "1001", booked: false, selected:false},
     { id: 2, name: "1002", booked: false, selected:false},
@@ -21,8 +22,25 @@ const GroundFloor = () => {
     { id: 16, name: "1016", booked: false, selected:false},
   ]);
 
+
   const [selected,setSelected] = useState({})
   
+  useEffect(()=>{
+    axios.get("http://localhost:7001/seats/available/2023-04-03",{
+        headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role":localStorage.getItem("role"),
+            "X-Eid":localStorage.getItem("eid")
+        }
+    })
+    .then((res)=>{
+        // setUser(res.data)
+        console.log(res)
+    }).catch((err)=>{
+        console.log(err)
+    })
+  },[])
+
   const handleSeatClick = (name) => {
     console.log(name)
     //logic for deselection
@@ -126,4 +144,4 @@ const GroundFloor = () => {
   );
 };
 
-export default GroundFloor;
+export default FirstFloor;

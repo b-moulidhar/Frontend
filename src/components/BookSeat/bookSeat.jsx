@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./bookSeat.css";
+import axios from "axios";
+import Api from "../Api/api";
 
 function BookSeat() {
   const [branchName, setBranchName] = useState("");
@@ -9,11 +11,46 @@ function BookSeat() {
   const [toDate, setToDate] = useState("");
   const [firstDate, setFirstDate] = useState("");
   const [meal, setMeal] = useState("");
+  var startTime = [];
+  var endTime = [];
   // const [fromDate, setfromDate] = useState('');
 
   const [shiftTiming, setShiftTiming] = useState("");
   const [request, setRequest] = useState("");
 
+    useEffect(()=>{
+      axios
+        .get("http://10.191.80.73:7001/shiftStart", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role": localStorage.getItem("role"),
+            "X-Eid": localStorage.getItem("eid"),
+          },
+
+          responseType: "json",
+        })
+        .then((res) => {
+          console.log(res.data);
+          // startTime = res.data
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      axios.get("http://10.191.80.73:7001/shiftEnd",{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "X-Role": localStorage.getItem("role"),
+          "X-Eid": localStorage.getItem("eid"),
+        },
+
+        responseType: "json",
+      })
+      .then((response)=>{
+        console.log(response.data)
+        // endTime = response.data
+      })
+    },[])
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -38,6 +75,9 @@ function BookSeat() {
       alert("Not allowed to book for more than 7 days");
     }
   }
+   const nextPage=()=>{
+    window.location="/floorlist"
+   }
 
   // var date = new Date();
 
@@ -49,6 +89,7 @@ function BookSeat() {
         value={branchName}
         onChange={(e) => setBranchName(e.target.value)}
         className="form-input"
+        required
       >
         <option value="Bangalore">Bangalore</option>
       </select>
@@ -59,6 +100,7 @@ function BookSeat() {
         value={buildingName}
         onChange={(e) => setBuildingName(e.target.value)}
         className="form-input"
+        required
       >
         <option value="JP Nagar">JP Nagar</option>
       </select>
@@ -68,17 +110,36 @@ function BookSeat() {
         value={request}
         onChange={(e) => setRequest(e.target.value)}
         className="form-input"
+        required
       >
         <option value="select">Select</option>
         <option value="Daily">Daily</option>
         <option value="Weekly">Weekly</option>
       </select>
-      <label htmlFor="shift-timing-input">Shift Timing:</label>
+      <label htmlFor="shift-timing-input">Shift Start Timing:</label>
       <select
         id="shift-timing-input"
         value={shiftTiming}
         onChange={(e) => setShiftTiming(e.target.value)}
         className="form-input"
+        required
+      >
+        <option value="" disabled>--Select--</option>
+        {
+          startTime.map((start)=>{
+            return <option value={start}>{start}</option>
+
+          })
+        }
+        
+      </select>
+      <label htmlFor="shift-timing-input">Shift End Timing:</label>
+      <select
+        id="shift-timing-input"
+        value={shiftTiming}
+        onChange={(e) => setShiftTiming(e.target.value)}
+        className="form-input"
+        required
       >
         <option value="" disabled>--Select--</option>
         <option value="Morning">9:00AM - 6:00PM</option>
@@ -91,6 +152,7 @@ function BookSeat() {
         value={meal}
         onChange={(e) => setMeal(e.target.value)}
         className="form-input"
+        required
       >
         <option value="select">Select</option>
         <option value="yes">Yes</option>
@@ -108,6 +170,7 @@ function BookSeat() {
             min={todayDate()}
             onChange={(e) => setToDate(e.target.value)}
             className="form-input"
+            required
           />
           <label htmlFor="to-date-input">To Date:</label>
           <input
@@ -118,6 +181,7 @@ function BookSeat() {
             // onChange={(e) => setToDate(e.target.value)}
             onChange={(e) => setToDate(e.target.value)}
             className="form-input"
+            required
           />
         </>
       )}
@@ -132,6 +196,7 @@ function BookSeat() {
             min={todayDate()}
             onChange={(e) => setFirstDate(e.target.value)}
             className="form-input"
+            required
           />
           <label htmlFor="to-date-input">To Date:</label>
           <input
@@ -142,13 +207,12 @@ function BookSeat() {
             // onChange={(e) => setToDate(e.target.value)}
             onChange={(e) => weeklydate(e)}
             className="form-input"
+            required
           />
         </>
       )}
 
-      <button className="btn btn-primary">
-        <a href="/floorList">Next</a>
-      </button>
+      <button onClick={nextPage} className="btn btn-primary">Next</button>
     </form>
   );
 }
