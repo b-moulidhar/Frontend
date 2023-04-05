@@ -59,10 +59,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 		AttendanceTable attendance = new AttendanceTable();
 		SeatsBooked sb = seatsBookedRepo.findById(sbId)
 				.orElseThrow(() -> new ResourceNotFoundException("SeatBooked not found"));
+		sb.getSt().getStEnd();
 		attendance.setStartDate("" + sb.getSbDate());
 		attendance.setEndDate("" + sb.getSbDate());
-		attendance.setShiftStart("" + sb.getPunchIn());
-		attendance.setShiftEnd("" + sb.getPunchOut());
+		attendance.setShiftStart("" + sb.getSt().getStStart());
+		attendance.setShiftEnd("" + sb.getSt().getStEnd());
 		attendance.seteId(sb.geteId());
 		attendanceRepository.save(attendance);
 		mailContent.attendanceApprovalRequest(attendance);
@@ -87,28 +88,26 @@ public class AttendanceServiceImpl implements AttendanceService {
 		}
 			else {
 			AttendanceTable attendance = new AttendanceTable();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm:ss");
-			String dateTimeString = startDate + " " + shiftStart + ":00:00";
-			LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
-			String dateTimeString1 = startDate + " " + shiftEnd + ":00:00";
-			LocalDateTime dateTime1 = LocalDateTime.parse(dateTimeString1, formatter);
-			saveAtt(attendance,emp,startDate,endDate,dateTime,dateTime1);
+			saveAtt(attendance,emp,startDate,endDate,shiftStart,shiftEnd);
 			System.out.println("saved");
 			mailContent.attendanceApprovalRequest(attendance);
 			}
 		}
 	}
 
-	private void saveAtt(AttendanceTable attendance, Employee emp, String startDate, String endDate,
-			LocalDateTime dateTime, LocalDateTime dateTime1) {	attendance.seteId(emp);
-			attendance.setStartDate("" + startDate);
-			attendance.setEndDate("" + endDate);
-			attendance.setShiftStart("" + dateTime);
-			attendance.setShiftEnd("" + dateTime1);
-			attendance.setApproval(false);
-			attendanceRepository.save(attendance);
+	private void saveAtt(AttendanceTable attendance, Employee emp, String startDate, String endDate, String shiftStart,
+			String shiftEnd) {
+		attendance.seteId(emp);
+		attendance.setStartDate("" + startDate);
+		attendance.setEndDate("" + endDate);
+		attendance.setShiftStart("" +shiftStart );
+		attendance.setShiftEnd("" + shiftEnd);
+		attendance.setApproval(false);
+		attendanceRepository.save(attendance);
 		
 	}
+
+
 
 	private void verifyDates(String startDate, String endDate) {
 		LocalDate currentDate = LocalDate.now();
@@ -152,17 +151,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 			    System.out.println("Seat Booking not allowed on holidays");
 			}
 				else {
-				DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm:ss");
-				String dateTimeString = date + " " + shiftStart + ":00:00";
-				LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter1);
-				String dateTimeString1 = date + " " + shiftEnd + ":00:00";
-				LocalDateTime dateTime1 = LocalDateTime.parse(dateTimeString1, formatter1);
 				AttendanceTable attendance = new AttendanceTable();
 				attendance.seteId(emp);
 				attendance.setStartDate("" + date);
 				attendance.setEndDate("" + date);
-				attendance.setShiftStart("" + dateTime);
-				attendance.setShiftEnd("" + dateTime1);
+				attendance.setShiftStart("" + shiftStart);
+				attendance.setShiftEnd("" + shiftEnd);
 				attendance.setApproval(false);
 				attendanceRepository.save(attendance);
 			}
