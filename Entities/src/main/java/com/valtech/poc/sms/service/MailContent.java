@@ -1,6 +1,8 @@
 package com.valtech.poc.sms.service;
 
 import com.valtech.poc.sms.entities.AttendanceTable;
+import com.valtech.poc.sms.entities.Employee;
+import com.valtech.poc.sms.entities.Mail;
 import com.valtech.poc.sms.entities.User;
 
 public interface MailContent {
@@ -20,5 +22,9 @@ public interface MailContent {
 	void attendanceApproved(String mail);
 
 	void attendanceDisApproved(String mail);
+
+	void dailyNotification(Employee emp);
+
+	void unsentMails(Mail mail);
 
 }

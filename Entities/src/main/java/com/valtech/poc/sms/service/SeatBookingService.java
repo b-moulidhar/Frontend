@@ -53,9 +53,26 @@ public interface SeatBookingService {
 
 	Seat getSeatById(int sId);
 
-	boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
+	//boolean canEmployeeBookSeat(int eId, int sId,LocalDate sbDate) throws ServiceException;
 
-	boolean checkIftheEmployeeAlreadyBookTheseat(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+	boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+
+	String createSeatsBookedDaily(int eId, int sId,int stId,  String from, String to);
+
+	String createSeatsBookedWeekly(int eId, int sId,int stId,  String from, String to);
+
+	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime);
+
+
+
+	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);
+
+
+
+
+	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
+
+	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
 
 
 	//void updateNotifStatus(int sbId, Connection connection);

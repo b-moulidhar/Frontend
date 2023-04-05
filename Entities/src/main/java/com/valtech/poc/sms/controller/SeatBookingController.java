@@ -7,6 +7,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,17 +19,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.valtech.poc.sms.component.ScheduledTask;
-import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.service.AdminService;
-import com.valtech.poc.sms.service.EmployeeService;
+import com.valtech.poc.sms.service.HolidayService;
 import com.valtech.poc.sms.service.SeatBookingService;
+
 
 @RestController
 @CrossOrigin(origins = "http://10.191.80.103/:3000")
@@ -34,9 +39,6 @@ public class SeatBookingController {
 
 	@Autowired
 	private SeatBookingService seatService;
-
-	@Autowired
-	private EmployeeService employeeService;
 
 	@Autowired
 	EmployeeRepo employeeRepo;
@@ -49,6 +51,10 @@ public class SeatBookingController {
 	
 	@Autowired
 	ScheduledTask scheduledTask;
+	
+	@Autowired
+	HolidayService holidayService;
+
 
 	@GetMapping("/total")
 	public ResponseEntity<List<Integer>> getAllSeats() {
@@ -82,61 +88,77 @@ public class SeatBookingController {
 
 	@PostMapping("/create/{eId}")
 	public synchronized ResponseEntity<String> createSeatsBooked(@PathVariable("eId") int eId,
-			@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
-		Employee emp = employeeRepo.findById(eId).get();
-		Seat seat = seatRepo.findById(sId).get();
-		LocalDate sbDate = LocalDate.now();
+			@RequestParam("sId") int sId,@RequestParam("stId") int stId,@RequestParam("from") String from,@RequestParam("to")String to) {
+		String stDate = from + " 00:00:00";
+		String edDate = to + " 00:00:00";
+//		LocalDate bookingDate = LocalDate.parse(from);
+//		if (holidayService.isHoliday(bookingDate)) {
+//		    return ResponseEntity.badRequest().body("Booking not allowed on holidays");
+//		}
+
 		
-//		//check if employee can book seat
-//		if (!seatService.canEmployeeBookSeat(eId, sbDate)) {
-//	        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
-//	        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
-//	    }
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-		//check if the seat is already booked
-		if(seatService.checkIftheEmployeeAlreadyBookTheseat(eId,fromDateTime,toDateTime)) {
-			System.out.println("This seat is aldready booked. Please Book another seat");
-			return ResponseEntity.ok("This seat is aldready booked. Please Book another seat " );
+		if(from.equals(to)) {
+			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,stId,from,to));
 		}
-		else {
-		String code = adminService.generateQrCode(eId);
-		LocalDateTime now = LocalDateTime.now();
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
-		
-		//check for recurring seats
-		if(seatService.CheckIfTheSameSeatBookingRecurring(eId)) {
-			System.out.println("Reccuring");
-			Seat recSeat=seatService.getSeatById(sId);
-			SeatsBooked sb = new SeatsBooked(dateTime, null, null,  true, code, recSeat, emp, true,false);
-			SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
-			scheduledTask.scheduleTask(1000, savedSeatsBooked);
-			return ResponseEntity.ok("The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: " + savedSeatsBooked.getSbId());
-		}
-		else {
-//		SeatsBooked sb = new SeatsBooked(dateTime, dateTime, dateTime, dateTime, true, code, seat, emp, false);
-		SeatsBooked sb = new SeatsBooked(dateTime, null, null, true, code, seat, emp, true,false);
-		SeatsBooked savedSeatsBooked = seatService.saveSeatsBookedDetails(sb);
-		scheduledTask.scheduleTask(1000, savedSeatsBooked);
-		//check if employee is booking a seat again on the same day
-				if (seatService.canEmployeeBookSeat(eId, sId,sbDate)) {
-			        System.out.println("This employee has already booked a seat today. Please try again tomorrow.");
-			        return ResponseEntity.ok("This employee has already booked a seat today. Please try again tomorrow.");
-			    }
-				return ResponseEntity.ok("Seats booked created successfully with ID: " + savedSeatsBooked.getSbId());
-		 }
-		 
-		   }
-	    }
 	
+		else {
+			return ResponseEntity.ok(seatService.createSeatsBookedWeekly(eId,sId,stId,stDate,edDate));
+		}
+		
+	}
 
 	@PutMapping("/notification/{sbId}")
 	public String notifStatus(@PathVariable int sbId) {
 		seatService.notifStatus(sbId);
 		return "Notification Sent";
 	}
+	
+	@ResponseBody
+	@GetMapping("/booked")
+	public ResponseEntity<List<SeatsBooked>> getSeatsBookedByDate(
+	        @RequestParam("startDate") String startDateStr,
+	        @RequestParam("endDate") String endDateStr) {
+
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    
+	    List<SeatsBooked> seatsBooked = seatService.getSeatsBookedByDate(startDate, endDate);
+	    
+	    return ResponseEntity.ok(seatsBooked);
+	}
+	@ResponseBody
+	@GetMapping("/booked/report")
+	public ResponseEntity<byte[]> generateSeatsBookedReport(@RequestParam("startDate") String startDateStr,
+	                                                           @RequestParam("endDate") String endDateStr) throws Exception {
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+	    byte[] pdfBytes = seatService.generateSeatsBookedReportPDF(startDate, endDate);
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_PDF);
+	    headers.setContentDisposition(ContentDisposition.builder("attachment")
+	            .filename("seats_booked.pdf")
+	            .build());
+
+	    return ResponseEntity.ok().headers(headers).body(pdfBytes);
+	}
+
+
+	@ResponseBody
+	@GetMapping("/booked/byemployee")
+	public ResponseEntity<List<SeatsBooked>> getSeatsBookedByEmployeeAndDate(
+	        @RequestParam int empId,
+	        @RequestParam("startDate") String startDateStr,
+	        @RequestParam("endDate") String endDateStr) {
+
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    
+	    List<SeatsBooked> seatsBookedList = seatService.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
+	    return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
+	}
+
 
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
