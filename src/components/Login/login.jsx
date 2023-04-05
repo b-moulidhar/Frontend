@@ -59,6 +59,10 @@ export default function Login(){
       }
     }
   };
+
+  const registerPage = ()=>{
+    window.location="/register"
+  }
   
 //  useEffect(() => {
     //   axios.get("http://10.191.80.112:7001/api/login").then((response) => {
@@ -122,13 +126,13 @@ export default function Login(){
                     <button onClick={handleLogin} className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">
                       Log in
                     </button>
-                    <a className="text-muted" href="#!">
+                    <a className="text-muted" href="/forget">
                       Forgot password?
                     </a>
                   </div>
                   <div className="d-flex align-items-center justify-content-center pb-4">
                     <p className="mb-0 me-2">Don't have an account?</p>
-                    <button type="button" className="btn btn-outline-danger">
+                    <button onClick={registerPage} type="button" className="btn btn-outline-danger">
                       Create new
                     </button>
                   </div>

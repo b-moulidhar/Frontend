@@ -19,14 +19,9 @@
     box-shadow: 10px 5px 5px grey;
 }
  .dashboard_container{
-    /* background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
+    background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1));
      
-<<<<<<< HEAD
-     /* background-image: url('D:/sindhu/SMS/src/assets/valtech.png'); */
-     /* background-position: center ; */
-     /* background-repeat: no-repeat; */
-=======
-     background-image: url('D:/sms_frontend/sms_frontend/src/assets/valtech.png');
+     /* background-image: url('D:/sms_frontend/sms_frontend/src/assets/valtech.png'); */
      background-position: center ;
      background-repeat: no-repeat;
      /* background-attachment: fixed; */
@@ -45,12 +40,11 @@
     box-shadow: 10px 5px 5px grey;
 }
  .dashboard_container{
-    /* background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
+    background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1));
      
-     background-image: url('D:/PoC/SMS/sms/sms_frontend/src/assets/valtech.png');
+     /* background-image: url('D:/PoC/SMS/sms/sms_frontend/src/assets/valtech.png'); */
      background-position: center ;
      background-repeat: no-repeat;
->>>>>>> e83fe7c45f977d5360997632009e281ece91c17b
      /* background-attachment: fixed; */
      /* background-size: cover; */
      /* width: 100%;
