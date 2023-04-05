@@ -61,6 +61,8 @@ public interface SeatBookingService {
 
 	String createSeatsBookedWeekly(int eId, int sId, String from, String to);
 
+	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime);
+
 
 
 	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);

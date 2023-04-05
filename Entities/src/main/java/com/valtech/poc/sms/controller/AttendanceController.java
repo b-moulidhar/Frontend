@@ -1,8 +1,5 @@
 package com.valtech.poc.sms.controller;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,18 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.valtech.poc.sms.entities.AttendanceTable;
-import com.valtech.poc.sms.entities.DateUtil;
 import com.valtech.poc.sms.entities.Employee;
-import com.valtech.poc.sms.entities.Seat;
-import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.AttendanceRepository;
-import com.valtech.poc.sms.repo.EmployeeRepo;
-import com.valtech.poc.sms.repo.SeatRepo;
-import com.valtech.poc.sms.repo.SeatsBookedRepo;
-import com.valtech.poc.sms.service.AdminService;
 import com.valtech.poc.sms.service.AttendanceService;
 import com.valtech.poc.sms.service.MailContent;
-import com.valtech.poc.sms.service.SeatBookingService;
 
 @Controller
 public class AttendanceController {
@@ -47,19 +35,7 @@ public class AttendanceController {
 	private AttendanceRepository attendanceRepository;
 
 	@Autowired
-	private EmployeeRepo employeeRepo;
-	
-	@Autowired
-	private SeatRepo seatRepo;
-	
-	@Autowired
-	private SeatsBookedRepo seatsBookedRepo;
-
-	@Autowired
 	private MailContent mailContent;
-	
-	@Autowired
-	private AdminService adminService;
 
 	private final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -77,13 +53,15 @@ public class AttendanceController {
 	@PostMapping("/attendanceRegularization/{eId}")
 	public void saveAttendance(@PathVariable("eId") int eId,@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,@RequestParam("shiftStart")String shiftStart,@RequestParam("shiftEnd")String shiftEnd ) {
 		logger.info("Request to save the attendance");
+		String stDate = startDate + " 00:00:00";
+		String edDate = endDate + " 00:00:00";
 		if(startDate.equals(endDate)) {
 			System.out.println("daily");
 		attendanceService.saveAttendance(eId,startDate,endDate,shiftStart,shiftEnd);
 		}
 		else {
 			System.out.println("weekly");
-	    attendanceService.saveAttendanceForMultipleDays(eId,startDate,endDate,shiftStart,shiftEnd);
+	    attendanceService.saveAttendanceForMultipleDays(eId,stDate,edDate,shiftStart,shiftEnd);
 		}
 	}
 
@@ -152,7 +130,7 @@ public class AttendanceController {
 	}
 
 	@ResponseBody
-	@GetMapping("/attendanceApproval/{eId}")
+	@GetMapping("/attendanceApprovalList/{eId}")
 	public List<Map<String, Object>> getAttendanceListForApproval(@PathVariable("eId") int eId) {
 		try {
 			return attendanceService.getAttendanceListForApproval(eId);
@@ -163,33 +141,33 @@ public class AttendanceController {
 
 	}
 
-	@ResponseBody
-	@PostMapping("/WeeklySeatBooking/{eId}")
-	public synchronized ResponseEntity<String> HandlingWeeklySeatBooking(@PathVariable("eId") int eId,@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
-		Employee emp = employeeRepo.findById(eId).get();
-		Seat seat = seatRepo.findById(sId).get();
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-		 LocalDate fromDate = fromDateTime.toLocalDate();
-	        LocalDate toDate = toDateTime.toLocalDate();
-		  List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
-		  System.out.println(dates);
-		  for (LocalDate date : dates) {
-			  System.out.println(date);
-			  SeatsBooked sb= new SeatsBooked();
-			  LocalDateTime localDateTime = date.atStartOfDay();
-			  sb.seteId(emp);
-			  sb.setSbDate(localDateTime);
-			  sb.setsId(seat);
-			  String code = adminService.generateQrCode(eId);
-			  sb.setCode(code);
-			  sb.setNotifStatus(false);
-			  sb.setCurrent(true);
-			  seatsBookedRepo.save(sb);
-				}
-		  return ResponseEntity.ok("Seats booked successfully " ); 
-	}
+//	@ResponseBody
+//	@PostMapping("/WeeklySeatBooking/{eId}")
+//	public synchronized ResponseEntity<String> HandlingWeeklySeatBooking(@PathVariable("eId") int eId,@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
+//		Employee emp = employeeRepo.findById(eId).get();
+//		Seat seat = seatRepo.findById(sId).get();
+//		
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+//		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
+//		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
+//		 LocalDate fromDate = fromDateTime.toLocalDate();
+//	        LocalDate toDate = toDateTime.toLocalDate();
+//		  List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
+//		  System.out.println(dates);
+//		  for (LocalDate date : dates) {
+//			  System.out.println(date);
+//			  SeatsBooked sb= new SeatsBooked();
+//			  LocalDateTime localDateTime = date.atStartOfDay();
+//			  sb.seteId(emp);
+//			  sb.setSbDate(localDateTime);
+//			  sb.setsId(seat);
+//			  String code = adminService.generateQrCode(eId);
+//			  sb.setCode(code);
+//			  sb.setNotifStatus(false);
+//			  sb.setCurrent(true);
+//			  seatsBookedRepo.save(sb);
+//				}
+//		  return ResponseEntity.ok("Seats booked successfully " ); 
+//	}
 }
 

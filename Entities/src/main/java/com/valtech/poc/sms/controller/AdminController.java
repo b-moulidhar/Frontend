@@ -55,7 +55,8 @@ public class AdminController {
 	@GetMapping("/foodCount/{ftDate}")
 	public int getFoodCount(@PathVariable("ftDate") String ftDate) {
 		logger.info("Fetching the food count");
-		int count = adminService.getFoodCount(ftDate);
+		String foodDate = ftDate + " 00:00:00";
+		int count = adminService.getFoodCount(foodDate);
 		return count;
 	}
 
@@ -68,11 +69,11 @@ public class AdminController {
 		User usr = userService.findByEmpId(empId);
 		Employee emp = usr.getEmpDetails();
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
-		System.out.println("sb details: " + sb.getPunchIn());
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
 //		LocalDateTime dateTime = formatter.format(now);
+		sb.setCurrent(false);
 		sb.setPunchOut(dateTime);
 		seatsBookedRepo.save(sb);
 		attendanceService.automaticRegularization(sb.getSbId());
@@ -87,6 +88,7 @@ public class AdminController {
 		Employee emp = employeeService.findById(eId);
 		System.out.println(emp.getEmpName());
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
+		System.out.println(sb);
 		String code = sb.getCode();
 		System.out.println(code);
 		return code;
@@ -112,14 +114,16 @@ public class AdminController {
 	@ResponseBody
 	@GetMapping("/foodCountWithJpa/{ftDate}")
 	public int getCountByFtdate(@PathVariable("ftDate") String ftDate) {
-		return adminService.getCount(ftDate);
+		String foodDate = ftDate + " 00:00:00";
+		return adminService.getCount(foodDate);
 	}
 
 	@ResponseBody
 	@GetMapping("/seatCount/{sbDate}")
 	public int getCountBySbDate(@PathVariable("sbDate") String sbDate) {
 		logger.info("Fetching the seat booked count");
-		int count = adminService.getSeatBookedCount(sbDate);
+		String SeatDate = sbDate + " 00:00:00";
+		int count = adminService.getSeatBookedCount(SeatDate);
 		return count;
 
 	}
@@ -183,5 +187,14 @@ public class AdminController {
     public Employee getAdminById(@PathVariable int eId) {
         return employeeService.getEmployeeByeId(eId);
     }
+	
+	
+	@ResponseBody
+	@GetMapping("/foodCountBasedOnDates")
+	public int getCountByDate(@RequestParam("sbDate")String sbDate) {
+		String SeatDate = sbDate + " 00:00:00";
+		int count = adminService.getCountOfFoodOpt(SeatDate);
+		return count;
+	}
 	
 }

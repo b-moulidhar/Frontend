@@ -33,10 +33,9 @@ public class ScheduledTask {
         		sb.setNotifStatus(false);
         		sb.setCode(null);
         		seatsBookedRepo.save(sb);
-        		System.out.println("test scheduled task");
+        		System.out.println("Seat has been cancelled");
         		return "Seat has been cancelled";
         	}
-        	System.out.println("test b fail scheduled task");
 			return null;
         	
         }, delay, TimeUnit.MILLISECONDS);
