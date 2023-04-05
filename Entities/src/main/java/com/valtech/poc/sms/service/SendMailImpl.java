@@ -3,6 +3,7 @@ package com.valtech.poc.sms.service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -16,14 +17,20 @@ import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.valtech.poc.sms.entities.Mail;
+
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
 public class SendMailImpl implements SendMail {
+	
+	@Autowired
+	MailService mailService;
 
 	private static final Logger logger = LoggerFactory.getLogger(SendMailImpl.class);
 
@@ -72,8 +79,12 @@ public class SendMailImpl implements SendMail {
 			message.setSubject(subject);
 			message.setText(body);
 			Transport.send(message);
+			Mail mail = new Mail(email, subject, body, true, LocalDateTime.now());
+			mailService.saveMail(mail);
 			logger.info("Mail Sent Successfully!");
 		} catch (MessagingException e) {
+			Mail mail = new Mail(email, subject, body, false, LocalDateTime.now());
+			mailService.saveMail(mail);
 			logger.error("Error Occurred while Sending Mail in SendMailImpl");
 		}
 	}
