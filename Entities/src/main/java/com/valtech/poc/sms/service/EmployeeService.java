@@ -18,5 +18,6 @@ public interface EmployeeService {
 
 	List<Employee> getAllEmployeesUnderTheManager(int eId);
 
+	int findeIdByMailId(String email);
 
 }

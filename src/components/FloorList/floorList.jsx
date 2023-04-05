@@ -17,15 +17,15 @@ function FloorList(){
             </div>
             <div className="floor0">
                 
-            <a href='/'><button className='floorbtn'>First Floor</button></a>
+            <a href='/ffloor'><button className='floorbtn'>First Floor</button></a>
             </div>
             <div className="floor0">
                 
-            <a href='/'><button className='floorbtn'>Second Floor</button></a>
+            <a href='/sfloor'><button className='floorbtn'>Second Floor</button></a>
             </div>
             <div className="floor0">
                 
-            <a href='/'><button className='floorbtn'>Third Floor</button></a>
+            <a href='/tfloor'><button className='floorbtn'>Third Floor</button></a>
             </div>
         </div>
         </div>
