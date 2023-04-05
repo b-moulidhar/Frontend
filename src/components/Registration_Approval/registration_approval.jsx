@@ -7,7 +7,7 @@ function Registration_Approval(){
     const [users,setUser] = useState([])
 
     useEffect(()=>{
-        axios.get("http://10.191.80.104:7001/registrationApprovalList",{
+        axios.get("http://10.191.80.73:7001/registrationApprovalList",{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role":localStorage.getItem("role"),

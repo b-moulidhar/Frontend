@@ -27,10 +27,7 @@ function AdminDashboard(){
     }).then((response)=>{  
         setCount(response.data);
 
-        console.log(response.data);
-        // alert(typeof response.url);
-      }).catch((err)=>{
-        console.log(err);
+        // responseType: "json",
       })
       }, []);
       useEffect(() => {
