@@ -262,7 +262,11 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	    byte[] pdf=seatBookingDao.generateSeatsBookedPDF(seatsBooked);
 	    return pdf;
 	}
+	
+    @Override
+    public List<Object[]> getTopFivePopularSeats() {
+        return seatsBookedRepo.findTopFivePopularSeats();
 
-
+}
 }
 

@@ -159,6 +159,11 @@ public class SeatBookingController {
 	    return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
 	}
 
+	 @GetMapping("/popular")
+	    public ResponseEntity<List<Object[]>> getTopFivePopularSeats() {
+	        List<Object[]> popularSeats = seatService.getTopFivePopularSeats();
+	        return ResponseEntity.ok(popularSeats);
+	   }
 
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {

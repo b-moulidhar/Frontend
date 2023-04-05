@@ -22,11 +22,21 @@ public interface SeatsBookedRepo extends JpaRepository<SeatsBooked, Integer>{
 
 	   // @Query("UPDATE seats_booked sb SET sb.notifStatus = ? WHERE sb.sbId = ?")
 	    //void notifStatus( @PathVariable("sbId") int sbId);
+	 @Query(value = "SELECT s.s_name AS seat_name, COUNT(*) AS popular_seats " +
+             "FROM seats_booked sb " +
+             "INNER JOIN seat s ON s.s_id = sb.s_id " +
+             "GROUP BY s.s_id " +
+             "ORDER BY popular_seats DESC " +
+             "LIMIT 5")
+         List<Object[]> findTopFivePopularSeats();
+	     }
+
+	
 	
 	
 	
 
-	}
+	
 
 	
 
