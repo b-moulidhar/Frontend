@@ -1,22 +1,16 @@
 package com.valtech.poc.sms.entities;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 public class CalendarUtil {
 
-   public static boolean isDateDisabled(Date date) {
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(date);
-    
-      int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-      // Disable Saturdays and Sundays
-      if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
-         return true;
-      }
-
-      // Enable all other dates
-      return false;
-   }
+	public static boolean isDateDisabled(LocalDate date) {
+		DayOfWeek dayOfWeek = date.getDayOfWeek();
+		if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+			return true;
+		}
+		return false;
+	}
 
 }

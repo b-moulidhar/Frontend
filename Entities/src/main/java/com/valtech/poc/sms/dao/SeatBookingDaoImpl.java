@@ -189,6 +189,9 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 			SeatsBooked sb = new SeatsBooked();
 			sb.setSbId(resultSet.getInt("sb_id"));
 			sb.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
+			sb.setPunchIn(resultSet.getObject("punch_in", LocalDateTime.class));
+            sb.setPunchOut(resultSet.getObject("punch_out", LocalDateTime.class));
+            sb.setCode(resultSet.getString("code"));
 			sb.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
 			sb.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
 
@@ -302,6 +305,7 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Override
 	public boolean checkIfTheSameSeatBookingRecurring(int eId) throws DataAccessException {
+		
 		String sql = "SELECT COUNT(*) As bookings FROM seat s INNER JOIN seats_booked sb ON s.s_id = sb.s_id INNER JOIN employee e ON sb.e_id = e.e_id WHERE e.e_id=? GROUP BY s.s_id, s.s_name, e.emp_name HAVING COUNT(*) >= 1 ORDER BY bookings DESC;";
 		try {
 			@SuppressWarnings("deprecation")
@@ -332,7 +336,6 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Override
 	public byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception {
-		// Create a new PDF document
 		// Create a new PDF document
 		Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 
