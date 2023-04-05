@@ -30,7 +30,7 @@ function Manager(){
 
     const handleApprove = (emp) => {
         // Send the data to the backend using axios.post
-        axios.post("https://example.com/approve", emp)
+        axios.post("http://10.191.80.104:7001/attendanceApproval", emp)
             .then(response => {
                 // Update the state to reflect the approved employee
                 setManagerEmp(prevEmps => prevEmps.map(prevEmp => {
@@ -64,7 +64,7 @@ function Manager(){
     //     { id: 1, name: 'John Abc' },
     //     { id: 2, name: 'James Smith' },
     //     { id: 3, name: 'Bosss Johnson' },
-    //     
+        
     //   ];
 
     return(

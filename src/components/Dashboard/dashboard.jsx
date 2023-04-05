@@ -5,36 +5,19 @@ import "./dashboard.css";
 function Dashboard() {
   return (
     <div className="dashboard_container">
+      <Navbar/>
       <div className="mainpage">
-              <div>
+              
                 <Sidebar/>
-              </div>
-        <div>
-        <Navbar/>
-          {/* <h2 className="status">Status</h2> */}
-          <div className="dashboard_head">
-            <h3>your name</h3>
-            <p>your seat for today is 1 at ground floor</p>
-          </div>
-          {/* <div className=" atten">
-            <div className="attenstatus">
-              <button type="button" className="btn btn-success statusbtn">
-                Approved
-              </button>
-            </div>
-            <div className="attenstatus">
-              <button type="button" className="btn btn-warning statusbtn">
-                Pending
-              </button>
-            </div>
-            <div className="attenstatus">
-              <button type="button" className="btn btn-danger statusbtn">
-                Rejected
-              </button>
-            </div>
-          </div> */}
-
-                <div class="middle-row col-lg-7 text-center ">
+      </div>      
+        <div className="container">
+       
+                <div className="dashboard_head">
+                  <h3>your name</h3>
+                  <p>your seat for today is 1 at ground floor</p>
+                </div>
+                
+                <div class="middle-row col-lg-12 text-center ">
                   <div class="box5 shadow">
                     <span class="numb">0</span>
                     <span class="char">Approved</span>
@@ -84,7 +67,7 @@ function Dashboard() {
                   </div>
                 </div>
         </div>
-      </div>
+      
     </div>
   );
 }
