@@ -56,7 +56,7 @@ function BookSeat() {
   };
 
   function todayDate() {
-    const now = new window.Date();
+    const now = new window.Date("yyyy-mm-dd");
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
     const day = now.getDate();

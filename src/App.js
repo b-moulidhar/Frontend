@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import FirstFloor from './components/layouts/firstFloor';
 import SecondFloor from './components/layouts/secondFloor';
 import ThirdFloor from './components/layouts/thirdFloor';
+import Manager from './components/Manager/manager';
 
 
 
@@ -52,7 +53,7 @@ function App() {
     <Route path="/" element={<Login/>}/>    
     <Route path="/register" element={<Register/>}/>    
     <Route path="/forget" element={<Forget/>}/>    
-    <Route path="/forget/reset" element={<Reset/>}/>    
+    <Route path="/forget/reset/:email" element={<Reset/>}/>    
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
     <Route path="/admin/:id" element={<AdminDashboard/>}/> 
     <Route path="/admin" element={<AdminDashboard/>}/>    
