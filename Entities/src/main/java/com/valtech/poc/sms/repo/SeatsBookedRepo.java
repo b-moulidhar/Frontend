@@ -18,12 +18,12 @@ public interface SeatsBookedRepo extends JpaRepository<SeatsBooked, Integer>{
 	@Transactional
     @Modifying
     
-	List<SeatsBooked> findAllByeId(Employee emp);
+	List<SeatsBooked> findAllByeIdAndCurrentTrue(Employee emp);
 
 	   // @Query("UPDATE seats_booked sb SET sb.notifStatus = ? WHERE sb.sbId = ?")
 	    //void notifStatus( @PathVariable("sbId") int sbId);
 	
-	
+	SeatsBooked findByeId(Employee eId);
 	
 
 	}

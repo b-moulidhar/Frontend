@@ -1,31 +1,22 @@
 package com.valtech.poc.sms.dao;
 
 import java.io.ByteArrayOutputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.valtech.poc.sms.entities.Employee;
@@ -203,13 +194,15 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public SeatsBooked findCurrentSeat(Employee emp) {
+	public List<SeatsBooked> findCurrentSeat(Employee emp) {
 		int empId = emp.geteId();
 		System.out.println(empId);
 		System.out.println(emp.getEmpName());
-		List<SeatsBooked> sb1= seatsBookedRepo.findAllByeId(emp);
-		System.out.println(sb1);
-		return null;
+		List<SeatsBooked> sb1= seatsBookedRepo.findAllByeIdAndCurrentTrue(emp);
+//		SeatsBooked sb = seatsBookedRepo.findByeId(emp);
+//		System.out.println(sb1);
+//		System.out.println(sb);
+		return sb1;
 //		String query = "select * from seats_booked where current = 1 and e_id = ?";
 //		return jdbcTemplate.queryForObject(query, new Object[] { empId }, BeanPropertyRowMapper.newInstance(SeatsBooked.class));
 //		return jdbcTemplate.queryForObject(query, new Object[] { empId }, new RowMapper<SeatsBooked>() {
@@ -257,6 +250,12 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 				new BeanPropertyRowMapper<>(Seat.class));
 		return availableSeats;
 	}
+	
+//	public List<SeatsBooked> findSBByShiftTimingsAndDate() { 
+//		String query = "SELECT sb. FROM seats_booked sb JOIN shift_timings stt ON sb.st_id = stt.st_id WHERE stt.st_start = ? "
+//				+ " AND DATE_FORMAT(sb.sb_date, '%Y-%m-%d') = ?";
+//		List<SeatsBooked> sb = jdbcTemplate.queryForList(query, new Object[] { }, null)
+//	}
 
 	@Override
 	public void bookSeat(SeatsBooked seatsBooked) {

@@ -3,6 +3,8 @@ package com.valtech.poc.sms.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +85,17 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 
 	@Override
 	public SeatsBooked findCurrentSeatBookingDetails(Employee emp) {
-		return seatBookingDao.findCurrentSeat(emp);
+		List<SeatsBooked> sb = seatBookingDao.findCurrentSeat(emp);
+
+		Collections.sort(sb, new Comparator<SeatsBooked>() {
+		      @Override
+		      public int compare(SeatsBooked o1, SeatsBooked o2) {
+		        return o1.getSbDate().compareTo(o2.getSbDate());
+		      }
+		    });
+		
+		SeatsBooked latestSb = sb.get(0);
+		return latestSb;
 	}
 
 	@Override

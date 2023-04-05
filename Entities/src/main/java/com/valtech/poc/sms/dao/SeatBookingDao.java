@@ -19,7 +19,7 @@ public interface SeatBookingDao {
 
 //	List<SeatsBooked> findAllByEId(Employee emp);
 
-	SeatsBooked findCurrentSeat(Employee emp);
+	List<SeatsBooked> findCurrentSeat(Employee emp);
 
 	List<Integer> countTotalSeats();
 
