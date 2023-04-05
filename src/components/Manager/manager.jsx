@@ -9,15 +9,7 @@ import Navbar from "../Navbar/navbar";
 function Manager(){
     const [managerEmp, setManagerEmp] = useState([])
     const [employees, setEmployees] = useState([])
-    // const [managerEmp, setManagerEmp] = useState({
-    //     empId:Number,
-    //     empName:"",
-    //     startdate:Date,
-    //     endDate:Date,
-    //     shiftStart:"",
-    //     shiftEnd:""
-    // })
-
+   
     useEffect(()=>{
         //axios.get("http://10.191.80.104:7001/seats/total")
         axios.get("https://reqres.in/api/users")
@@ -60,13 +52,6 @@ function Manager(){
         .catch(err => console.log("Error ", err))
     },[])
 
-    // const employees = [
-    //     { id: 1, name: 'John Abc' },
-    //     { id: 2, name: 'James Smith' },
-    //     { id: 3, name: 'Bosss Johnson' },
-        
-    //   ];
-
     return(
        
         
@@ -94,14 +79,6 @@ function Manager(){
             </tr>
         </thead>
         <tbody>
-            {/* <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>12</td>
-            <td>22</td>
-            <td>09:00am</td>
-            <td>18:00pm</td>
-        </tr>    */}
             {managerEmp.map((emp,idx)=>(
                 <tr key={idx}>
                     <th scope="row">{idx+1}</th>
@@ -135,7 +112,8 @@ function Manager(){
         </tbody>
         </table>
             <a href="/bookseat"><button>Book Seat</button></a>
-        <EmployeeList employees={employees} />
+        {/* <EmployeeList employees={employees} /> */}
+        <EmployeeList/>
         </div>
         
     </div>
