@@ -74,6 +74,14 @@ public interface SeatBookingService {
 
 	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
 
+	byte[] generateSeatsBookedByEmployeeReportPDF(int empId, LocalDateTime startDate, LocalDateTime endDate)
+			throws Exception;
+
+	List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate, LocalDateTime endDate);
+
+	byte[] generateSeatsBookedByShiftReportPDF(int stId, LocalDateTime startDate, LocalDateTime endDate)
+			throws Exception;
+
 
 	//void updateNotifStatus(int sbId, Connection connection);
 

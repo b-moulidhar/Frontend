@@ -142,8 +142,12 @@ public class SeatBookingServiceImpl implements SeatBookingService {
     public List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate) {
         return seatBookingDao.getSeatsBookedByDate(startDate, endDate);
     }
-
-	
+    
+    @Override
+    public List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId,LocalDateTime startDate, LocalDateTime endDate) {
+        return seatBookingDao.getSeatsBookedByShiftTimingBetweenDates(stId, startDate, endDate);
+    }
+    
 
 	@Override
 	public boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
@@ -227,6 +231,20 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	@Override
 	public byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception {
 	    List<SeatsBooked> seatsBooked = getSeatsBookedByDate(startDate, endDate);
+	    
+	    byte[] pdf=seatBookingDao.generateSeatsBookedPDF(seatsBooked);
+	    return pdf;
+	}
+	@Override
+	public byte[] generateSeatsBookedByEmployeeReportPDF(int empId,LocalDateTime startDate, LocalDateTime endDate) throws Exception {
+	    List<SeatsBooked> seatsBooked = getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
+	    
+	    byte[] pdf=seatBookingDao.generateSeatsBookedPDF(seatsBooked);
+	    return pdf;
+	}
+	@Override
+	public byte[] generateSeatsBookedByShiftReportPDF(int stId,LocalDateTime startDate, LocalDateTime endDate) throws Exception {
+	    List<SeatsBooked> seatsBooked = getSeatsBookedByShiftTimingBetweenDates(stId, startDate, endDate);
 	    
 	    byte[] pdf=seatBookingDao.generateSeatsBookedPDF(seatsBooked);
 	    return pdf;
