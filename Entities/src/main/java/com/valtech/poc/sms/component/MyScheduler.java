@@ -16,35 +16,33 @@ import com.valtech.poc.sms.service.MailContent;
 import com.valtech.poc.sms.service.MailService;
 import com.valtech.poc.sms.service.SeatBookingService;
 
-import jakarta.annotation.PostConstruct;
-
 @Component
 public class MyScheduler {
-	
+
 	private static final Logger logger = Logger.getLogger(MyScheduler.class.getName());
 
 	@Autowired
 	MailContent mailContent;
-	
+
 	@Autowired
 	SeatBookingService seatBookingService;
-	
+
 	@Autowired
 	MailService mailService;
-	
+
 	@Autowired
 	ScheduledTask scheduledTask;
-	
+
 	@Autowired
 	ConfigurationsRepo configurationsRepo;
-	
+
 	private String shiftCancelCron;
-	
-    @Scheduled(cron = "0 0/2 * * * ?") // Runs every 2mins
-    public void myTask() {
+
+	@Scheduled(cron = "0 0/2 * * * ?") // Runs every 2mins
+	public void myTask() {
 //    	System.out.println("scheduled");
-    }
-    
+	}
+
 //    @PostConstruct
 //    public void init() {
 //        Configurations cfg = configurationsRepo.findByName("shift");
@@ -52,10 +50,12 @@ public class MyScheduler {
 //        String shiftCancelCron = "0 0 "+shift+" * * ?"; 
 //    }
 
-    
-    @Scheduled(cron = "0 0 9 * * ?")
-    public void firstShift() {
-    	logger.info("Running firstShift() method which calls the timer to cancel seats automatically");
+	// Fetches all seatsbooked for firstshift and triggers a timer that cancels the
+	// seat booking
+	// if employee doesn't check in before the buffer time
+	@Scheduled(cron = "0 0 9 * * ?")
+	public void firstShift() {
+		logger.info("Running firstShift() method which calls the timer to cancel seats automatically");
 //    	Properties prop = new Properties();
 //    	String fileName = "app.config";
 //    	try (FileInputStream fis = new FileInputStream(fileName)) {
@@ -68,24 +68,24 @@ public class MyScheduler {
 //    	String delay = prop.getProperty("shift.cancel.delay");
 //    	int delayInHrs = Integer.parseInt(delay);
 //    	long Delay = 3600000*delayInHrs;
-    	Configurations cfg = configurationsRepo.findByName("buffer");
-    	int buffer = cfg.getValue();
-    	int delay = 3600000*buffer;
-    	List<SeatsBooked> sbl = seatBookingService.getSBBySTAndDate(9,LocalDate.now().toString());
-    	for (SeatsBooked seatsBooked : sbl) {
-    		scheduledTask.scheduleTask(delay, seatsBooked);
+		Configurations cfg = configurationsRepo.findByName("buffer");
+		int buffer = cfg.getValue();
+		int delay = 3600000 * buffer;
+		List<SeatsBooked> sbl = seatBookingService.getSBBySTAndDate(9, LocalDate.now().toString());
+		for (SeatsBooked seatsBooked : sbl) {
+			scheduledTask.scheduleTask(delay, seatsBooked);
 		}
-    	
-    }
-    
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void unsentMails() {
-    	logger.info("Running unsentMails() method");
-    	List<Mail> unsentMails = mailService.getAllUnsentMail();
 
-    	for (Mail mail : unsentMails) {
-    		mailContent.unsentMails(mail);
-    	}
-    }
-    
+	}
+
+	@Scheduled(cron = "0 0 0 * * ?")
+	public void unsentMails() {
+		logger.info("Running unsentMails() method");
+		List<Mail> unsentMails = mailService.getAllUnsentMail();
+
+		for (Mail mail : unsentMails) {
+			mailContent.unsentMails(mail);
+		}
+	}
+
 }

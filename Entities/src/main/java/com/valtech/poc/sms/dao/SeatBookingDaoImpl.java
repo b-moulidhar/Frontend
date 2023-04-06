@@ -252,17 +252,17 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 		return seatsBookedList;
 	}
 
+	// This method returns a list of current seat bookings for a given employee.
+	// It takes an Employee object as input parameter and returns a List of SeatsBooked objects.
 	@SuppressWarnings("deprecation")
 	@Override
 	public List<SeatsBooked> findCurrentSeat(Employee emp) {
 		int empId = emp.geteId();
-		System.out.println(empId);
-		System.out.println(emp.getEmpName());
 		List<SeatsBooked> sb1 = seatsBookedRepo.findAllByeIdAndCurrentTrue(emp);
+		return sb1;
 //		SeatsBooked sb = seatsBookedRepo.findByeId(emp);
 //		System.out.println(sb1);
 //		System.out.println(sb);
-		return sb1;
 //		String query = "select * from seats_booked where current = 1 and e_id = ?";
 //		return jdbcTemplate.queryForObject(query, new Object[] { empId }, BeanPropertyRowMapper.newInstance(SeatsBooked.class));
 //		return jdbcTemplate.queryForObject(query, new Object[] { empId }, new RowMapper<SeatsBooked>() {
@@ -430,7 +430,11 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Override
 	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, LocalDateTime from) throws DataAccessException {
-		String sql = "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=? AND current = true";
+
+		
+
+		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=? AND current = true";
+
 
 		try {
 			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { eId, from }, Integer.class);

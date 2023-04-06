@@ -100,8 +100,10 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	/* Find the current seat booking details */
 	@Override
 	public SeatsBooked findCurrentSeatBookingDetails(Employee emp) {
+		// Get the list of all seat bookings of the employee.
 		List<SeatsBooked> sb = seatBookingDao.findCurrentSeat(emp);
 
+		// Sort the seat bookings in ascending order of the booking date.
 		Collections.sort(sb, new Comparator<SeatsBooked>() {
 			@Override
 			public int compare(SeatsBooked o1, SeatsBooked o2) {
@@ -109,8 +111,12 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 			}
 		});
 
+		// Get the latest seat booking of the employee.
 		SeatsBooked latestSb = sb.get(0);
+
+		// Return the latest seat booking.
 		return latestSb;
+
 	}
 
 	@Override
@@ -203,7 +209,9 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return seatBookingDao.checkIfEmployeeAlreadyBookTheSeatDaily(eId, fromDateTime);
 	}
 
-	/* Saving the booked seats details daily */
+	
+
+	/*Saving the booked seats details daily*/
 	@Override
 	public String createSeatsBookedDaily(int eId, int sId, int stId, String from, String to) {
 		Employee emp = employeeRepo.findById(eId).get();
@@ -240,7 +248,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false, true,
 						st);
 				SeatsBooked savedSeatsBooked = saveSeatsBookedDetails(sb);
-				if (sb.isFood() == true) {
+				if(sb.isFood()==true) {
 					seatBookingDao.updatFoodCount(sb.getSbDate());
 				}
 //				scheduledTask.scheduleTask(limit, savedSeatsBooked);
@@ -257,45 +265,48 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		}
 
 	}
-
+	
 	@Override
 	public String createSeatsBookedWeekly(int eId, int sId, int stId, String from, String to) {
-		Employee emp = employeeRepo.findById(eId).get();
-		Seat seat = seatRepo.findById(sId).get();
-		ShiftTimings st = shiftTimingsRepo.findById(stId).get();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-		if (checkIftheSeatIsCurrentlyBooked(eId, fromDateTime, toDateTime)) {
-			return "This employee has already booked.";
-		} else {
-			LocalDate fromDate = fromDateTime.toLocalDate();
-			LocalDate toDate = toDateTime.toLocalDate();
-			List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
-
-			if (dates.size() > 7) {
-				return "Cannot book seats for more than 7 days";
-			}
-
-			for (LocalDate date : dates) {
-				if (CalendarUtil.isDateDisabled(date)) {
-					System.out.println("The date falls on sunday or saturday");
-				} else if (holidayService.isHoliday(date)) {
-					System.out.println("Seat Booking not allowed on holidays");
-				} else {
-					LocalDateTime localDateTime = date.atStartOfDay();
-					String code = adminService.generateQrCode(eId);
-					SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false,
-							false, st);
-					seatsBookedRepo.save(sb);
-					if (sb.isFood()) {
-						seatBookingDao.updatFoodCount(sb.getSbDate());
-					}
-				}
-			}
-			return "Seats booked successfully ";
-		}
+	    Employee emp = employeeRepo.findById(eId).get();
+	    Seat seat = seatRepo.findById(sId).get();
+	    ShiftTimings st = shiftTimingsRepo.findById(stId).get();
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
+	    LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
+	    if (checkIftheSeatIsCurrentlyBooked(eId,  fromDateTime, toDateTime)) {
+	        return "This employee has already booked.";
+	    } else {
+	        LocalDate fromDate = fromDateTime.toLocalDate();
+	        LocalDate toDate = toDateTime.toLocalDate();
+	        List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
+	        
+	        if (dates.size() > 7) {
+	            return "Cannot book seats for more than 7 days";
+	        }
+	        else {
+	        
+	        for (LocalDate date : dates) {
+	            if (CalendarUtil.isDateDisabled(date)) {
+	                System.out.println("The date falls on sunday or saturday");
+	            } else if (holidayService.isHoliday(date)) {
+	                System.out.println("Seat Booking not allowed on holidays");
+	            } else {
+	                LocalDateTime localDateTime = date.atStartOfDay();
+	                String code = adminService.generateQrCode(eId);
+	                SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false,
+	                        false, st);
+	                seatsBookedRepo.save(sb);
+	                if (sb.isFood()) {
+	                    seatBookingDao.updatFoodCount(sb.getSbDate());
+	                }
+	            }
+	        }
+	        return "test ";
+	    }
+	    }
 	}
+
 
 	/* Generating the seatsbooked report in the pdf format */
 	@Override
