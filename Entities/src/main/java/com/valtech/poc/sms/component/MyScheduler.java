@@ -52,7 +52,7 @@ public class MyScheduler {
 
 	// Fetches all seatsbooked for firstshift and triggers a timer that cancels the
 	// seat booking
-	// if emloyee doesn't check in before the buffer time
+	// if employee doesn't check in before the buffer time
 	@Scheduled(cron = "0 0 9 * * ?")
 	public void firstShift() {
 		logger.info("Running firstShift() method which calls the timer to cancel seats automatically");
