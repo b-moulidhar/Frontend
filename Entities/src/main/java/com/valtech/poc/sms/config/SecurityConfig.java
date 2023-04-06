@@ -61,7 +61,7 @@ public class SecurityConfig {
         .disable()
         .cors().and() 
                 .authorizeHttpRequests()
-                .requestMatchers("/api/login","/saveuser","/roleNames","/gettingAllManagernames").permitAll()
+                .requestMatchers("/api/login","/saveuser","/roleNames","/gettingAllManagernames","/reset/{email}","/reset/newPass/{email}").permitAll()
                 .requestMatchers("/v2/api-docs", "/swagger-resources/configuration/ui", "/swagger-resources/**", "/swagger-resources/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll().requestMatchers("/api/").permitAll()
                 .requestMatchers("/seats/count").hasRole("Admin")
                 .anyRequest().authenticated().and().formLogin().and().httpBasic();

@@ -1,26 +1,29 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import cors from 'cors';
+
+// enable CORS for all requests
+app.use(cors())
 
 function Manager_Approval(){
     const [managerEmp, setManagerEmp] = useState([])
-    let id=useParams()
+    const { id } = useParams()
 
     useEffect(()=>{
-        //axios.get("http://10.191.80.104:7001/seats/total")
-        axios.get(`http://10.191.80.104:7001/attendanceApprovalList/${id}`, {}, {
+        axios.get(`http://localhost:7001/attendanceApprovalList/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role": localStorage.getItem("role"),
                 "X-Eid": localStorage.getItem("eid")
             }
-            })
+        })
         .then((response) => {
             setManagerEmp(response.data)
             console.log(response.data)
         })
         .catch(err => console.log("Error ", err))
-    },[])
+    },[id])
 
     function approve(atid){
         axios.put(`http://10.191.80.104:7001/attendanceApproval/${atid}`, {}, {
@@ -40,7 +43,7 @@ function Manager_Approval(){
     }
     function disapprove(atid){
         alert(atid)
-        axios.put(`http://10.191.80.104:7001/disapproveAttendance/${atid}`, {}, {
+        axios.delete(`http://10.191.80.104:7001/disapproveAttendance/${atid}`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role": localStorage.getItem("role"),

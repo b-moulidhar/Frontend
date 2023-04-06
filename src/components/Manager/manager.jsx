@@ -24,7 +24,7 @@ function Manager(){
             console.log(response.data.data)
         })
         .catch(err => console.log("Error ", err))
-    },[])
+    },[id])
 
     const approve = (atid) => {
         axios.put(`http://10.191.80.104:7001/attendanceApproval/${atid}`, {}, {

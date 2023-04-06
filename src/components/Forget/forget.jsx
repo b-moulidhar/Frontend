@@ -1,28 +1,30 @@
 import axios from "axios";
 import { useState } from "react"
+import { useParams } from "react-router";
 
 export default function Forget(){
 
-      const [email,setEmail]=useState({email:''})
-
-      // function changeEmail(event){
-      //   setEmail({
-      //     [event.target.name]: event.target.value
-      //   })
-      // }
+    
+    const [email,setEmail]=useState({email:''})
+      
 
       function handleSubmit(event){
+      
         event.preventDefault();
         if(email.email.trim() === ""){
           alert("Please Enter Your Email");
         
         }
         else{
-          axios.post("http://10.191.80.73:7001/reset/mouli@valtech.com",{})
+          console.log(email.email);
+          axios.post(`http://10.191.80.73:7001/reset/${email.email}` )
           .then((res)=>{
-              console.log(res)
+              console.log(res);
+              console.log(email);
+              window.location=`/forget/reset/${email.email}`;
           })
-          nav(`/forget/reset/${email.email}`);
+          
+        
         }
       }
 
