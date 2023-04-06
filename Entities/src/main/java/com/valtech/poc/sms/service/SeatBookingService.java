@@ -63,6 +63,9 @@ public interface SeatBookingService {
 
 	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
 
+	boolean checkIftheSeatIsCurrentlyBooked(int eId,  LocalDateTime fromDateTime, LocalDateTime toDateTime);
+
+	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime);
 
 	List<Map<String, Object>> GettingDetailsOfViwPass(int eid);
 
@@ -81,11 +84,6 @@ public interface SeatBookingService {
 
 	//List<Object[]> getTopFivePopularSeats();
 
-
-	boolean checkIftheSeatIsCurrentlyBooked(int eId, int sId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
-
-
-	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId, LocalDateTime fromDateTime);
 
 	// void updateNotifStatus(int sbId, Connection connection);
 
