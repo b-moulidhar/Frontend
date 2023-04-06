@@ -52,7 +52,7 @@ function App() {
     <Route path="/" element={<Login/>}/>    
     <Route path="/register" element={<Register/>}/>    
     <Route path="/forget" element={<Forget/>}/>    
-    <Route path="/forget/reset" element={<Reset/>}/>    
+    <Route path="/forget/reset/:email" element={<Reset/>}/>    
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
     <Route path="/admin/:id" element={<AdminDashboard/>}/> 
     <Route path="/admin" element={<AdminDashboard/>}/>    
@@ -64,7 +64,7 @@ function App() {
     <Route path="/notify" element={<Notify/>}/>    
     <Route path="/manager/:id" element={<Manager/>}/>    
     <Route path="/floorLIst" element={<FloorList/>}/>    
-    <Route path="/viewpass" element={<ViewPass/>}/>    
+    <Route path="/viewpass/:id" element={<ViewPass/>}/>    
     <Route path="/bookseat/:id" element={<BookSeat/>}/>    
     <Route path="/qrscanner" element={<QrCodeScan/>}/>    
     <Route path="/qrgenerator" element={<QrCodeGen/>}/>    

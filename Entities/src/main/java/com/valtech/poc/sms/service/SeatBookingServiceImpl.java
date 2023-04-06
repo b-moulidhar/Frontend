@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -249,6 +250,12 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	    
 	    byte[] pdf=seatBookingDao.generateSeatsBookedPDF(seatsBooked);
 	    return pdf;
+	}
+
+	@Override
+	public List<Map<String,Object>> GettingDetailsOfViwPass(int eid) {
+		// TODO Auto-generated method stub
+		return seatBookingDao.GettingDetailsOfViwPass(eid);
 	}
 
 

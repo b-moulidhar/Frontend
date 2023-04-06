@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.service.spi.ServiceException;
 
@@ -73,6 +74,8 @@ public interface SeatBookingService {
 	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
 
 	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
+
+	List<Map<String, Object>> GettingDetailsOfViwPass(int eid);
 
 
 	//void updateNotifStatus(int sbId, Connection connection);

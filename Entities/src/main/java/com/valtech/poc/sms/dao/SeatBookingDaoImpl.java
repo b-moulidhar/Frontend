@@ -423,6 +423,13 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 		return pdfBytes;
 	}
 
+	@Override
+	public List<Map<String, Object>> GettingDetailsOfViwPass(int eid) {
+		String sql="select distinct e.emp_name, u.emp_id, s.s_name,st.st_start,st.st_end from employee e,seat s,seats_booked sb,shift_timings st,user u where e.e_id=? and sb.st_id=st.st_id and sb.s_id=s.s_id and sb.e_id=e.e_id and u.e_id=e.e_id;";
+		 List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, eid);
+		return results;
+	}
+
 //	
 //	    @Override
 //	    public List<SeatsBooked> getSeatBookingsByEId(int eId)  {

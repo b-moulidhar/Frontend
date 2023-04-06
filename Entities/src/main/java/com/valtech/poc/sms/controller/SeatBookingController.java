@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.entities.Seat;
-import com.valtech.poc.sms.entities.SeatBookingTempOne;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
@@ -162,18 +162,13 @@ public class SeatBookingController {
 	}
 
 	@ResponseBody
-	@PostMapping("/GetDatatoBookSeat")
-	public String storeDataToSeatBookingTempOne(@RequestBody SeatBookingTempOne seatBookingTempOne) {
-		
-		return "Success";
+	@PostMapping("/GettingDetailsOfViwPass/{eid}")
+	public List<Map<String, Object>> GettingDetailsOfViwPass(@PathVariable("eid") int eid){
+		List<Map<String, Object>> empdata=seatService.GettingDetailsOfViwPass(eid);
+		return empdata;
 	}
 	
-	@ResponseBody
-	@PostMapping("/GetSeatId")
-	public int GetSidBySname(@RequestBody String sName) {
-		return seatRepo.findIdBysName(sName);
-	}
-	
+}	
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
 //			List<SeatsBooked> booking = seatService.getSeatBookingsByEId(eId);
@@ -199,7 +194,7 @@ public class SeatBookingController {
 //        }
 //      }
 
-}
+
 
 //    @GetMapping("/{eId}")
 //    public Employee getEmployeeById(@PathVariable int eId) {
