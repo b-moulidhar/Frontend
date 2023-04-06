@@ -73,6 +73,8 @@ public interface SeatBookingService {
 
 	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId, LocalDateTime fromDateTime);
 
+	List<SeatsBooked> getSBBySTAndDate(int start, String date);
+
 	// void updateNotifStatus(int sbId, Connection connection);
 
 //	void bookSeat();

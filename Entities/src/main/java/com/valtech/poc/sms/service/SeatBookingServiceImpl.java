@@ -3,9 +3,13 @@ package com.valtech.poc.sms.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,9 +57,21 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 
 	@Autowired
 	MailContent mailContent;
+	
 
 //	@Override
 //	public String getQrCodeKeyForEmpId(int empId)
+	
+	@Override
+	public List<SeatsBooked> getSBBySTAndDate(int start,String date){
+		List<SeatsBooked> sbtemp = seatBookingDao.findSBIdByShiftTimingsAndDate(start, date);
+//		List<SeatsBooked> sb = new ArrayList<>();
+//		for (SeatsBooked seatsBooked : sbtemp) {
+//			SeatsBooked seatsBookedi =  seatsBookedRepo.findById(seatsBooked.getSbId()).get();
+//			sb.add(seatsBookedi);
+//		}
+		return sbtemp;
+	}
 
 	@Override
 	public List<Integer> getAllSeats() {

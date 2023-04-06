@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.valtech.poc.sms.dao.SeatBookingDao;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.entities.User;
@@ -48,6 +49,9 @@ public class AdminController {
 
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	SeatBookingDao seatBookingDao;
 	
 	@Autowired
 	AttendanceService attendanceService;
@@ -197,6 +201,13 @@ public class AdminController {
 		String SeatDate = sbDate + " 00:00:00";
 		int count = adminService.getCountOfFoodOpt(SeatDate);
 		return count;
+	}
+	
+	@ResponseBody
+	@GetMapping("/test/sb/shift/{start}")
+	public List<SeatsBooked> testList(@PathVariable("start") int start,@RequestParam("date") String date) {
+//		return seatBookingDao.findSBIdByShiftTimingsAndDate(start, date);
+		return seatBookingService.getSBBySTAndDate(start, date);
 	}
 	
 }

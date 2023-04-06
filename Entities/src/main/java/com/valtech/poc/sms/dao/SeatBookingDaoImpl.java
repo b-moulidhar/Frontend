@@ -1,8 +1,11 @@
 package com.valtech.poc.sms.dao;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
@@ -20,12 +24,15 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.valtech.poc.sms.entities.Employee;
+import com.valtech.poc.sms.entities.Manager;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
+import com.valtech.poc.sms.entities.ShiftTimings;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.ManagerRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.repo.SeatsBookedRepo;
+import com.valtech.poc.sms.repo.ShiftTimingsRepo;
 
 @Component
 @ComponentScan
@@ -49,6 +56,10 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	EmployeeRepo employeeRepo;
+	
+	@Autowired
+	ShiftTimingsRepo timingsRepo;
+	
 
 	@Override
 	public List<Integer> getAllSeats() {
@@ -251,11 +262,87 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 		return availableSeats;
 	}
 	
-//	public List<SeatsBooked> findSBByShiftTimingsAndDate() { 
-//		String query = "SELECT sb. FROM seats_booked sb JOIN shift_timings stt ON sb.st_id = stt.st_id WHERE stt.st_start = ? "
+	@SuppressWarnings("deprecation")
+	@Override
+//	public List<SeatsBooked> findSBByShiftTimingsAndDate(int stStart, String date) { 
+//		String query = "SELECT * FROM seats_booked sb JOIN shift_timings stt ON sb.st_id = stt.st_id WHERE stt.st_start = ? "
 //				+ " AND DATE_FORMAT(sb.sb_date, '%Y-%m-%d') = ?";
-//		List<SeatsBooked> sb = jdbcTemplate.queryForList(query, new Object[] { }, null)
+//		List<SeatsBooked> sb = jdbcTemplate.queryForList(query, new Object[] { stStart, date }, SeatsBooked.class);
+//		return sb;
 //	}
+//	public List<SeatsBooked> findSBByShiftTimingsAndDate(int stStart, String date) {
+////	    String query = "SELECT * FROM seats_booked sb JOIN shift_timings stt ON sb.st_id = stt.st_id WHERE stt.st_start = ? AND DATE_FORMAT(sb.sb_date, '%Y-%m-%d') = ?";
+//	    String query = "SELECT sb.*,  emp.* "
+//	    		+ "FROM seats_booked sb "
+//	    		+ "JOIN employee emp ON sb.e_id = emp.e_id "
+//	    		+ "WHERE sb.st_id = ? AND DATE_FORMAT(sb.sb_date, '%Y-%m-%d') = ? ";
+//		List<SeatsBooked> sb = jdbcTemplate.query(
+//	        connection -> {
+//	            PreparedStatement ps = connection.prepareStatement(query);
+//	            ps.setInt(1, stStart);
+//	            ps.setString(2, date);
+//	            return ps;
+//	        },
+//	        new BeanPropertyRowMapper<>(SeatsBooked.class)
+//	    );
+//	    return sb;
+//	}
+
+
+	public List<SeatsBooked> findSBIdByShiftTimingsAndDate(int stStart, String date) {
+	    String query =" SELECT sb.*, st.*, seat.*, emp.*, mgr.* FROM seats_booked sb JOIN shift_timings st ON sb.st_id = st.st_id JOIN seat ON sb.s_id = seat.s_id JOIN employee emp ON sb.e_id = emp.e_id LEFT JOIN manager mgr ON emp.m_id = mgr.m_id WHERE st.st_start = ? AND DATE_FORMAT(sb.sb_date, '%Y-%m-%d') = ?";
+
+	    List<SeatsBooked> sbList = jdbcTemplate.query(query, new Object[]{stStart, date}, new ResultSetExtractor<List<SeatsBooked>>() {
+	        @Override
+	        public List<SeatsBooked> extractData(ResultSet rs) throws SQLException, DataAccessException {
+	            List<SeatsBooked> seatsBookedList = new ArrayList<>();
+	            while (rs.next()) {
+	                SeatsBooked sb = new SeatsBooked();
+	                sb.setSbId(rs.getInt("sb_id"));
+	                sb.setSbDate(rs.getTimestamp("sb_date").toLocalDateTime());
+//	                sb.setPunchIn(rs.getTimestamp("punch_in").toLocalDateTime());
+//	                sb.setPunchOut(rs.getTimestamp("punch_out").toLocalDateTime());
+	                sb.setCurrent(rs.getBoolean("current"));
+	                sb.setCode(rs.getString("code"));
+
+	                Seat seat = new Seat();
+	                seat.setsId(rs.getInt("s_id"));
+	                seat.setsName(rs.getString("s_name"));
+	                sb.setsId(seat);
+
+	                Employee emp = new Employee();
+	                emp.seteId(rs.getInt("e_id"));
+	                emp.setEmpName(rs.getString("emp_name"));
+	                emp.setPhNum(rs.getString("ph_num"));
+	                emp.setMailId(rs.getString("mail_id"));
+
+	                Manager mgr = new Manager();
+	                mgr.setmId(rs.getInt("m_id"));
+	                emp.setManagerDetails(mgr);
+
+	                sb.seteId(emp);
+	                sb.setNotifStatus(rs.getBoolean("notif_status"));
+	                sb.setVerified(rs.getBoolean("verified"));
+	                sb.setFood(rs.getBoolean("food"));
+
+	                ShiftTimings st = new ShiftTimings();
+	                st.setStId(rs.getInt("st_id"));
+	                st.setStStart(rs.getString("st_start"));
+	                st.setStEnd(rs.getString("st_end"));
+	                sb.setSt(st);
+
+	                seatsBookedList.add(sb);
+	            }
+	            return seatsBookedList;
+	        }
+	    });
+
+	    return sbList;
+	}
+
+
+
+
 
 	@Override
 	public void bookSeat(SeatsBooked seatsBooked) {

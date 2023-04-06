@@ -58,6 +58,8 @@ public interface SeatBookingDao {
 
 	List<Seat> getTopFivePopularSeats();
 
+	List<SeatsBooked> findSBIdByShiftTimingsAndDate(int stStart, String date);
+
 
 
 
