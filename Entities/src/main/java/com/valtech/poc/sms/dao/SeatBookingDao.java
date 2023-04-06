@@ -15,7 +15,7 @@ public interface SeatBookingDao {
 
 //	List<Integer> getAllSeats();
 
-	List<Integer> availableSeats();
+	List<String> availableSeats();
 
 //	List<SeatsBooked> findAllByEId(Employee emp);
 
@@ -57,6 +57,12 @@ public interface SeatBookingDao {
 	byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception;
 
 	List<Seat> getTopFivePopularSeats();
+
+	List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findBookedSeatsByDate(LocalDate date);
 
 
 

@@ -61,7 +61,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	}
 
 	@Override
-	public List<Integer> availableSeats() {
+	public List<String> availableSeats() {
 		return seatBookingDao.availableSeats();
 	}
 
@@ -95,6 +95,11 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	@Override
 	public List<Seat> findAvailableSeatsByDate(LocalDate date) {
 		return seatBookingDao.findAvailableSeatsByDate(date);
+	}
+	
+	@Override
+	public List<Seat> findBookedSeatsByDate(LocalDate date) {
+		return seatBookingDao.findBookedSeatsByDate(date);
 	}
 
 	@Override
@@ -303,7 +308,16 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	   public List<Seat> getTopFivePopularSeats() {
 	        return seatBookingDao.getTopFivePopularSeats();
 	    }
-	
+	 
+	  @Override
+	 public List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate) {
+	     return seatBookingDao.findBookedSeatsByWeek(fromDate, toDate);
+	 }
+
+	@Override
+	 public List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate) {
+	     return seatBookingDao.findAvailableSeatsByWeek(fromDate, toDate);
+	 }
 //    @Override
 //    public List<Object[]> getTopFivePopularSeats() {
 //        return seatRepo.findTopFivePopularSeats();

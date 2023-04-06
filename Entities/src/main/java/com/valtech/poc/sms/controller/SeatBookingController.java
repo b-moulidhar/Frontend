@@ -65,9 +65,9 @@ public class SeatBookingController {
 	}
 
 //        
-	@GetMapping("/bookedSeatDetails")
-	public ResponseEntity<List<Integer>> availableSeats() {
-		List<Integer> availableSeats = seatService.availableSeats();
+	@GetMapping("/availableSeatDetails")
+	public ResponseEntity<List<String>> availableSeats() {
+		List<String> availableSeats = seatService.availableSeats();
 		return ResponseEntity.ok().body(availableSeats);
 
 	}
@@ -88,18 +88,23 @@ public class SeatBookingController {
 		return ResponseEntity.ok(availableSeats);
 	}
 
+	@GetMapping("/booked/{date}")
+	public ResponseEntity<List<Seat>> getBookedSeatsByDate(
+			@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+		List<Seat> availableSeats = seatService.findBookedSeatsByDate(date);
+		if (availableSeats.isEmpty()) {
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.ok(availableSeats);
+	}
+
+	
 	@PostMapping("/create/{eId}")
 	public synchronized ResponseEntity<String> createSeatsBooked(@PathVariable("eId") int eId,
 			@RequestParam("sId") int sId,@RequestParam("stId") int stId,@RequestParam("from") String from,@RequestParam("to")String to) {
 		String stDate = from + " 00:00:00";
 		String edDate = to + " 00:00:00";
-//		LocalDate bookingDate = LocalDate.parse(from);
-//		if (holidayService.isHoliday(bookingDate)) {
-//		    return ResponseEntity.badRequest().body("Booking not allowed on holidays");
-//		}
-
-		
-		if(from.equals(to)) {
+          if(from.equals(to)) {
 			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,stId,stDate,edDate));
 		}
 	
@@ -187,6 +192,32 @@ public class SeatBookingController {
         return seatService.getTopFivePopularSeats();
     }
 
+	
+	@GetMapping("/booked/week")
+	public ResponseEntity<List<Seat>> getBookedSeatsByWeek(
+	        @RequestParam("fromDate") LocalDate fromDate,
+	        @RequestParam("toDate") LocalDate toDate) {
+
+	    List<Seat> bookedSeats = seatService.findBookedSeatsByWeek(fromDate, toDate);
+	    if (bookedSeats.isEmpty()) {
+	        return ResponseEntity.noContent().build();
+	    }
+	    return ResponseEntity.ok(bookedSeats);
+	}
+
+	
+	@GetMapping("available/week")
+	public ResponseEntity<List<Seat>> findAvailableSeatsByWeek(
+	        @RequestParam("fromDate") LocalDate fromDate,
+	        @RequestParam("toDate") LocalDate toDate) {
+
+	    List<Seat> bookedSeats = seatService.findAvailableSeatsByWeek(fromDate, toDate);
+	    if (bookedSeats.isEmpty()) {
+	        return ResponseEntity.noContent().build();
+	    }
+	    return ResponseEntity.ok(bookedSeats);
+	}
+	
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
 //			List<SeatsBooked> booking = seatService.getSeatBookingsByEId(eId);
