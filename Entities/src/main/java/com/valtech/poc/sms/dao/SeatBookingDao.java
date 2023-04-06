@@ -16,7 +16,7 @@ public interface SeatBookingDao {
 
 //	List<Integer> getAllSeats();
 
-	List<Integer> availableSeats();
+	List<String> availableSeats();
 
 //	List<SeatsBooked> findAllByEId(Employee emp);
 
@@ -45,9 +45,9 @@ public interface SeatBookingDao {
 
 	boolean canEmployeeBookSeat(int eId,int sId, LocalDate sbDate);
 
-	boolean checkIfEmployeeAlreadyBookTheSeat(int eId, int sId,LocalDateTime from, LocalDateTime to) throws DataAccessException;
+	boolean checkIfEmployeeAlreadyBookTheSeat(int eId,LocalDateTime from, LocalDateTime to) throws DataAccessException;
 
-	boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, int sId, LocalDateTime from) throws DataAccessException;
+	boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId,  LocalDateTime from) throws DataAccessException;
 
 
 	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);
@@ -57,11 +57,25 @@ public interface SeatBookingDao {
 
 	byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception;
 
+	void updatFoodCount(LocalDateTime sbDate);
+
 
 	List<Map<String, Object>> GettingDetailsOfViwPass(int eid);
 
 	List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate, LocalDateTime endDate);
 	List<Seat> getTopFivePopularSeats();
+
+
+	List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findBookedSeatsByDate(LocalDate date);
+
+	List<SeatsBooked> findSBIdByShiftTimingsAndDate(int stStart, String date);
+
+	int findIdBysName(String sname);
+
 
 
 
