@@ -76,7 +76,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 
 	/* Fetching the available seats */
 	@Override
-	public List<Integer> availableSeats() {
+	public List<String> availableSeats() {
 		return seatBookingDao.availableSeats();
 	}
 
@@ -129,6 +129,11 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	@Override
 	public List<Seat> findAvailableSeatsByDate(LocalDate date) {
 		return seatBookingDao.findAvailableSeatsByDate(date);
+	}
+	
+	@Override
+	public List<Seat> findBookedSeatsByDate(LocalDate date) {
+		return seatBookingDao.findBookedSeatsByDate(date);
 	}
 
 	/* Save the booked seat details */
@@ -307,6 +312,23 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return pdf;
 	}
 
+
+	
+	 @Override
+	   public List<Seat> getTopFivePopularSeats() {
+	        return seatBookingDao.getTopFivePopularSeats();
+	    }
+	 
+	  @Override
+	 public List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate) {
+	     return seatBookingDao.findBookedSeatsByWeek(fromDate, toDate);
+	 }
+
+	@Override
+	 public List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate) {
+	     return seatBookingDao.findAvailableSeatsByWeek(fromDate, toDate);
+	 }
+
 	/* Generating the employee report in the pdf format */
 	@Override
 	public byte[] generateSeatsBookedByEmployeeReportPDF(int empId, LocalDateTime startDate, LocalDateTime endDate)
@@ -335,10 +357,6 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	}
 
 	/* Listing the top 5 popular seats */
-	@Override
-	public List<Seat> getTopFivePopularSeats() {
-		return seatBookingDao.getTopFivePopularSeats();
-	}
 
 	/* Providing seat details to the employee */
 	@Override
@@ -350,6 +368,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 				+ sb.getSt().getStEnd() + " shift";
 		return notification;
 	}
+
 
 //    @Override
 //    public List<Object[]> getTopFivePopularSeats() {

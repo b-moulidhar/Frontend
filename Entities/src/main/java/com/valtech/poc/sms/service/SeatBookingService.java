@@ -15,7 +15,7 @@ public interface SeatBookingService {
 
 	// List<Seat> findAvailableSeats();
 
-	List<Integer> availableSeats();
+	List<String> availableSeats();
 //
 //	int totalSeats();
 
@@ -86,6 +86,12 @@ public interface SeatBookingService {
 //	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId, LocalDateTime fromDateTime);
 
 	List<SeatsBooked> getSBBySTAndDate(int start, String date);
+
+	List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findBookedSeatsByDate(LocalDate date);
 
 	// void updateNotifStatus(int sbId, Connection connection);
 

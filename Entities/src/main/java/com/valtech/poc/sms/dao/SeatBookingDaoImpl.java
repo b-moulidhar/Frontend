@@ -97,16 +97,17 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 // retreiving seat booking details where current = 1
 
 	@Override
-	public List<Integer> availableSeats() {
+	public List<String> availableSeats() {
 		String query = "SELECT sb.sb_id, s.s_name " + "FROM seats_booked sb " + "INNER JOIN seat s ON sb.s_id = s.s_id "
-				+ "WHERE current = 1";
+				+ "WHERE current = 0";
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
-		List<Integer> availableSeats = new ArrayList<>();
+		List<String> availableSeats = new ArrayList<>();
 		for (Map<String, Object> row : rows) {
 			Integer sbId = (Integer) row.get("sb_id");
 			String sName = (String) row.get("s_name");
 			System.out.println("Seat ID: " + sbId + ", Seat Name: " + sName);
-			availableSeats.add(sbId);
+			availableSeats.add(sName);
+			
 
 		}
 		return availableSeats;
@@ -388,6 +389,16 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
+	public List<Seat> findBookedSeatsByDate(LocalDate date) {
+		String query = "SELECT s.s_id, s.s_name " + "FROM seat s " + "WHERE s.s_id  IN ( " + "   SELECT sb.s_id "
+				+ "   FROM seats_booked sb " + "   WHERE DATE(sb.sb_date) = ? AND sb.current = true" + ")";
+		List<Seat> availableSeats = jdbcTemplate.query(query, new Object[] { date },
+				new BeanPropertyRowMapper<>(Seat.class));
+		return availableSeats;
+	}
+
+	
+	@Override
 	public void bookSeat(SeatsBooked seatsBooked) {
 		String sql = "INSERT INTO seats_booked (sb_id, sb_date, punch_in, punch_out, current, code, s_id, e_id) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -561,6 +572,41 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 		return pdfBytes;
 	}
 
+
+	
+	@Override
+	public List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate) {
+	    String query = "SELECT s.s_id, s.s_name "
+	                 + "FROM seat s "
+	                 + "WHERE s.s_id IN ( "
+	                 + "   SELECT sb.s_id "
+	                 + "   FROM seats_booked sb "
+	                 + "   WHERE DATE(sb.sb_date) BETWEEN ? AND ?"
+	                 + "       AND sb.current = true"
+	                 + ")";
+	    List<Seat> bookedSeats = jdbcTemplate.query(query, new Object[] { fromDate, toDate },
+	            new BeanPropertyRowMapper<>(Seat.class));
+	    return bookedSeats;
+	}
+
+	
+	@Override
+	public List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate) {
+	    String query = "SELECT s.s_id, s.s_name "
+	                 + "FROM seat s "
+	                 + "WHERE s.s_id NOT IN ( "
+	                 + "   SELECT sb.s_id "
+	                 + "   FROM seats_booked sb "
+	                 + "   WHERE DATE(sb.sb_date) BETWEEN ? AND ?"
+	                 + "       AND sb.current = true"
+	                 + ")";
+	    List<Seat> bookedSeats = jdbcTemplate.query(query, new Object[] { fromDate, toDate },
+	            new BeanPropertyRowMapper<>(Seat.class));
+	    return bookedSeats;
+	}
+	
+	
+
 	@Override
 	public void updatFoodCount(LocalDateTime sbDate) {
 		String selectSql = "SELECT COUNT(*) FROM food WHERE ft_date = ?";
@@ -585,6 +631,7 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 		List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, eid);
 		return results;
 	}
+
 
 //	
 //	    @Override
