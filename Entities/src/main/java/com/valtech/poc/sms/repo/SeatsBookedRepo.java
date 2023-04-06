@@ -18,7 +18,7 @@ public interface SeatsBookedRepo extends JpaRepository<SeatsBooked, Integer>{
 	@Transactional
     @Modifying
     
-	List<SeatsBooked> findAllByeId(Employee emp);
+	List<SeatsBooked> findAllByeIdAndCurrentTrue(Employee emp);
 
 	   // @Query("UPDATE seats_booked sb SET sb.notifStatus = ? WHERE sb.sbId = ?")
 	    //void notifStatus( @PathVariable("sbId") int sbId);
@@ -29,6 +29,8 @@ public interface SeatsBookedRepo extends JpaRepository<SeatsBooked, Integer>{
 //             "ORDER BY popular_seats DESC " +
 //             "LIMIT 5")
 //         List<Object[]> findTopFivePopularSeats();
+	
+	SeatsBooked findByeId(Employee eId);
 	     }
 
 	

@@ -1,6 +1,7 @@
 package com.valtech.poc.sms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public List<Employee> getAllEmployeesUnderTheManager(int eId) {
+	public List<Map<String, Object>> getAllEmployeesUnderTheManager(int eId) {
 		return employeeDAO.getAllEmployeesUnderTheManager(eId);
 	}
 

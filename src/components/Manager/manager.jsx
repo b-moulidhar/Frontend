@@ -1,6 +1,8 @@
 import Sidebar from "../Sidebar/sidebar";
 import './manager.css';
 import { useParams } from "react-router";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 
 function Manager(){
@@ -9,7 +11,7 @@ function Manager(){
     let id=useParams()
 
     useEffect(()=>{
-        //axios.get("http://10.191.80.104:7001/seats/total")
+    
         axios.get(`http://10.191.80.104:7001/attendanceApprovalList/${id}`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -24,7 +26,7 @@ function Manager(){
         .catch(err => console.log("Error ", err))
     },[])
 
-    function approve(atid){
+    const approve = (atid) => {
         axios.put(`http://10.191.80.104:7001/attendanceApproval/${atid}`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -34,15 +36,15 @@ function Manager(){
         })
         .then(response => {
             console.log(response.data);
-            // window.location.reload();
+            window.location.reload();
         })
         .catch(error => {
             console.error(error);
         });
     }
-    function disapprove(atid){
-        alert(atid)
-        axios.put(`http://10.191.80.104:7001/disapproveAttendance/${atid}`, {}, {
+
+    const disapprove = (atid) => {
+        axios.delete(`http://10.191.80.104:7001/disapproveAttendance/${atid}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role": localStorage.getItem("role"),
@@ -51,21 +53,12 @@ function Manager(){
         })
         .then(response => {
             console.log(response.data);
-            // window.location.reload();
+            window.location.reload();
         })
         .catch(error => {
             console.error(error);
         });
     }
-    
-    // useEffect(()=>{
-    //     axios.get("https://example.com/employees")
-    //     .then((response) => {
-    //         setEmployees(response.data)
-    //     })
-    //     .catch(err => console.log("Error ", err))
-    // },[])
-
     
 
     return(
@@ -90,14 +83,7 @@ function Manager(){
             </tr>
         </thead>
         <tbody>
-            {/* <tr> */}
-            {/* <th scope="row">1</th>
-            <td>Mark</td>
-            <td>12</td>
-            <td>22</td>
-            <td>09:00am</td>
-            <td>18:00pm</td>
-    // </tr>   } */}
+         
             {managerEmp.map((emp,idx)=>(
                 <tr key={idx}>
                     <th scope="row">{emp.atid}</th>

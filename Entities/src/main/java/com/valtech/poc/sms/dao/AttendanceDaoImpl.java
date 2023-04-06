@@ -91,7 +91,7 @@ String query="select *from attendance_table a JOIN employee e ON a.e_id = e.e_id
 
 	@Override
 	public List<Map<String, Object>> getAttendanceListForApproval(int eId) {
-String query="SELECT * FROM attendance_table WHERE approval = ? AND e_id IN ( SELECT e_id FROM employee  WHERE m_id = (SELECT m_id  FROM manager  WHERE e_id = ?))";
+String query="SELECT at_id,start_date,end_date,shift_start,shift_end,e_id FROM attendance_table WHERE approval = ? AND e_id IN ( SELECT e_id FROM employee  WHERE m_id = (SELECT m_id  FROM manager  WHERE e_id = ?))";
 		
     	List<Map<String, Object>> result = jdbcTemplate.queryForList(query, false,eId);
 		return result;

@@ -1,11 +1,9 @@
 package com.valtech.poc.sms.service;
 
-import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import org.hibernate.service.spi.ServiceException;
+import java.util.Map;
 
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
@@ -62,16 +60,32 @@ public interface SeatBookingService {
 
 	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
 
+	boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+
+	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime);
+
+	List<Map<String, Object>> GettingDetailsOfViwPass(int eid);
+
+	byte[] generateSeatsBookedByEmployeeReportPDF(int empId, LocalDateTime startDate, LocalDateTime endDate)
+			throws Exception;
+
+	List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate, LocalDateTime endDate);
+
+	byte[] generateSeatsBookedByShiftReportPDF(int stId, LocalDateTime startDate, LocalDateTime endDate)
+			throws Exception;
 
 	List<Seat> getTopFivePopularSeats();
 
-	//List<Object[]> getTopFivePopularSeats();
+	String notificationAboutSeat(int eId);
 
+	// List<Object[]> getTopFivePopularSeats();
 
-	boolean checkIftheSeatIsCurrentlyBooked(int eId, int sId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+//	boolean checkIftheSeatIsCurrentlyBooked(int eId, int sId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+//
+//
+//	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId, LocalDateTime fromDateTime);
 
-
-	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId, LocalDateTime fromDateTime);
+	List<SeatsBooked> getSBBySTAndDate(int start, String date);
 
 	List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate);
 

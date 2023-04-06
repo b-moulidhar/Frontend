@@ -1,6 +1,7 @@
 package com.valtech.poc.sms.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.valtech.poc.sms.entities.Employee;
 
@@ -10,6 +11,6 @@ public interface EmployeeDAO {
 
 	List<Employee> getAllEmployees(int empID);
 
-	List<Employee> getAllEmployeesUnderTheManager(int eId);
+	List<Map<String, Object>> getAllEmployeesUnderTheManager(int eId);
 
 }
