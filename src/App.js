@@ -22,7 +22,7 @@ import { useEffect, useState } from 'react';
 import FirstFloor from './components/layouts/firstFloor';
 import SecondFloor from './components/layouts/secondFloor';
 import ThirdFloor from './components/layouts/thirdFloor';
-import Manager from './components/Manager/manager';
+
 
 
 
@@ -56,16 +56,16 @@ function App() {
     <Route path="/forget/reset/:email" element={<Reset/>}/>    
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
     <Route path="/admin/:id" element={<AdminDashboard/>}/> 
-    <Route path="/admin" element={<AdminDashboard/>}/>    
+  
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
-    <Route path="/admin" element={<AdminDashboard/>}/>
+ 
     <Route path="/navbar" element={<Navbar/>}/>    
     <Route path="/profile/:id" element={<Profile/>}/>    
      {/* <Route path="/sidebar" element={<Sidebar/>}/>      */}
     <Route path="/notify" element={<Notify/>}/>    
     <Route path="/manager/:id" element={<Manager/>}/>    
     <Route path="/floorLIst" element={<FloorList/>}/>    
-    <Route path="/viewpass" element={<ViewPass/>}/>    
+    <Route path="/viewpass/:id" element={<ViewPass/>}/>    
     <Route path="/bookseat/:id" element={<BookSeat/>}/>    
     <Route path="/qrscanner" element={<QrCodeScan/>}/>    
     <Route path="/qrgenerator" element={<QrCodeGen/>}/>    

@@ -32,7 +32,8 @@ import com.valtech.poc.sms.service.SeatBookingService;
 import com.valtech.poc.sms.service.UserService;
 
 @Controller
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+		RequestMethod.DELETE })
 public class AdminController {
 
 	@Autowired
@@ -49,10 +50,10 @@ public class AdminController {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
 	@Autowired
 	SeatBookingDao seatBookingDao;
-	
+
 	@Autowired
 	AttendanceService attendanceService;
 
@@ -99,7 +100,7 @@ public class AdminController {
 		System.out.println(code);
 		return code;
 	}
-	
+
 	@ResponseBody
 	@PostMapping("/qr/verification/{eId}")
 	public boolean verifyQrCode(@PathVariable("eId") int eId, @RequestParam("code") String code) {
@@ -115,13 +116,6 @@ public class AdminController {
 		String qrCodeKey = adminService.generateQrCode(empId);// this generates new code everytime (for test purpose
 																// only)
 		return qrCodeKey;
-	}
-
-	@ResponseBody
-	@GetMapping("/foodCountWithJpa/{ftDate}")
-	public int getCountByFtdate(@PathVariable("ftDate") String ftDate) {
-		String foodDate = ftDate + " 00:00:00";
-		return adminService.getCount(foodDate);
 	}
 
 	@ResponseBody
@@ -180,34 +174,40 @@ public class AdminController {
 
 	}
 
-	
 	@ResponseBody
 	@GetMapping("/registrationApprovalList")
 	public List<Map<String, Object>> getRegistrationListForApproval() {
 		logger.info("fetching the list of Approval Request");
 		return adminService.getRegistrationListForApproval();
 	}
-		
+
 	@ResponseBody
 	@GetMapping("/profileDetailsAdmin/{admnId}")
-    public Employee getAdminById(@PathVariable int eId) {
-        return employeeService.getEmployeeByeId(eId);
-    }
-	
-	
+	public Employee getAdminById(@PathVariable int eId) {
+		return employeeService.getEmployeeByeId(eId);
+	}
+
 	@ResponseBody
 	@GetMapping("/foodCountBasedOnDates")
-	public int getCountByDate(@RequestParam("sbDate")String sbDate) {
+	public int getCountByDate(@RequestParam("sbDate") String sbDate) {
 		String SeatDate = sbDate + " 00:00:00";
 		int count = adminService.getCountOfFoodOpt(SeatDate);
 		return count;
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/test/sb/shift/{start}")
-	public List<SeatsBooked> testList(@PathVariable("start") int start,@RequestParam("date") String date) {
+	public List<SeatsBooked> testList(@PathVariable("start") int start, @RequestParam("date") String date) {
 //		return seatBookingDao.findSBIdByShiftTimingsAndDate(start, date);
 		return seatBookingService.getSBBySTAndDate(start, date);
 	}
-	
+
+	@ResponseBody
+	@GetMapping("/foodCountBasedOnDates/{sbDate}")
+	public int getCountByDates(@PathVariable("sbDate") String sbDate) {
+		String SeatDate = sbDate + " 00:00:00";
+		int count = adminService.getCountOfFoodOpt(SeatDate);
+		return count;
+	}
+
 }

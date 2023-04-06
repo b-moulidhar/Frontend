@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +18,13 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.valtech.poc.sms.entities.Employee;
@@ -28,23 +32,27 @@ import com.valtech.poc.sms.entities.Manager;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.entities.ShiftTimings;
+import com.valtech.poc.sms.entities.User;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.ManagerRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.repo.SeatsBookedRepo;
 import com.valtech.poc.sms.repo.ShiftTimingsRepo;
+import com.valtech.poc.sms.repo.UserRepo;
+import com.valtech.poc.sms.service.EmployeeService;
+import com.valtech.poc.sms.service.ShiftTimingsService;
 
 @Component
 @ComponentScan
 
-public  class SeatBookingDaoImpl implements SeatBookingDao {
+public class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	SeatRepo seatRepo;
-	
+
 	@Autowired
 	SeatsBookedRepo seatsBookedRepo;
 
@@ -56,10 +64,20 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Autowired
 	EmployeeRepo employeeRepo;
-	
+
 	@Autowired
 	ShiftTimingsRepo timingsRepo;
-	
+
+	UserRepo userRepo;
+
+	@Autowired
+	EmployeeService employeeService;
+
+	@Autowired
+	private ShiftTimingsService shiftTimingsService;
+
+	@Autowired
+	private ShiftTimingsRepo shiftTimingsRepo;
 
 	@Override
 	public List<Integer> getAllSeats() {
@@ -164,16 +182,18 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	public List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate) {
 		String query = "SELECT * FROM seats_booked WHERE sb_date >= ? AND sb_date <= ?";
 		List<SeatsBooked> seatsBooked = new ArrayList<>();
-
 		jdbcTemplate.query(query, new Object[] { startDate, endDate }, resultSet -> {
 			SeatsBooked sb = new SeatsBooked();
 			sb.setSbId(resultSet.getInt("sb_id"));
 			sb.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
 			sb.setPunchIn(resultSet.getObject("punch_in", LocalDateTime.class));
-            sb.setPunchOut(resultSet.getObject("punch_out", LocalDateTime.class));
-            sb.setCode(resultSet.getString("code"));
+			sb.setPunchOut(resultSet.getObject("punch_out", LocalDateTime.class));
+			sb.setCurrent(resultSet.getBoolean("current"));
+			sb.setCode(resultSet.getString("code"));
+			sb.setFood(resultSet.getBoolean("food"));
 			sb.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
 			sb.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
+			sb.setSt(shiftTimingsRepo.findById(resultSet.getInt("st_id")).orElse(null));
 
 			seatsBooked.add(sb);
 		});
@@ -184,7 +204,7 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	@Override
 	public List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate,
 			LocalDateTime endDate) {
-		String query = "SELECT * FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ?";
+		String query = "SELECT sb.* FROM seats_booked sb JOIN employee e ON sb.e_id = e.e_id JOIN user u ON e.e_id = u.e_id WHERE u.emp_id = ? AND sb.sb_date BETWEEN ? AND ?";
 		List<SeatsBooked> seatsBooked = new ArrayList<>();
 
 		jdbcTemplate.query(query, new Object[] { empId, startDate, endDate }, resultSet -> {
@@ -192,10 +212,13 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 			sb.setSbId(resultSet.getInt("sb_id"));
 			sb.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
 			sb.setPunchIn(resultSet.getObject("punch_in", LocalDateTime.class));
-            sb.setPunchOut(resultSet.getObject("punch_out", LocalDateTime.class));
-            sb.setCode(resultSet.getString("code"));
+			sb.setPunchOut(resultSet.getObject("punch_out", LocalDateTime.class));
+			sb.setCurrent(resultSet.getBoolean("current"));
+			sb.setCode(resultSet.getString("code"));
+			sb.setFood(resultSet.getBoolean("food"));
 			sb.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
 			sb.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
+			sb.setSt(shiftTimingsRepo.findById(resultSet.getInt("st_id")).orElse(null));
 
 			seatsBooked.add(sb);
 		});
@@ -205,11 +228,35 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
+	public List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate,
+			LocalDateTime endDate) {
+		String sql = "SELECT * FROM seats_booked WHERE st_id = ? AND sb_date >= ? AND sb_date <= ?";
+		List<SeatsBooked> seatsBookedList = new ArrayList<>();
+		jdbcTemplate.query(sql, new Object[] { stId, startDate, endDate }, (resultSet, i) -> {
+			SeatsBooked seatsBooked = new SeatsBooked();
+			seatsBooked.setSbId(resultSet.getInt("sb_id"));
+			seatsBooked.setSbDate(resultSet.getObject("sb_date", LocalDateTime.class));
+			seatsBooked.setPunchIn(resultSet.getObject("punch_in", LocalDateTime.class));
+			seatsBooked.setPunchOut(resultSet.getObject("punch_out", LocalDateTime.class));
+			seatsBooked.setCurrent(resultSet.getBoolean("current"));
+			seatsBooked.setCode(resultSet.getString("code"));
+			seatsBooked.setFood(resultSet.getBoolean("food"));
+			seatsBooked.setsId(seatRepo.findById(resultSet.getInt("s_id")).get());
+			seatsBooked.seteId(employeeRepo.findById(resultSet.getInt("e_id")).get());
+			seatsBooked.setSt(shiftTimingsRepo.findById(resultSet.getInt("st_id")).orElse(null));
+			seatsBookedList.add(seatsBooked);
+			return seatsBooked;
+		});
+		return seatsBookedList;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
 	public List<SeatsBooked> findCurrentSeat(Employee emp) {
 		int empId = emp.geteId();
 		System.out.println(empId);
 		System.out.println(emp.getEmpName());
-		List<SeatsBooked> sb1= seatsBookedRepo.findAllByeIdAndCurrentTrue(emp);
+		List<SeatsBooked> sb1 = seatsBookedRepo.findAllByeIdAndCurrentTrue(emp);
 //		SeatsBooked sb = seatsBookedRepo.findByeId(emp);
 //		System.out.println(sb1);
 //		System.out.println(sb);
@@ -261,7 +308,7 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 				new BeanPropertyRowMapper<>(Seat.class));
 		return availableSeats;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 //	public List<SeatsBooked> findSBByShiftTimingsAndDate(int stStart, String date) { 
@@ -288,61 +335,57 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 //	    return sb;
 //	}
 
-
 	public List<SeatsBooked> findSBIdByShiftTimingsAndDate(int stStart, String date) {
-	    String query =" SELECT sb.*, st.*, seat.*, emp.*, mgr.* FROM seats_booked sb JOIN shift_timings st ON sb.st_id = st.st_id JOIN seat ON sb.s_id = seat.s_id JOIN employee emp ON sb.e_id = emp.e_id LEFT JOIN manager mgr ON emp.m_id = mgr.m_id WHERE st.st_start = ? AND DATE_FORMAT(sb.sb_date, '%Y-%m-%d') = ?";
+		String query = " SELECT sb.*, st.*, seat.*, emp.*, mgr.* FROM seats_booked sb JOIN shift_timings st ON sb.st_id = st.st_id JOIN seat ON sb.s_id = seat.s_id JOIN employee emp ON sb.e_id = emp.e_id LEFT JOIN manager mgr ON emp.m_id = mgr.m_id WHERE st.st_start = ? AND DATE_FORMAT(sb.sb_date, '%Y-%m-%d') = ?";
 
-	    List<SeatsBooked> sbList = jdbcTemplate.query(query, new Object[]{stStart, date}, new ResultSetExtractor<List<SeatsBooked>>() {
-	        @Override
-	        public List<SeatsBooked> extractData(ResultSet rs) throws SQLException, DataAccessException {
-	            List<SeatsBooked> seatsBookedList = new ArrayList<>();
-	            while (rs.next()) {
-	                SeatsBooked sb = new SeatsBooked();
-	                sb.setSbId(rs.getInt("sb_id"));
-	                sb.setSbDate(rs.getTimestamp("sb_date").toLocalDateTime());
+		List<SeatsBooked> sbList = jdbcTemplate.query(query, new Object[] { stStart, date },
+				new ResultSetExtractor<List<SeatsBooked>>() {
+					@Override
+					public List<SeatsBooked> extractData(ResultSet rs) throws SQLException, DataAccessException {
+						List<SeatsBooked> seatsBookedList = new ArrayList<>();
+						while (rs.next()) {
+							SeatsBooked sb = new SeatsBooked();
+							sb.setSbId(rs.getInt("sb_id"));
+							sb.setSbDate(rs.getTimestamp("sb_date").toLocalDateTime());
 //	                sb.setPunchIn(rs.getTimestamp("punch_in").toLocalDateTime());
 //	                sb.setPunchOut(rs.getTimestamp("punch_out").toLocalDateTime());
-	                sb.setCurrent(rs.getBoolean("current"));
-	                sb.setCode(rs.getString("code"));
+							sb.setCurrent(rs.getBoolean("current"));
+							sb.setCode(rs.getString("code"));
 
-	                Seat seat = new Seat();
-	                seat.setsId(rs.getInt("s_id"));
-	                seat.setsName(rs.getString("s_name"));
-	                sb.setsId(seat);
+							Seat seat = new Seat();
+							seat.setsId(rs.getInt("s_id"));
+							seat.setsName(rs.getString("s_name"));
+							sb.setsId(seat);
 
-	                Employee emp = new Employee();
-	                emp.seteId(rs.getInt("e_id"));
-	                emp.setEmpName(rs.getString("emp_name"));
-	                emp.setPhNum(rs.getString("ph_num"));
-	                emp.setMailId(rs.getString("mail_id"));
+							Employee emp = new Employee();
+							emp.seteId(rs.getInt("e_id"));
+							emp.setEmpName(rs.getString("emp_name"));
+							emp.setPhNum(rs.getString("ph_num"));
+							emp.setMailId(rs.getString("mail_id"));
 
-	                Manager mgr = new Manager();
-	                mgr.setmId(rs.getInt("m_id"));
-	                emp.setManagerDetails(mgr);
+							Manager mgr = new Manager();
+							mgr.setmId(rs.getInt("m_id"));
+							emp.setManagerDetails(mgr);
 
-	                sb.seteId(emp);
-	                sb.setNotifStatus(rs.getBoolean("notif_status"));
-	                sb.setVerified(rs.getBoolean("verified"));
-	                sb.setFood(rs.getBoolean("food"));
+							sb.seteId(emp);
+							sb.setNotifStatus(rs.getBoolean("notif_status"));
+							sb.setVerified(rs.getBoolean("verified"));
+							sb.setFood(rs.getBoolean("food"));
 
-	                ShiftTimings st = new ShiftTimings();
-	                st.setStId(rs.getInt("st_id"));
-	                st.setStStart(rs.getString("st_start"));
-	                st.setStEnd(rs.getString("st_end"));
-	                sb.setSt(st);
+							ShiftTimings st = new ShiftTimings();
+							st.setStId(rs.getInt("st_id"));
+							st.setStStart(rs.getString("st_start"));
+							st.setStEnd(rs.getString("st_end"));
+							sb.setSt(st);
 
-	                seatsBookedList.add(sb);
-	            }
-	            return seatsBookedList;
-	        }
-	    });
+							seatsBookedList.add(sb);
+						}
+						return seatsBookedList;
+					}
+				});
 
-	    return sbList;
+		return sbList;
 	}
-
-
-
-
 
 	@Override
 	public void bookSeat(SeatsBooked seatsBooked) {
@@ -358,16 +401,13 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
-	public boolean checkIfEmployeeAlreadyBookTheSeat(int eId, int sId,LocalDateTime from, LocalDateTime to)
+	public boolean checkIfEmployeeAlreadyBookTheSeat(int eId, LocalDateTime from, LocalDateTime to)
 			throws DataAccessException {
-		
-		   String sql = "SELECT COUNT(*) \r\n"
-		    		+ "FROM seats_booked\r\n"
-		    		+ "WHERE (e_id = ? AND s_id = ? AND sb_date BETWEEN ? AND ?)\r\n"
-		    		+ "   OR (e_id != ? AND s_id = ? AND sb_date BETWEEN ? AND ?);";
-		try {
-			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { sId,from,to,eId,sId ,from, to,eId }, Integer.class);
 
+		String sql = "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ? AND current = true";
+
+		try {
+			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { eId, from, to }, Integer.class);
 			if (cnt > 0)
 				return true;
 			return false;
@@ -375,32 +415,24 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 			return false;
 		}
 	}
-	
-	
+
 	@Override
-	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, int sId, LocalDateTime from) throws DataAccessException {
-	    String sql = "SELECT COUNT(*) \r\n"
-	    		+ "FROM seats_booked\r\n"
-	    		+ "WHERE (e_id = ? AND s_id = ? AND sb_date =?)\r\n"
-	    		+ "   OR (e_id != ? AND s_id = ? AND sb_date = ?);";
+	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, LocalDateTime from) throws DataAccessException {
+		String sql = "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=from AND current = true";
 
-	    try {
-	        int cnt = jdbcTemplate.queryForObject(sql, new Object[]{eId,sId, from,eId, sId, from}, Integer.class);
-
-	        if(cnt>0)
-	        	return true;
-	        return false;
-	    } catch (DataAccessException e) {
-	        throw e;
-	    }
+		try {
+			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { eId, from }, Integer.class);
+			if (cnt > 0)
+				return true;
+			return false;
+		} catch (DataAccessException e) {
+			throw e;
+		}
 	}
-	
-
-	
 
 	@Override
 	public boolean checkIfTheSameSeatBookingRecurring(int eId) throws DataAccessException {
-		
+
 		String sql = "SELECT COUNT(*) As bookings FROM seat s INNER JOIN seats_booked sb ON s.s_id = sb.s_id INNER JOIN employee e ON sb.e_id = e.e_id WHERE e.e_id=? GROUP BY s.s_id, s.s_name, e.emp_name HAVING COUNT(*) >= 1 ORDER BY bookings DESC;";
 		try {
 			@SuppressWarnings("deprecation")
@@ -428,25 +460,19 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 			return false;
 		}
 	}
-	
-	
+
 	@Override
-    public List<Seat> getTopFivePopularSeats() {
-        String query = "SELECT s.* " +
-                       "FROM seats_booked sb " +
-                       "INNER JOIN seat s ON s.s_id = sb.s_id " +
-                       "GROUP BY s.s_id " +
-                       "ORDER BY COUNT(*) DESC " +
-                       "LIMIT 5";
-        List<Seat> seats = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Seat.class));
-        return seats;
-    }
-	
+	public List<Seat> getTopFivePopularSeats() {
+		String query = "SELECT s.* " + "FROM seats_booked sb " + "INNER JOIN seat s ON s.s_id = sb.s_id "
+				+ "GROUP BY s.s_id " + "ORDER BY COUNT(*) DESC " + "LIMIT 5";
+		List<Seat> seats = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Seat.class));
+		return seats;
+	}
 
 	@Override
 	public byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception {
 		// Create a new PDF document
-		Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+		Document document = new Document(new Rectangle(612, 792), 50, 50, 50, 50);
 
 		// Create a byte array output stream to write the document to a byte array
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -457,71 +483,74 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 		// Open the document
 		document.open();
 
-		// Add a title and some text to the document
-		document.addTitle("Seats Booked Report");
-		document.add(new Paragraph("Seats Booked Report"));
+		Paragraph title = new Paragraph("Seats Booked Report", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16));
+		title.setAlignment(Element.ALIGN_CENTER);
+		document.add(title);
 
-		// Add a table to the document to display the data
-		PdfPTable table = new PdfPTable(9);
-		table.addCell("ID");
-		table.addCell("Date");
-		table.addCell("Current");
-		table.addCell("Punch In");
-		table.addCell("Punch Out");
-		table.addCell("Code");
-		table.addCell("Seat");
-		table.addCell("Employee");
-		table.addCell("Email Notification");
+		// Add some space between the title and the table
+		document.add(new Paragraph("\n"));
+		PdfPTable table = new PdfPTable(12);
+		table.setWidthPercentage(100);
+
+		float[] columnWidths = { 1f, 1.2f, 1f, 1.5f, 1.5f, 1.5f, 1f, 1f, 1f, 1.5f, 1.5f, 1f };
+		table.setWidths(columnWidths);
+
+		Font font = FontFactory.getFont(FontFactory.HELVETICA, 10);
+
+		table.addCell(new PdfPCell(new Phrase("ID", font)));
+		table.addCell(new PdfPCell(new Phrase("Date", font)));
+		table.addCell(new PdfPCell(new Phrase("Current", font)));
+		table.addCell(new PdfPCell(new Phrase("Punch In", font)));
+		table.addCell(new PdfPCell(new Phrase("Punch Out", font)));
+		table.addCell(new PdfPCell(new Phrase("Code", font)));
+		table.addCell(new PdfPCell(new Phrase("Seat", font)));
+		table.addCell(new PdfPCell(new Phrase("Shift Start", font)));
+		table.addCell(new PdfPCell(new Phrase("Shift End", font)));
+		table.addCell(new PdfPCell(new Phrase("Employee ID", font)));
+		table.addCell(new PdfPCell(new Phrase("Employee Name", font)));
+		table.addCell(new PdfPCell(new Phrase("Food Opted", font)));
+
 		for (SeatsBooked sb : seatsBooked) {
-			table.addCell(String.valueOf(sb.getSbId()));
-			table.addCell(sb.getSbDate().toString());
-			table.addCell(String.valueOf(sb.isCurrent()));
-			// Add the "Punch In" cell
-			System.out.println("Code: " + sb.getCode());
-
-			if (sb.getPunchIn() != null) {
-	            table.addCell(sb.getPunchIn().toString());
-	        } else {
-	            table.addCell("");
-	        }
-	        if (sb.getPunchOut() != null) {
-	            table.addCell(sb.getPunchOut().toString());
-	        } else {
-	            table.addCell("");
-	        }
-	        if(sb.getCode()!= null) {
-	        	table.addCell(sb.getCode().toString());
-	        }else {
-	        	table.addCell("");
-	        }
-
-
-
-			table.addCell(sb.getsId().getsName());
-			table.addCell(sb.geteId().getEmpName());
-			table.addCell(String.valueOf(sb.isNotifStatus()));
+			table.addCell(new PdfPCell(new Phrase(String.valueOf(sb.getSbId()), font)));
+			table.addCell(new PdfPCell(new Phrase(sb.getSbDate().toString(), font)));
+			table.addCell(new PdfPCell(new Phrase(String.valueOf(sb.isCurrent()), font)));
+			table.addCell(new PdfPCell(new Phrase(sb.getPunchIn() != null ? sb.getPunchIn().toString() : "", font)));
+			table.addCell(new PdfPCell(new Phrase(sb.getPunchOut() != null ? sb.getPunchOut().toString() : "", font)));
+			table.addCell(new PdfPCell(new Phrase(sb.getCode() != null ? sb.getCode().toString() : "", font)));
+			table.addCell(new PdfPCell(new Phrase(sb.getsId().getsName(), font)));
+			table.addCell(new PdfPCell(new Phrase(sb.getSt().getStStart(), font)));
+			table.addCell(new PdfPCell(new Phrase(sb.getSt().getStEnd(), font)));
+			Employee emp = sb.geteId();
+			User user = userRepo.findByEmpDetails(emp);
+			if (emp != null) {
+				table.addCell(new PdfPCell(new Phrase(String.valueOf(user.getEmpId()), font)));
+			} else {
+				table.addCell(new PdfPCell(new Phrase("", font)));
+			}
+			table.addCell(new PdfPCell(new Phrase(sb.geteId().getEmpName(), font)));
+			table.addCell(new PdfPCell(new Phrase(String.valueOf(sb.isFood()), font)));
 		}
 
 		document.add(table);
 
 		// Add a title and some text to the document
-		document.add(new Paragraph("Employees"));
-
-		// Add a table to the document to display the data
-		PdfPTable empTable = new PdfPTable(4);
-		empTable.addCell("ID");
-		empTable.addCell("Name");
-		empTable.addCell("Phone Number");
-		empTable.addCell("Email");
-
-		for (SeatsBooked sb : seatsBooked) {
-			empTable.addCell(String.valueOf(sb.geteId().geteId()));
-			empTable.addCell(sb.geteId().getEmpName());
-			empTable.addCell(sb.geteId().getPhNum());
-			empTable.addCell(sb.geteId().getMailId());
-		}
-
-		document.add(empTable);
+//	    document.add(new Paragraph("Employees"));
+//
+//	    // Add a table to the document to display the data
+//	    PdfPTable empTable = new PdfPTable(4);
+//	    empTable.addCell("ID");
+//	    empTable.addCell("Name");
+//	    empTable.addCell("Phone Number");
+//	    empTable.addCell("Email");
+//
+//	    for (SeatsBooked sb : seatsBooked) {
+//	        empTable.addCell(String.valueOf(sb.geteId().geteId()));
+//	        empTable.addCell(sb.geteId().getEmpName());
+//	        empTable.addCell(sb.geteId().getPhNum());
+//	        empTable.addCell(sb.geteId().getMailId());
+//	    }
+//
+//	    document.add(empTable);
 
 		// Close the document
 		document.close();
@@ -530,6 +559,31 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 		byte[] pdfBytes = byteArrayOutputStream.toByteArray();
 
 		return pdfBytes;
+	}
+
+	@Override
+	public void updatFoodCount(LocalDateTime sbDate) {
+		String selectSql = "SELECT COUNT(*) FROM food WHERE ft_date = ?";
+		Integer count = jdbcTemplate.queryForObject(selectSql, new Object[] { sbDate }, Integer.class);
+		String query = "SELECT MAX(ft_id) FROM food";
+		Integer lastId = jdbcTemplate.queryForObject(query, Integer.class);
+		if (lastId == null) {
+			lastId = 1;
+		}
+
+		if (count == 0) {
+			String insertSql = "INSERT INTO food (ft_id,ft_date,count) VALUES (?,?,?)";
+			jdbcTemplate.update(insertSql, lastId + 1, sbDate, count);
+		}
+
+		String sql = "UPDATE food SET count = count+1 WHERE ft_date = ?";
+		jdbcTemplate.update(sql, sbDate);
+	}
+
+	public List<Map<String, Object>> GettingDetailsOfViwPass(int eid) {
+		String sql = "select distinct e.emp_name, u.emp_id, s.s_name,st.st_start,st.st_end from employee e,seat s,seats_booked sb,shift_timings st,user u where e.e_id=? and sb.st_id=st.st_id and sb.s_id=s.s_id and sb.e_id=e.e_id and u.e_id=e.e_id;";
+		List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, eid);
+		return results;
 	}
 
 //	

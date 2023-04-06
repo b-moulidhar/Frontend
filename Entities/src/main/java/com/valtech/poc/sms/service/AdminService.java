@@ -9,8 +9,6 @@ public interface AdminService {
 
 	int getSeatBookedCount(String sbDate);
 
-	int getCount(String ftDate);
-
 	List<String> findRoles();
 
 	String generateQrCode(int empId);

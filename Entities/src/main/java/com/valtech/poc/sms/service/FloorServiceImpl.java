@@ -49,6 +49,16 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
+	public void addFloor(Floors floor) {
+		floorDao.addFloor(floor);
+	}
+
+	@Override
+	public void deleteFloor(int fId) {
+		floorDao.deleteFloor(fId);
+	}
+
+	@Override
 	public void addFloorSeats(int f_id, int seatsToAdd) {
 		Floors floor = floorDao.getFloorById(f_id);
 		if (floor == null) {
@@ -71,14 +81,26 @@ public class FloorServiceImpl implements FloorService {
 		floorDao.updateFloor(floor);
 	}
 
+//	@Override
+//	public void updateFloorSeats(int f_id, int updatedNumberOfSeats) {
+//		Floors floor = floorDao.getFloorById(f_id);
+//		if (floor == null) {
+//			throw new RuntimeException("Floor not found");
+//		}
+//		floor.setfSeats(updatedNumberOfSeats);
+//		floorDao.updateFloor(floor);
+//	}
+
 	@Override
-	public void updateFloorSeats(int f_id, int updatedNumberOfSeats) {
+	public void updateFloorAndSeats(int f_id, String f_name, int updatedNumberOfSeats) {
 		Floors floor = floorDao.getFloorById(f_id);
 		if (floor == null) {
 			throw new RuntimeException("Floor not found");
 		}
 		floor.setfSeats(updatedNumberOfSeats);
+		floor.setfName(f_name);
 		floorDao.updateFloor(floor);
+
 	}
 
 }

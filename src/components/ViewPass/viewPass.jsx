@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import qrcode from "qrcode"
 import axios from "axios";
 import "./viewPass.css"
+import { useParams } from "react-router";
 // import {QrReader} from "react-qr-reader"
 function ViewPass(){
     // const qrRef = useRef(null)
@@ -9,32 +10,72 @@ function ViewPass(){
     // const [webcamResult, setwebcamResult] = useState()
 
     // const [text,setText] = useState("");
+    const {id} = useParams();
     const [imgQR, setImageQR] = useState();
-    const [data,setData] = useState({
-      name:"",
-      emp_id:Number,
-      email:""
-    })
-
+    // const [data,setData] = useState({
+    //   name:"",
+    //   emp_id:Number,
+    //   email:""
+    // })
+    // const [empName, setEmpName] = useState('');
+    // const [code, setCode] = useState('');
+    const [empData, setEmpData] = useState([]);
+  
+    useEffect(() => {
+      const fetchPasscode = async () => {
+        const response = await axios.get(`/viewPass/${id}`, {
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+      });
+        const image = qrcode.toDataURL(response.data)
+         setImageQR(image);
+      };
+      const fetchEmpData = async () => {
+        const response = await axios.post(`/GettingDetailsOfViwPass/${id}`, {
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+      });
+        setEmpData(response.data);
+      };
+      fetchPasscode();
+      fetchEmpData();
+    }, []);
     // const generateQrCode  = async ()=>{
     //     const image = await qrcode.toDataURL(text)
     //     setImageQR(image)
     // }
-    useEffect(() => {
-      axios.get("https://reqres.in/api/users").then(async(response) => {
-        const image = await qrcode.toDataURL(response.data.data[1].email)
-        setImageQR(image);
-      }); 
-      axios.get("https://reqres.in/api/users")
-      .then((res)=>{
-        console.log(res.data.data[1].first_name)
-        setData({
-         ...data,name:res.data.data[1].first_name,
-                 emp_id:res.data.data[1].id,
-                 email:res.data.data[1].email
-        })
-      })
-    }, []);
+    // useEffect(() => {
+    //   axios.get(`http://10.191.80.104:7001/viewPass/${id}`, {}, {
+    //     headers:{
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //         "X-Role":localStorage.getItem("role"),
+    //         "X-Eid":localStorage.getItem("eid")
+    //     }
+    // }).then((response) => {
+    //   console.log(response.data)
+    //     const image = qrcode.toDataURL(response.data)
+    //     setImageQR(image);
+    //   }); 
+    //   axios.get(`http://10.191.80.104:7001/seats/GettingDetailsOfViwPass/${id}`, {}, {
+    //     headers:{
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //         "X-Role":localStorage.getItem("role"),
+    //         "X-Eid":localStorage.getItem("eid")
+    //     }
+    // })
+    //   .then((res)=>{
+    //     console.log(res.data)
+    //     // setData({
+         
+    //     // })
+    //   })
+    // }, []);
 
     // const openDialog = ()=>{
     //     qrRef.current.openImageDialog()
@@ -70,10 +111,10 @@ function ViewPass(){
             QrCode generator
           </h2>
           <div className="details">
-            <div>Name:{data.name} </div>
-            <div>Emp Id:{data.emp_id}</div>
-            <div>Booked Seat: {localStorage.getItem("seat_name")} </div>
-            <div>Booked shift:{data.email} </div>
+            <div>Name:{empData.name} </div>
+            <div>Emp Id:{empData.emp_id}</div>
+            <div>Booked Seat: {empData.sName} </div>
+            <div>Booked shift:{empData.st_start}"-"{empData.st_end} </div>
           </div>
         </div>
         {/* <div className="row">

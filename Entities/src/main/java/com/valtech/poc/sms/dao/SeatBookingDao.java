@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
 
@@ -44,9 +45,9 @@ public interface SeatBookingDao {
 
 	boolean canEmployeeBookSeat(int eId,int sId, LocalDate sbDate);
 
-	boolean checkIfEmployeeAlreadyBookTheSeat(int eId, int sId,LocalDateTime from, LocalDateTime to) throws DataAccessException;
+	boolean checkIfEmployeeAlreadyBookTheSeat(int eId,LocalDateTime from, LocalDateTime to) throws DataAccessException;
 
-	boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, int sId, LocalDateTime from) throws DataAccessException;
+	boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId,  LocalDateTime from) throws DataAccessException;
 
 
 	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);
@@ -56,9 +57,16 @@ public interface SeatBookingDao {
 
 	byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception;
 
+	void updatFoodCount(LocalDateTime sbDate);
+
+
+	List<Map<String, Object>> GettingDetailsOfViwPass(int eid);
+
+	List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate, LocalDateTime endDate);
 	List<Seat> getTopFivePopularSeats();
 
 	List<SeatsBooked> findSBIdByShiftTimingsAndDate(int stStart, String date);
+
 
 
 
