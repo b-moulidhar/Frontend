@@ -201,6 +201,10 @@ public class SeatBookingController {
 	    return ResponseEntity.ok().headers(headers).body(pdfBytes);
 	}
 
+	@GetMapping("/notificationAboutSeat/{eId}")
+	public String notificationAboutSeat(@PathVariable("eId") int eId) {
+		return seatService.notificationAboutSeat(eId);
+	}
 
 
 //	 @GetMapping("/popular")

@@ -57,12 +57,14 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 
 //	@Override
 //	public String getQrCodeKeyForEmpId(int empId)
-
+    
+	/*Fetching the total seats*/
 	@Override
 	public List<Integer> getAllSeats() {
 		return seatBookingDao.getAllSeats();
 	}
 
+	/*Fetching the available seats*/
 	@Override
 	public List<Integer> availableSeats() {
 		return seatBookingDao.availableSeats();
@@ -74,6 +76,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return null;
 	}
 
+	/*Get the total count of seats*/
 	@Override
 	public List<Integer> countTotalSeats() {
 		return seatBookingDao.countTotalSeats();
@@ -84,6 +87,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 //		return seatBookingDao.findAllByEId(emp);
 //	}
 
+	/*Find the current seat booking details*/
 	@Override
 	public SeatsBooked findCurrentSeatBookingDetails(Employee emp) {
 		List<SeatsBooked> sb = seatBookingDao.findCurrentSeat(emp);
@@ -105,16 +109,19 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return null;
 	}
 
+	/*Fetching the available seats by date*/
 	@Override
 	public List<Seat> findAvailableSeatsByDate(LocalDate date) {
 		return seatBookingDao.findAvailableSeatsByDate(date);
 	}
 
+	/*Save the booked seat details*/
 	@Override
 	public SeatsBooked saveSeatsBookedDetails(SeatsBooked seatsBooked) {
 		return seatsBookedRepo.save(seatsBooked);
 	}
 
+	/*notify the status*/
 	@Override
 	public void notifStatus(int sbId) {
 		seatBookingDao.notifStatus(sbId);
@@ -147,35 +154,41 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return null;
 	}
 
+	/*Fetching the booked seat info using emplyeeid and date*/
 	@Override
 	public List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate,
 			LocalDateTime endDate) {
 		return seatBookingDao.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
 	}
 
+	/*Fetching the booked seat info using start date and end date*/
 	@Override
 	public List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate) {
 		return seatBookingDao.getSeatsBookedByDate(startDate, endDate);
 	}
 
+	/*Fetching the booked seat info using shift timings*/
 	@Override
 	public List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate,
 			LocalDateTime endDate) {
 		return seatBookingDao.getSeatsBookedByShiftTimingBetweenDates(stId, startDate, endDate);
 	}
 
+	/*Verify the seat is currently booked */
 	@Override
 	public boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
 		// TODO Auto-generated method stub
 		return seatBookingDao.checkIfEmployeeAlreadyBookTheSeat(eId, fromDateTime, toDateTime);
 	}
 
+	/*Verify whether the seat is currently booked*/
 	@Override
 	public boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime) {
 		// TODO Auto-generated method stub
 		return seatBookingDao.checkIfEmployeeAlreadyBookTheSeatDaily(eId, fromDateTime);
 	}
 
+	/*Saving the booked seats details daily*/
 	@Override
 	public String createSeatsBookedDaily(int eId, int sId, int stId, String from, String to) {
 		Employee emp = employeeRepo.findById(eId).get();
@@ -198,7 +211,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 				LocalDateTime localDateTime = fromDate.atStartOfDay();
 				// LocalDateTime dateTime = LocalDateTime.parse(formatter.format(localDateTime),
 				// formatter);
-				long limit = 60000 * 240;
+//				long limit = 60000 * 240;
 				// check for recurring seats
 //			if (CheckIfTheSameSeatBookingRecurring(eId)) {
 //				Seat recSeat = getSeatById(sId);
@@ -215,7 +228,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 				if(sb.isFood()==true) {
 					seatBookingDao.updatFoodCount(sb.getSbDate());
 				}
-				scheduledTask.scheduleTask(limit, savedSeatsBooked);
+//				scheduledTask.scheduleTask(limit, savedSeatsBooked);
 //				mailContent.dailyNotification(emp);
 				// check if employee is booking a seat again on the same day
 //				if (canEmployeeBookSeat(eId, sId,fromDateTime)) {
@@ -229,40 +242,49 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		}
 
 	}
-
+	
 	@Override
 	public String createSeatsBookedWeekly(int eId, int sId, int stId, String from, String to) {
-		Employee emp = employeeRepo.findById(eId).get();
-		Seat seat = seatRepo.findById(sId).get();
-		ShiftTimings st = shiftTimingsRepo.findById(stId).get();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-		if (checkIftheSeatIsCurrentlyBooked(eId,  fromDateTime, toDateTime)) {
-			return "This employee has already booked.";
-		} else {
-			LocalDate fromDate = fromDateTime.toLocalDate();
-			LocalDate toDate = toDateTime.toLocalDate();
-			List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
-			for (LocalDate date : dates) {
-				if (CalendarUtil.isDateDisabled(date)) {
-					System.out.println("The date falls on sunday or saturday");
-				} else if (holidayService.isHoliday(date)) {
-					System.out.println("Seat Booking not allowed on holidays");
-				} else {
-					LocalDateTime localDateTime = date.atStartOfDay();
-					String code = adminService.generateQrCode(eId);
-					SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false,
-							false, st);
-					seatsBookedRepo.save(sb);
-					if(sb.isFood()==true) {
-						seatBookingDao.updatFoodCount(sb.getSbDate());
-					}
-				}
-			}
-			return "Seats booked successfully ";
-		}
+	    Employee emp = employeeRepo.findById(eId).get();
+	    Seat seat = seatRepo.findById(sId).get();
+	    ShiftTimings st = shiftTimingsRepo.findById(stId).get();
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
+	    LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
+	    if (checkIftheSeatIsCurrentlyBooked(eId,  fromDateTime, toDateTime)) {
+	        return "This employee has already booked.";
+	    } else {
+	        LocalDate fromDate = fromDateTime.toLocalDate();
+	        LocalDate toDate = toDateTime.toLocalDate();
+	        List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
+	        
+	        if (dates.size() > 7) {
+	            return "Cannot book seats for more than 7 days";
+	        }
+	        
+	        for (LocalDate date : dates) {
+	            if (CalendarUtil.isDateDisabled(date)) {
+	                System.out.println("The date falls on sunday or saturday");
+	            } else if (holidayService.isHoliday(date)) {
+	                System.out.println("Seat Booking not allowed on holidays");
+	            } else {
+	                LocalDateTime localDateTime = date.atStartOfDay();
+	                String code = adminService.generateQrCode(eId);
+	                SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false,
+	                        false, st);
+	                seatsBookedRepo.save(sb);
+	                if (sb.isFood()) {
+	                    seatBookingDao.updatFoodCount(sb.getSbDate());
+	                }
+	            }
+	        }
+	        return "Seats booked successfully ";
+	    }
 	}
+
+	
+	
+	/*Generating the seatsbooked report in the pdf format*/
 	@Override
 	public byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception {
 		List<SeatsBooked> seatsBooked = getSeatsBookedByDate(startDate, endDate);
@@ -271,6 +293,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return pdf;
 	}
 
+	/*Generating the employee report in the pdf format*/
 	@Override
 	public byte[] generateSeatsBookedByEmployeeReportPDF(int empId, LocalDateTime startDate, LocalDateTime endDate)
 			throws Exception {
@@ -280,6 +303,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return pdf;
 	}
 
+	/*Generating the seatsbooked by shift report in the pdf format*/
 	@Override
 	public byte[] generateSeatsBookedByShiftReportPDF(int stId, LocalDateTime startDate, LocalDateTime endDate)
 			throws Exception {
@@ -289,15 +313,26 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return pdf;
 	}
 
+	/*Fetching the details of view pass*/
 	@Override
 	public List<Map<String, Object>> GettingDetailsOfViwPass(int eid) {
 		// TODO Auto-generated method stub
 		return seatBookingDao.GettingDetailsOfViwPass(eid);
 	}
 
+	/*Listing the top 5 popular seats*/
 	@Override
 	public List<Seat> getTopFivePopularSeats() {
 		return seatBookingDao.getTopFivePopularSeats();
+	}
+
+	/*Providing seat details to the employee*/
+	@Override
+	public String notificationAboutSeat(int eId) {
+		Employee emp=employeeRepo.findById(eId).get();
+		SeatsBooked sb=findCurrentSeatBookingDetails(emp);
+		String notification="Hello, you have a booked seat for "+sb.getSbDate().toLocalDate()+" and the seat number is "+sb.getsId().getsName()+" for "+sb.getSt().getStStart()+" - "+sb.getSt().getStEnd()+" shift";
+		return notification;
 	}
 
 //    @Override

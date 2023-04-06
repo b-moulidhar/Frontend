@@ -48,12 +48,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	private final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
+	/*Approve the attendance regularization request*/
 	@Override
 	public void updateAttendance(int atId, String mail) {
 		attendanceDao.approveAttendance(atId);
 		mailContent.attendanceApproved(mail);
 	}
 
+	/*Automates the attendance regularization */
 	@Override
 	public void automaticRegularization(int sbId) {
 		AttendanceTable attendance = new AttendanceTable();
@@ -69,6 +71,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		mailContent.attendanceApprovalRequest(attendance);
 	}
 
+	/*Save the attendance details of the employees*/
 	@Override
 	public String saveAttendance(int eId, String startDate, String endDate, String shiftStart, String shiftEnd) {
 		logger.info("Fetching employee by id");
@@ -80,23 +83,33 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 		LocalDateTime fromDateTime = LocalDateTime.parse(StDate, formatter);
 		LocalDate fromDate = fromDateTime.toLocalDate();
+		logger.info("Check if the attendance for a particular date is aleady regularized");
 		if (attendanceDao.checkIfTheAttendanceIsRegularized(eId, startDate)) {
 			return "Already Regularized";
-		} else if (CalendarUtil.isDateDisabled(fromDate)) {
+		}  
+		else if (CalendarUtil.isDateDisabled(fromDate)) {
+			logger.info("check if the date falls on saturday or sunday");
+			logger.debug("checking the date if it falls on weekends"+fromDate);
 			return "The date falls on sunday or saturday";
 		} else if (holidayService.isHoliday(fromDate)) {
+			logger.info("check if the date falls on holidays");
 			return "Seat Booking not allowed on holidays";
 		} else if (verifyDates(startDate, endDate)) {
+			logger.info("check if the date in the future");
 			return "Start or end date is outside allowable range or in future";
 		} else {
 			AttendanceTable attendance = new AttendanceTable();
+			logger.info("saving the attendance details");
 			saveAtt(attendance, emp, fromDate, shiftStart, shiftEnd);
 			System.out.println("saved");
+			logger.info("Sending the mail");
 			mailContent.attendanceApprovalRequest(attendance);
+			logger.debug(attendance.geteId().getManagerDetails().getManagerDetails().getMailId());
 			return "saved";
 		}
 	}
 
+	/*Save the details*/
 	private void saveAtt(AttendanceTable attendance, Employee emp, LocalDate fromDate, String shiftStart,
 			String shiftEnd) {
 		attendance.seteId(emp);
@@ -109,6 +122,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	}
 
+	/*Verify the start dates and end dates*/
 	private boolean verifyDates(String startDate, String endDate) {
 		LocalDate currentDate = LocalDate.now();
 		LocalDate minDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth().minus(1), 15);
@@ -124,71 +138,83 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return false;
 
 	}
-
+	
+	/*Regularizing the attendance for multiple days*/
 	@Override
-	public String saveAttendanceForMultipleDays(int eId, String startDate, String endDate, String shiftStart,
-			String shiftEnd) {
-		Employee emp = employeeRepo.findById(eId).get();
-		AttendanceTable attendance1 = new AttendanceTable();
-		attendance1.seteId(emp);
-		String StDate = startDate + " 00:00:00";
-		String edDate = endDate + " 00:00:00";
-		if (attendanceDao.checkIfTheAttendanceIsRegularised(eId, StDate, edDate)) {
-			return "Already Regularized";
-		} else {
-
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-			LocalDateTime fromDateTime = LocalDateTime.parse(StDate, formatter);
-			LocalDateTime toDateTime = LocalDateTime.parse(edDate, formatter);
-			LocalDate fromDate = fromDateTime.toLocalDate();
-			LocalDate toDate = toDateTime.toLocalDate();
-			List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
-			for (LocalDate date : dates) {
-				if (CalendarUtil.isDateDisabled(date)) {
-					System.out.println("The date falls on sunday or saturday");
-				} else if (holidayService.isHoliday(date)) {
-					System.out.println("Seat Booking not allowed on holidays");
-				} else if (verifyDates(startDate, endDate)) {
-					System.out.println("Start or end date is outside allowable range or in future");
-				} else {
-					AttendanceTable attendance = new AttendanceTable();
-					saveAtt(attendance, emp, date, shiftStart, shiftEnd);
-				}
-
-			}
-			mailContent.attendanceApprovalRequest(attendance1);
-			return "saved";
-		}
+	public String saveAttendanceForMultipleDays(int eId, String startDate, String endDate, String shiftStart, String shiftEnd) {
+	    Employee emp = employeeRepo.findById(eId).get();
+	    AttendanceTable attendance1 = new AttendanceTable();
+	    attendance1.seteId(emp);
+	    String StDate = startDate + " 00:00:00";
+	    String edDate = endDate + " 00:00:00";
+	    if (attendanceDao.checkIfTheAttendanceIsRegularised(eId, StDate, edDate)) {
+	        return "Already Regularized";
+	    } else {
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	        LocalDateTime fromDateTime = LocalDateTime.parse(StDate, formatter);
+	        LocalDateTime toDateTime = LocalDateTime.parse(edDate, formatter);
+	        LocalDate fromDate = fromDateTime.toLocalDate();
+	        LocalDate toDate = toDateTime.toLocalDate();
+	        List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
+	        int count = 0;
+	        for (LocalDate date : dates) {
+	            if (CalendarUtil.isDateDisabled(date)) {
+	                System.out.println("The date falls on sunday or saturday");
+	            } else if (holidayService.isHoliday(date)) {
+	                System.out.println("Seat Booking not allowed on holidays");
+	            } else if (verifyDates(startDate, endDate)) {
+	                System.out.println("Start or end date is outside allowable range or in future");
+	            } else {
+	                AttendanceTable attendance = new AttendanceTable();
+	                saveAtt(attendance, emp, date, shiftStart, shiftEnd);
+	                count++;
+	            }
+	        }
+	        if (count > 7) {
+	            return "Attendance can be saved for maximum 7 days only";
+	        } else {
+	            mailContent.attendanceApprovalRequest(attendance1);
+	            return "saved";
+	        }
+	    }
 	}
 
+
+
+	/*Fetching the specific employee*/
 	@Override
 	public Employee getSpecificEmployee(AttendanceTable attendance) {
 		return employeeRepo.findById(attendance.geteId().geteId())
 				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 	}
 
+	/*Getting the attendance information of particular employee using atid*/
 	@Override
 	public AttendanceTable getList(int atId) {
 		return attendanceDao.getList(atId);
 	}
 
+	/*Get complete attendance list*/
 	@Override
 	public List<Map<String, Object>> getCompleteAttendanceList() {
 		return attendanceDao.getCompleteAttendanceList();
 
 	}
 
+	/*Get attendance details of each employee by atId */
 	@Override
 	public Map<String, Object> getAttendanceListForEachEmployee(int atId) {
 		return attendanceDao.getAttendanceListForEachEmployee(atId);
 
 	}
-
+	
+	/*Get attendance details of each employee by eId*/
 	@Override
 	public List<Map<String, Object>> getAttendanceForEmployeeBasedOnEmployeeId(int eId) {
 		return attendanceDao.getAttendanceForEmployeeBasedOnEmployeeId(eId);
 	}
 
+	/*Get attendance details of each employee by eId for approval*/
 	@Override
 	public List<Map<String, Object>> getAttendanceListForApproval(int eId) {
 //		Employee e = employeeRepo.findById(eId).get();
@@ -196,6 +222,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return attendanceDao.getAttendanceListForApproval(eId);
 	}
 
+	/*Disapprove the attendance request of an employee */
 	@Override
 	public void deleteAttendanceRequest(int atId, String mail) {
 		attendanceDao.deleteAttendanceRequest(atId);
@@ -203,6 +230,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	}
 
+	/*Fetching the mail using atId*/
 	@Override
 	public String getMailIdByAtId(int atId) {
 		return attendanceDao.getMailIdByAtId(atId);

@@ -82,6 +82,8 @@ public interface SeatBookingService {
 
 	List<Seat> getTopFivePopularSeats();
 
+	String notificationAboutSeat(int eId);
+
 	//List<Object[]> getTopFivePopularSeats();
 
 
