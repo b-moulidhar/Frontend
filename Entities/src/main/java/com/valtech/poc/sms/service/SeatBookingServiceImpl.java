@@ -100,8 +100,10 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	/* Find the current seat booking details */
 	@Override
 	public SeatsBooked findCurrentSeatBookingDetails(Employee emp) {
+		// Get the list of all seat bookings of the employee.
 		List<SeatsBooked> sb = seatBookingDao.findCurrentSeat(emp);
 
+		// Sort the seat bookings in ascending order of the booking date.
 		Collections.sort(sb, new Comparator<SeatsBooked>() {
 			@Override
 			public int compare(SeatsBooked o1, SeatsBooked o2) {
@@ -109,8 +111,12 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 			}
 		});
 
+		// Get the latest seat booking of the employee.
 		SeatsBooked latestSb = sb.get(0);
+
+		// Return the latest seat booking.
 		return latestSb;
+
 	}
 
 	@Override

@@ -71,42 +71,55 @@ public class AdminController {
 	@Autowired
 	SeatsBookedRepo seatsBookedRepo;
 
+	// This method handles the punch out of an employee
 	@ResponseBody
 	@GetMapping("/checkout")
 	public String checkOut(@RequestParam("empId") int empId) {
+		// Find the user associated with the employee ID
 		User usr = userService.findByEmpId(empId);
+		// Get the employee details
 		Employee emp = usr.getEmpDetails();
+		// Find the current seat booking details for the employee
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
+		// Get the current date and time
 		LocalDateTime now = LocalDateTime.now();
+		// Format the date and time as a string with a specific format
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
-//		LocalDateTime dateTime = formatter.format(now);
+		// Set the current seat booking status to false and set the punch out time to the current date and time
 		sb.setCurrent(false);
 		sb.setPunchOut(dateTime);
+		// Save the updated seat booking details to the database
 		seatsBookedRepo.save(sb);
+		// Automatically regularize the attendance for the seat booking
 		attendanceService.automaticRegularization(sb.getSbId());
 		return "checked out";
 	}
 
+
+	// This method retrieves the current passcode for an employee's seat booking
 	@ResponseBody
 	@GetMapping("/viewPass/{eId}")
 	public String viewPasscode(@PathVariable("eId") int eId) {
-//		User usr = userService.findByEId(eId);
-//		Employee emp = usr.getEmpDetails();
+		// Find the employee associated with the employee ID
 		Employee emp = employeeService.findById(eId);
 		System.out.println(emp.getEmpName());
+		// Find the current seat booking details for the employee
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
 		String code = sb.getCode();
 		System.out.println(code);
 		return code;
 	}
 
+	// This method verifies a QR code for an employee's seat booking
 	@ResponseBody
 	@PostMapping("/qr/verification/{eId}")
 	public boolean verifyQrCode(@PathVariable("eId") int eId, @RequestParam("code") String code) {
+		// Call the AdminService to verify the QR code
 		boolean b = adminService.verifyQr(eId, code);
 		return b;
 	}
+
 
 	@ResponseBody
 	@GetMapping("/qr/codeGenerator/{empId}")

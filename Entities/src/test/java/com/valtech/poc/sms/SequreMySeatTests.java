@@ -1,9 +1,10 @@
 package com.valtech.poc.sms;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.Assert;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -11,15 +12,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import com.valtech.poc.sms.controller.SeatBookingController;
 import com.valtech.poc.sms.entities.Employee;
-import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
+import com.valtech.poc.sms.repo.SeatsBookedRepo;
 import com.valtech.poc.sms.service.AdminService;
 import com.valtech.poc.sms.service.SeatBookingService;
 
@@ -37,8 +36,15 @@ class SequreMySeatTests {
 	    @Mock
 	    private AdminService adminService;
 
+//	    @Mock
+//	    private SeatBookingService seatBookingService;
+	    
 	    @Mock
+	    private SeatsBookedRepo seatsBookedRepo;
+	    
+	    @InjectMocks
 	    private SeatBookingService seatBookingService;
+
 
 	    @InjectMocks
 	    private SeatBookingController seatBookingController;
@@ -80,5 +86,7 @@ class SequreMySeatTests {
 	@Test
 	void contextLoads() {
 	}
+	
+
 
 }
