@@ -62,9 +62,9 @@ public interface SeatBookingService {
 
 	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
 
-	boolean checkIftheSeatIsCurrentlyBooked(int eId, int sId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+	boolean checkIftheSeatIsCurrentlyBooked(int eId,  LocalDateTime fromDateTime, LocalDateTime toDateTime);
 
-	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId, LocalDateTime fromDateTime);
+	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime);
 
 	// void updateNotifStatus(int sbId, Connection connection);
 

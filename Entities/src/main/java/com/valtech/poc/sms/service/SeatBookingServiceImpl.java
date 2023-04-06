@@ -146,16 +146,16 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	}
 
 	@Override
-	public boolean checkIftheSeatIsCurrentlyBooked(int eId, int sId, LocalDateTime fromDateTime,
+	public boolean checkIftheSeatIsCurrentlyBooked(int eId,  LocalDateTime fromDateTime,
 			LocalDateTime toDateTime) {
 		// TODO Auto-generated method stub
-		return seatBookingDao.checkIfEmployeeAlreadyBookTheSeat(eId, sId, fromDateTime, toDateTime);
+		return seatBookingDao.checkIfEmployeeAlreadyBookTheSeat(eId, fromDateTime, toDateTime);
 	}
 
 	@Override
-	public boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId,LocalDateTime fromDateTime) {
+	public boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime) {
 		// TODO Auto-generated method stub
-		return seatBookingDao.checkIfEmployeeAlreadyBookTheSeatDaily(eId,sId ,fromDateTime);
+		return seatBookingDao.checkIfEmployeeAlreadyBookTheSeatDaily(eId,fromDateTime);
 	}
 
 	@Override
@@ -168,7 +168,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		LocalDate fromDate = fromDateTime.toLocalDate();
 
 		// check if the seat is already booked
-		if (checkIftheSeatIsCurrentlyBookedDaily(eId, sId, fromDateTime)) {
+		if (checkIftheSeatIsCurrentlyBookedDaily(eId, fromDateTime)) {
 			return "This employee has already booked the seat.";
 		} else {
 			if (CalendarUtil.isDateDisabled(fromDate)) {
@@ -191,9 +191,12 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 //				return "The Same Seat is booked successfully because you are selecting this seat more than 3 times with ID: "
 //						+ savedSeatsBooked.getSbId();
 //			} else {
-				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false, false,
+				SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false, true,
 						st);
 				SeatsBooked savedSeatsBooked = saveSeatsBookedDetails(sb);
+				if(sb.isFood()==true) {
+					seatBookingDao.updatFoodCount(sb.getSbDate());
+				}
 				scheduledTask.scheduleTask(limit, savedSeatsBooked);
 //				mailContent.dailyNotification(emp);
 				// check if employee is booking a seat again on the same day
@@ -217,7 +220,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
 		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-		if (checkIftheSeatIsCurrentlyBooked(eId, sId, fromDateTime, toDateTime)) {
+		if (checkIftheSeatIsCurrentlyBooked(eId,  fromDateTime, toDateTime)) {
 			return "This employee has already booked.";
 		} else {
 			LocalDate fromDate = fromDateTime.toLocalDate();
@@ -234,6 +237,9 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 					SeatsBooked sb = new SeatsBooked(localDateTime, null, null, true, code, seat, emp, false, false,
 							false, st);
 					seatsBookedRepo.save(sb);
+					if(sb.isFood()==true) {
+						seatBookingDao.updatFoodCount(sb.getSbDate());
+					}
 				}
 			}
 			return "Seats booked successfully ";

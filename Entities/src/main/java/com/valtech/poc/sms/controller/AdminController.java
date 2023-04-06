@@ -115,13 +115,6 @@ public class AdminController {
 	}
 
 	@ResponseBody
-	@GetMapping("/foodCountWithJpa/{ftDate}")
-	public int getCountByFtdate(@PathVariable("ftDate") String ftDate) {
-		String foodDate = ftDate + " 00:00:00";
-		return adminService.getCount(foodDate);
-	}
-
-	@ResponseBody
 	@GetMapping("/seatCount/{sbDate}")
 	public int getCountBySbDate(@PathVariable("sbDate") String sbDate) {
 		logger.info("Fetching the seat booked count");
@@ -200,4 +193,12 @@ public class AdminController {
 		return count;
 	}
 	
+	
+	@ResponseBody
+	@GetMapping("/foodCountBasedOnDates/{sbDate}")
+	public int getCountByDates(@PathVariable("sbDate") String sbDate) {
+		String SeatDate = sbDate + " 00:00:00";
+		int count = adminService.getCountOfFoodOpt(SeatDate);
+		return count;
+	}
 }

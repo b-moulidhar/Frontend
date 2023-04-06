@@ -272,16 +272,13 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 	}
 
 	@Override
-	public boolean checkIfEmployeeAlreadyBookTheSeat(int eId, int sId,LocalDateTime from, LocalDateTime to)
+	public boolean checkIfEmployeeAlreadyBookTheSeat(int eId, LocalDateTime from, LocalDateTime to)
 			throws DataAccessException {
 		
-		   String sql = "SELECT COUNT(*) \r\n"
-		    		+ "FROM seats_booked\r\n"
-		    		+ "WHERE (e_id = ? AND s_id = ? AND sb_date BETWEEN ? AND ?)\r\n"
-		    		+ "   OR (e_id != ? AND s_id = ? AND sb_date BETWEEN ? AND ?);";
-		try {
-			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { sId,from,to,eId,sId ,from, to,eId }, Integer.class);
+		String sql = "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date BETWEEN ? AND ? AND current = true";
 
+		try {
+			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { eId, from, to }, Integer.class);
 			if (cnt > 0)
 				return true;
 			return false;
@@ -292,15 +289,12 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 	
 	
 	@Override
-	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, int sId, LocalDateTime from) throws DataAccessException {
-	    String sql = "SELECT COUNT(*) \r\n"
-	    		+ "FROM seats_booked\r\n"
-	    		+ "WHERE (e_id = ? AND s_id = ? AND sb_date =?)\r\n"
-	    		+ "   OR (e_id != ? AND s_id = ? AND sb_date = ?);";
+	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, LocalDateTime from) throws DataAccessException {
+		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=from AND current = true";
+
 
 	    try {
-	        int cnt = jdbcTemplate.queryForObject(sql, new Object[]{eId,sId, from,eId, sId, from}, Integer.class);
-
+	       int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,from }, Integer.class);
 	        if(cnt>0)
 	        	return true;
 	        return false;
@@ -430,6 +424,25 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 		byte[] pdfBytes = byteArrayOutputStream.toByteArray();
 
 		return pdfBytes;
+	}
+
+	@Override
+	public void updatFoodCount(LocalDateTime sbDate) {
+		 String selectSql = "SELECT COUNT(*) FROM food WHERE ft_date = ?";
+		    Integer count = jdbcTemplate.queryForObject(selectSql, new Object[]{sbDate}, Integer.class);
+		    String query = "SELECT MAX(ft_id) FROM food";
+		    Integer lastId = jdbcTemplate.queryForObject(query, Integer.class);
+		    if(lastId==null) {
+		    	lastId=1;
+		    }
+
+		    if (count == 0) {
+		        String insertSql = "INSERT INTO food (ft_id,ft_date,count) VALUES (?,?,?)";
+		        jdbcTemplate.update(insertSql,lastId+1 ,sbDate,count);
+		    }
+
+		String sql = "UPDATE food SET count = count+1 WHERE ft_date = ?";
+	    jdbcTemplate.update(sql, sbDate);
 	}
 
 //	

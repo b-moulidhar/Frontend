@@ -80,14 +80,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public int getCount(String ftDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime dateTime = LocalDateTime.parse(ftDate, formatter);
-		Food f= adminRepository.getFoodByFtDate(dateTime);
-		return f.getCount();
-	}
-	
-	@Override
 	public List<String> findShiftStartTimings() {
 		return adminDao.findShiftStartTimings();
 	}
