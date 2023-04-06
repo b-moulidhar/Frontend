@@ -16,7 +16,7 @@ public interface SeatBookingDao {
 
 //	List<Integer> getAllSeats();
 
-	List<Integer> availableSeats();
+	List<String> availableSeats();
 
 //	List<SeatsBooked> findAllByEId(Employee emp);
 
@@ -64,6 +64,16 @@ public interface SeatBookingDao {
 
 	List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate, LocalDateTime endDate);
 	List<Seat> getTopFivePopularSeats();
+
+
+	List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findBookedSeatsByDate(LocalDate date);
+
+	List<SeatsBooked> findSBIdByShiftTimingsAndDate(int stStart, String date);
+
 
 
 

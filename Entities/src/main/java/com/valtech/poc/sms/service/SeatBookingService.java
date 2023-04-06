@@ -1,12 +1,9 @@
 package com.valtech.poc.sms.service;
 
-import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-
-import org.hibernate.service.spi.ServiceException;
 
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Seat;
@@ -18,7 +15,7 @@ public interface SeatBookingService {
 
 	// List<Seat> findAvailableSeats();
 
-	List<Integer> availableSeats();
+	List<String> availableSeats();
 //
 //	int totalSeats();
 
@@ -63,29 +60,38 @@ public interface SeatBookingService {
 
 	byte[] generateSeatsBookedReportPDF(LocalDateTime startDate, LocalDateTime endDate) throws Exception;
 
-	boolean checkIftheSeatIsCurrentlyBooked(int eId,  LocalDateTime fromDateTime, LocalDateTime toDateTime);
+	boolean checkIftheSeatIsCurrentlyBooked(int eId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
 
 	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, LocalDateTime fromDateTime);
 
 	List<Map<String, Object>> GettingDetailsOfViwPass(int eid);
 
-
 	byte[] generateSeatsBookedByEmployeeReportPDF(int empId, LocalDateTime startDate, LocalDateTime endDate)
 			throws Exception;
-
 
 	List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate, LocalDateTime endDate);
 
 	byte[] generateSeatsBookedByShiftReportPDF(int stId, LocalDateTime startDate, LocalDateTime endDate)
 			throws Exception;
 
-
 	List<Seat> getTopFivePopularSeats();
 
 	String notificationAboutSeat(int eId);
 
-	//List<Object[]> getTopFivePopularSeats();
+	// List<Object[]> getTopFivePopularSeats();
 
+//	boolean checkIftheSeatIsCurrentlyBooked(int eId, int sId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
+//
+//
+//	boolean checkIftheSeatIsCurrentlyBookedDaily(int eId, int sId, LocalDateTime fromDateTime);
+
+	List<SeatsBooked> getSBBySTAndDate(int start, String date);
+
+	List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findBookedSeatsByDate(LocalDate date);
 
 	// void updateNotifStatus(int sbId, Connection connection);
 
