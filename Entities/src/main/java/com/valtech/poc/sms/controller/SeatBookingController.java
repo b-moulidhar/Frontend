@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.entities.Seat;
-import com.valtech.poc.sms.entities.SeatBookingTempOne;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
@@ -109,6 +109,40 @@ public class SeatBookingController {
 	}
 
 	@ResponseBody
+	@GetMapping("/{stId}")
+    public ResponseEntity<List<SeatsBooked>> getSeatsBookedByShiftTimingBetweenDates(
+            @PathVariable int stId,
+            @RequestParam("startDate") String startDateStr,
+	        @RequestParam("endDate") String endDateStr) {
+		
+		LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    
+	    List<SeatsBooked> seatsBooked = seatService.getSeatsBookedByShiftTimingBetweenDates(stId, startDate, endDate);
+	    
+	    return ResponseEntity.ok(seatsBooked);
+    }
+	
+	@ResponseBody
+	@GetMapping("/booked/byshift/report")
+	public ResponseEntity<byte[]> generateSeatsBookedByShiftReport(@RequestParam("stId") int stId,
+	                                                         @RequestParam("startDate") String startDateStr,
+	                                                         @RequestParam("endDate") String endDateStr) throws Exception {
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+	    byte[] pdfBytes = seatService.generateSeatsBookedByShiftReportPDF(stId, startDate, endDate);
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_PDF);
+	    headers.setContentDisposition(ContentDisposition.builder("attachment")
+	            .filename("seats_booked_by_employee.pdf")
+	            .build());
+
+	    return ResponseEntity.ok().headers(headers).body(pdfBytes);
+	}
+	
+	@ResponseBody
 	@GetMapping("/booked")
 	public ResponseEntity<List<SeatsBooked>> getSeatsBookedByDate(@RequestParam("startDate") String startDateStr,
 			@RequestParam("endDate") String endDateStr) {
@@ -148,19 +182,52 @@ public class SeatBookingController {
 		List<SeatsBooked> seatsBookedList = seatService.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
 		return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
 	}
-
 	@ResponseBody
-	@PostMapping("/GetDatatoBookSeat")
-	public String storeDataToSeatBookingTempOne(@RequestBody SeatBookingTempOne seatBookingTempOne) {
+	@GetMapping("/booked/byemployee/report")
+	public ResponseEntity<byte[]> generateSeatsBookedByEmployeeReport(@RequestParam("empId") int empId,
+	                                                         @RequestParam("startDate") String startDateStr,
+	                                                         @RequestParam("endDate") String endDateStr) throws Exception {
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-		return "Success";
+	    byte[] pdfBytes = seatService.generateSeatsBookedByEmployeeReportPDF(empId, startDate, endDate);
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_PDF);
+	    headers.setContentDisposition(ContentDisposition.builder("attachment")
+	            .filename("seats_booked_by_employee.pdf")
+	            .build());
+
+	    return ResponseEntity.ok().headers(headers).body(pdfBytes);
 	}
+
+
+
+//	 @GetMapping("/popular")
+//	    public ResponseEntity<List<Object[]>> getTopFivePopularSeats() {
+//	        List<Object[]> popularSeats = seatService.getTopFivePopularSeats();
+//	        return ResponseEntity.ok(popularSeats);
+//	   }
+
+
 
 	@ResponseBody
 	@PostMapping("/GetSeatId")
 	public int GetSidBySname(@RequestBody String sName) {
 		return seatRepo.findIdBysName(sName);
 	}
+	@PostMapping("/GettingDetailsOfViwPass/{eid}")
+	public List<Map<String, Object>> GettingDetailsOfViwPass(@PathVariable("eid") int eid){
+		List<Map<String, Object>> empdata=seatService.GettingDetailsOfViwPass(eid);
+		return empdata;
+	}
+	
+
+	@GetMapping("/popular")
+    public List<Seat> getTopFivePopularSeats() {
+        return seatService.getTopFivePopularSeats();
+    }
+}
 
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
@@ -187,7 +254,7 @@ public class SeatBookingController {
 //        }
 //      }
 
-}
+
 
 //    @GetMapping("/{eId}")
 //    public Employee getEmployeeById(@PathVariable int eId) {

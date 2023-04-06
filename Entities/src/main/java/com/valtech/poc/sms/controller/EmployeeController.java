@@ -25,6 +25,7 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 	
+	
 	@ResponseBody
 	@GetMapping("/profileDetailsEmployee/{eId}")
     public Employee getEmployeeById(@PathVariable int eId) {

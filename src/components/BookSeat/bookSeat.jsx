@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./bookSeat.css";
 import axios from "axios";
-import Api from "../Api/api";
+
 
 function BookSeat() {
   const [branchName, setBranchName] = useState("");
@@ -13,44 +13,54 @@ function BookSeat() {
   const [meal, setMeal] = useState("");
   var startTime = [];
   var endTime = [];
+  var timeRange = []
   // const [fromDate, setfromDate] = useState('');
 
   const [shiftTiming, setShiftTiming] = useState("");
   const [request, setRequest] = useState("");
 
-    useEffect(()=>{
-      axios
-        .get("http://10.191.80.73:7001/shiftStart", {
-          headers: {
+ 
+  
+
+    const [timeRange1, setTimeRange] = useState([]);
+    const concatenate=()=>{
+      startTime.map((time,idx)=>{
+            return timeRange[idx] = `${time} - ${endTime[idx]}`
+
+      })
+    }
+    useEffect(() => {
+      axios.get('http://10.191.80.104:7001/shiftStart',{
+        headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role": localStorage.getItem("role"),
-            "X-Eid": localStorage.getItem("eid"),
-          },
-
-          responseType: "json",
-        })
-        .then((res) => {
-          console.log(res.data);
-          // startTime = res.data
-        })
-        .catch((err) => {
-          console.log(err);
+            "X-Role":localStorage.getItem("role"),
+            "X-Eid":localStorage.getItem("eid")
+        }
+    }).then(function (response) {
+           startTime = response.data;
+          return axios.get('http://10.191.80.104:7001/shiftEnd',{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Role":localStorage.getItem("role"),
+                "X-Eid":localStorage.getItem("eid")
+            }
         });
+        })
+        .then(function (response) {
+           endTime = response.data;
+          // const timeRange = startTime + ' - ' + endTime;
+          // setTimeRange(timeRange);
+          concatenate();
+          setTimeRange(timeRange)
+          // console.log(timeRange)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }, []);
 
-      axios.get("http://10.191.80.73:7001/shiftEnd",{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "X-Role": localStorage.getItem("role"),
-          "X-Eid": localStorage.getItem("eid"),
-        },
+    
 
-        responseType: "json",
-      })
-      .then((response)=>{
-        console.log(response.data)
-        // endTime = response.data
-      })
-    },[])
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -116,7 +126,7 @@ function BookSeat() {
         <option value="Daily">Daily</option>
         <option value="Weekly">Weekly</option>
       </select>
-      <label htmlFor="shift-timing-input">Shift Start Timing:</label>
+      <label htmlFor="shift-timing-input">Shift Timing:</label>
       <select
         id="shift-timing-input"
         value={shiftTiming}
@@ -126,26 +136,21 @@ function BookSeat() {
       >
         <option value="" disabled>--Select--</option>
         {
-          startTime.map((start)=>{
-            return <option value={start}>{start}</option>
-
+          // console.log(timeRange1)
+          
+          timeRange1.map((start,idx)=>{
+            return <option key={idx} value={start}>{start}</option>
+            // return console.log(start);
           })
         }
         
       </select>
-      <label htmlFor="shift-timing-input">Shift End Timing:</label>
-      <select
-        id="shift-timing-input"
-        value={shiftTiming}
-        onChange={(e) => setShiftTiming(e.target.value)}
-        className="form-input"
-        required
-      >
-        <option value="" disabled>--Select--</option>
+      
+        {/* <option value="" disabled>--Select--</option>
         <option value="Morning">9:00AM - 6:00PM</option>
         <option value="Afternoon">2:00PM - 10:00PM</option>
-        <option value="night">10:00PM - 6:00AM</option>
-      </select>
+        <option value="night">10:00PM - 6:00AM</option> */}
+      {/* </select> */}
       <label htmlFor="meal-name-input">Meal:</label>
       <select
         id="meal-name-input"

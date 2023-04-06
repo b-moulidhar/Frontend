@@ -11,7 +11,7 @@ import com.valtech.poc.sms.entities.Floors;
 
 @Repository
 public class FloorDAOImpl implements FloorDao {
-	
+
 //	@Autowired
 //  private JdbcTemplate jdbcTemplate;
 //
@@ -32,7 +32,7 @@ public class FloorDAOImpl implements FloorDao {
 //      String sql = "DELETE FROM Floors WHERE f_id = ?";
 //      jdbcTemplate.update(sql, floorId);
 //  }	
-	
+
 //	---------------------------------------------------------------------------------------------------------
 
 	@Autowired
@@ -55,10 +55,27 @@ public class FloorDAOImpl implements FloorDao {
 	}
 
 	@Override
+	public void addFloor(Floors floor) {
+		String sql = "INSERT INTO Floors (f_id, f_name, f_seats) VALUES (?, ?, ?)";
+		jdbcTemplate.update(sql, floor.getfId(), floor.getfName(), floor.getfSeats());
+	}
+
+//	@Override
+//    public void addFloor(Floors floor) {
+//        String sql = "INSERT INTO Floors (f_name, f_seats) VALUES (?, ?)";
+//        jdbcTemplate.update(sql, floor.getfName(), floor.getfSeats());
+//    }
+
+	@Override
+	public void deleteFloor(int fId) {
+		String sql = "DELETE FROM Floors WHERE f_id = ?";
+		jdbcTemplate.update(sql, fId);
+	}
+
+	@Override
 	public void updateFloor(Floors floor) {
 		String sql = "UPDATE Floors SET f_name = ?, f_seats = ? WHERE f_id = ?";
 		jdbcTemplate.update(sql, floor.getfName(), floor.getfSeats(), floor.getfId());
 	}
-	
 
 }

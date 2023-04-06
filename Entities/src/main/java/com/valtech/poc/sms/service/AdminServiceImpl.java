@@ -124,8 +124,14 @@ public class AdminServiceImpl implements AdminService{
 		System.out.println(emp.getEmpName());
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
 		String key = sb.getCode();
+		System.out.println(key);
+		System.out.println(code);
 		if(key.equals(code)) {
 			sb.setVerified(true);
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
+			sb.setPunchIn(dateTime);
 			seatsBookedRepo.save(sb);
 			return true;
 		}

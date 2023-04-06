@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-backend-deploy
+spec:
+  replicas: 1
+  selector:
+     matchLabels:
+       app: smsapp
+  template:
+    metadata:
+      labels:
+        app: smsapp
+    spec:
+
+      containers:
+      - name: smsapp
+        image: smsacr321.azurecr.io/smsapp12:#{Build.BuildId}# 
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7001
+        
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-backend-external-svc
+spec:
+  selector:
+    app: smsapp
+  ports:
+    - protocol: TCP
+      port: 7001
+      targetPort: 7001
+  type: LoadBalancer

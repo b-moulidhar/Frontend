@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
 
@@ -19,7 +20,7 @@ public interface SeatBookingDao {
 
 //	List<SeatsBooked> findAllByEId(Employee emp);
 
-	SeatsBooked findCurrentSeat(Employee emp);
+	List<SeatsBooked> findCurrentSeat(Employee emp);
 
 	List<Integer> countTotalSeats();
 
@@ -57,6 +58,13 @@ public interface SeatBookingDao {
 	byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception;
 
 	void updatFoodCount(LocalDateTime sbDate);
+
+
+	List<Map<String, Object>> GettingDetailsOfViwPass(int eid);
+
+	List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate, LocalDateTime endDate);
+	List<Seat> getTopFivePopularSeats();
+
 
 
 
