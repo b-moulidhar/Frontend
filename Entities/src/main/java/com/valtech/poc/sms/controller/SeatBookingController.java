@@ -142,7 +142,7 @@ public class SeatBookingController {
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_PDF);
 	    headers.setContentDisposition(ContentDisposition.builder("attachment")
-	            .filename("seats_booked_by_employee.pdf")
+	            .filename("seats_booked_by_shift.pdf")
 	            .build());
 
 	    return ResponseEntity.ok().headers(headers).body(pdfBytes);

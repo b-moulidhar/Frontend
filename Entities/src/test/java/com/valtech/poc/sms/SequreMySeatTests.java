@@ -1,27 +1,38 @@
 package com.valtech.poc.sms;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.valtech.poc.sms.controller.SeatBookingController;
-import com.valtech.poc.sms.entities.Employee;
-import com.valtech.poc.sms.entities.Seat;
-import com.valtech.poc.sms.entities.SeatsBooked;
+import com.valtech.poc.sms.dao.UserDAO;
+import com.valtech.poc.sms.entities.Roles;
+import com.valtech.poc.sms.entities.User;
 import com.valtech.poc.sms.repo.EmployeeRepo;
+import com.valtech.poc.sms.repo.ManagerRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
+import com.valtech.poc.sms.repo.UserRepo;
+import com.valtech.poc.sms.security.JwtUtil;
 import com.valtech.poc.sms.service.AdminService;
 import com.valtech.poc.sms.service.SeatBookingService;
+import com.valtech.poc.sms.service.UserServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
@@ -42,6 +53,33 @@ class SequreMySeatTests {
 
 	    @InjectMocks
 	    private SeatBookingController seatBookingController;
+	    
+	    @InjectMocks
+	    private UserServiceImpl userService;
+
+	    @Mock
+	    private UserRepo userRepo;
+
+	    @Mock
+	    private UserDAO userDao;
+
+
+	    @Mock
+	    private ManagerRepo managerRepo;
+
+	    @Mock
+	    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	    @Mock
+	    private JwtUtil jwtUtil;
+	   
+	    
+	    @Mock
+	    private UserDetails userDetails;
+	    
+	    
+//	    @InjectMocks
+//	    private UserService userService;
 	    
 //	    @Test
 //	    public void testCreateSeatsBooked() {
@@ -77,6 +115,86 @@ class SequreMySeatTests {
 ////	        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
 ////	        Assert.assertEquals("Seats booked created successfully with ID: 1", response.getBody());
 //	    }
+	    
+	    @Test
+	    public void testLoadUserByUsername() {
+	        // Create a User object to return from the mocked userRepo
+	        User user = new User();
+	        user.setEmpId(123);
+	        user.setPass("password");
+
+	        Set<Roles> roles = new HashSet<>();
+	        Roles role = new Roles();
+	        role.setRole("Admin");
+	        roles.add(role);;
+
+
+	        user.setRoles(roles);
+
+	        // Mock the userRepo to return the User object for empId 123
+	        when(userRepo.findByEmpId(123)).thenReturn(user);
+
+	        // Call the loadUserByUsername method
+	        UserDetails userDetails = userService.loadUserByUsername("123");
+
+	        // Verify that the mocked userRepo was called with the correct empId
+	        verify(userRepo).findByEmpId(123);
+
+	        // Verify that the UserDetails object was constructed correctly
+	        assertEquals("123", userDetails.getUsername());
+	        assertEquals("password", userDetails.getPassword());
+	        assertEquals("ROLE_Admin", userDetails.getAuthorities().iterator().next().getAuthority());
+	    }
+	    @Test
+	    public void testValidLogin() {
+	        // given
+	        int empId = 123;
+	        String pass="hello";
+	        User user = new User();
+	        user.setEmpId(empId);
+	        user.setPass(pass);
+	        user.setApproval(true);
+	        Roles role = new Roles();
+	        role.setRole("USER");
+	        user.getRoles().add(role);
+	        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+	    	        .username(String.valueOf(user.getEmpId()))
+	    	        .password(user.getPass())
+	    	        .roles(role.getRole())
+	    	        .build();
+	        String expectedToken = "jwt.token";
+	        when(userRepo.findByEmpId(empId)).thenReturn(user);
+	        when(bCryptPasswordEncoder.matches(pass, user.getPass())).thenReturn(true);
+	        when(jwtUtil.generateToken(userDetails)).thenReturn(expectedToken);
+	        
+	        // when
+	        String actualToken = userService.login(empId, pass);
+	        
+	        // then
+	        assertEquals(expectedToken, actualToken);
+	    }
+
+	    @Test
+	    public void testLoginWithNonApprovedUser() {
+	        int empId = 123;
+	        String pass = "password";
+
+	        User user = new User();
+	        user.setEmpId(empId);
+	        user.setPass("password");
+	        user.setApproval(false);
+
+	        when(userRepo.findByEmpId(empId)).thenReturn(user);
+	        when(bCryptPasswordEncoder.matches(pass, user.getPass())).thenReturn(true);
+
+	        assertThrows(RuntimeException.class, () ->userService.login(empId, pass));
+	    }
+
+
+
+	    
+
+
 	@Test
 	void contextLoads() {
 	}
