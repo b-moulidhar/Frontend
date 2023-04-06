@@ -3,8 +3,6 @@ package com.valtech.poc.sms;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.valtech.poc.sms.controller.SeatBookingController;
@@ -28,6 +25,7 @@ import com.valtech.poc.sms.entities.User;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.ManagerRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
+import com.valtech.poc.sms.repo.SeatsBookedRepo;
 import com.valtech.poc.sms.repo.UserRepo;
 import com.valtech.poc.sms.security.JwtUtil;
 import com.valtech.poc.sms.service.AdminService;
@@ -50,6 +48,11 @@ class SequreMySeatTests {
 
 	    @Mock
 	    private SeatBookingService seatBookingService;
+	    
+	    @Mock
+	    private SeatsBookedRepo seatsBookedRepo;
+	  
+
 
 	    @InjectMocks
 	    private SeatBookingController seatBookingController;
@@ -198,5 +201,7 @@ class SequreMySeatTests {
 	@Test
 	void contextLoads() {
 	}
+	
+
 
 }
