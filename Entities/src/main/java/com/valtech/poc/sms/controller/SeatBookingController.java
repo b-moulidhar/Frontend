@@ -27,11 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.valtech.poc.sms.component.ScheduledTask;
 import com.valtech.poc.sms.entities.Seat;
 import com.valtech.poc.sms.entities.SeatsBooked;
+import com.valtech.poc.sms.entities.ShiftTimings;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatRepo;
 import com.valtech.poc.sms.service.AdminService;
 import com.valtech.poc.sms.service.HolidayService;
 import com.valtech.poc.sms.service.SeatBookingService;
+import com.valtech.poc.sms.service.ShiftTimingsService;
 
 @RestController
 @CrossOrigin(origins = "http://10.191.80.103/:3000")
@@ -56,6 +58,9 @@ public class SeatBookingController {
 	@Autowired
 	HolidayService holidayService;
 
+	@Autowired
+	ShiftTimingsService shiftTimingsService;
+	
 	@GetMapping("/total")
 	public ResponseEntity<List<Integer>> getAllSeats() {
 		List<Integer> allSeats = seatService.getAllSeats();
@@ -99,10 +104,23 @@ public class SeatBookingController {
 	
 	@PostMapping("/create/{eId}")
 	public synchronized ResponseEntity<String> createSeatsBooked(@PathVariable("eId") int eId,
-			@RequestParam("sId") int sId, @RequestParam("stId") int stId, @RequestParam("from") String from,
+			@RequestParam("sname") String sname, @RequestParam("sttime") String sttime, @RequestParam("from") String from,
 			@RequestParam("to") String to) {
 		String stDate = from + " 00:00:00";
 		String edDate = to + " 00:00:00";
+		int sId=seatService.getSidBySname(sname);
+	
+		String[] times = sttime.split("-");
+		String startTime = times[0];
+		String endTime = times[1];
+
+//		int start = Integer.parseInt(startTimeString);
+//		int end = Integer.parseInt(endTimeString);
+
+		// Assuming you have a data structure or database that stores the mapping between stid, start time, and end time
+		int stId = shiftTimingsService.getStId(startTime, endTime);
+
+		System.out.println("stid: " + stId);
 
           if(from.equals(to)) {
 			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,stId,stDate,edDate));

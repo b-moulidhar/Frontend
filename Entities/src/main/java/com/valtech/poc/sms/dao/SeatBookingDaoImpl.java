@@ -12,6 +12,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -429,7 +430,7 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 
 	@Override
 	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, LocalDateTime from) throws DataAccessException {
-		String sql = "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=from AND current = true";
+		String sql = "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=? AND current = true";
 
 		try {
 			int cnt = jdbcTemplate.queryForObject(sql, new Object[] { eId, from }, Integer.class);
@@ -630,6 +631,18 @@ public class SeatBookingDaoImpl implements SeatBookingDao {
 		String sql = "select distinct e.emp_name, u.emp_id, s.s_name,st.st_start,st.st_end from employee e,seat s,seats_booked sb,shift_timings st,user u where e.e_id=? and sb.st_id=st.st_id and sb.s_id=s.s_id and sb.e_id=e.e_id and u.e_id=e.e_id;";
 		List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, eid);
 		return results;
+	}
+
+	@Override
+	public int findIdBysName(String sname) {
+		String sql="select s_id from seat where s_name=?";
+		try {
+	        Integer sid = jdbcTemplate.queryForObject(sql, new Object[] {sname }, Integer.class);
+	        return sid != null ? sid : 0;
+	    } catch (EmptyResultDataAccessException e) {
+	        System.out.println("No stid found for the given start time and end time.");
+	        return 0;
+	    }
 	}
 
 

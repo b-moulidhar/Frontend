@@ -93,6 +93,8 @@ public interface SeatBookingService {
 
 	List<Seat> findBookedSeatsByDate(LocalDate date);
 
+	int getSidBySname(String sname);
+
 	// void updateNotifStatus(int sbId, Connection connection);
 
 //	void bookSeat();

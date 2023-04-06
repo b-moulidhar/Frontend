@@ -74,6 +74,8 @@ public interface SeatBookingDao {
 
 	List<SeatsBooked> findSBIdByShiftTimingsAndDate(int stStart, String date);
 
+	int findIdBysName(String sname);
+
 
 
 

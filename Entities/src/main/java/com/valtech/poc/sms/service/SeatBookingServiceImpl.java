@@ -363,6 +363,12 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		return notification;
 	}
 
+	@Override
+	public int getSidBySname(String sname) {
+		// TODO Auto-generated method stub
+		return seatBookingDao.findIdBysName(sname);
+	}
+
 
 //    @Override
 //    public List<Object[]> getTopFivePopularSeats() {
