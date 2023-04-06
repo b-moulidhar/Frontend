@@ -340,7 +340,7 @@ public  class SeatBookingDaoImpl implements SeatBookingDao {
 	
 	@Override
 	public boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId, LocalDateTime from) throws DataAccessException {
-		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=from AND current = true";
+		String sql= "SELECT COUNT(*) FROM seats_booked WHERE e_id = ? AND sb_date=? AND current = true";
 
 
 	    try {

@@ -237,7 +237,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 				return "Seats booked created successfully with ID: " + savedSeatsBooked.getSbId();
 				// }
 			}
-			return "Seat Booked Succesfully";
+			return "test";
 
 		}
 
@@ -261,6 +261,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	        if (dates.size() > 7) {
 	            return "Cannot book seats for more than 7 days";
 	        }
+	        else {
 	        
 	        for (LocalDate date : dates) {
 	            if (CalendarUtil.isDateDisabled(date)) {
@@ -278,7 +279,8 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	                }
 	            }
 	        }
-	        return "Seats booked successfully ";
+	        return "test";
+	    }
 	    }
 	}
 

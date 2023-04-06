@@ -156,7 +156,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	        LocalDate fromDate = fromDateTime.toLocalDate();
 	        LocalDate toDate = toDateTime.toLocalDate();
 	        List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
-	        int count = 0;
+	        if (dates.size() > 7) {
+	            return "Cannot book seats for more than 7 days";
+	        }
+	        else {
 	        for (LocalDate date : dates) {
 	            if (CalendarUtil.isDateDisabled(date)) {
 	                System.out.println("The date falls on sunday or saturday");
@@ -167,17 +170,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 	            } else {
 	                AttendanceTable attendance = new AttendanceTable();
 	                saveAtt(attendance, emp, date, shiftStart, shiftEnd);
-	                count++;
 	            }
 	        }
-	        if (count > 7) {
-	            return "Attendance can be saved for maximum 7 days only";
-	        } else {
+	      
 	            mailContent.attendanceApprovalRequest(attendance1);
 	            return "saved";
 	        }
 	    }
-	}
+	    }
+	
 
 
 
