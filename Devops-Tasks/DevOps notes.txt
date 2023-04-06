@@ -1,0 +1,169 @@
+to integrate acr with already running kubernetes cluster to avoid imagepullback error
+step 1: enable the option at the time of aks creation
+  or
+step 2: use command : az aks update -n <cluster_name> -g <resource_grp name> --attach-acr <acr_name>
+
+
+netsh wlan show profile wireless key=clear
+
+
+the aks loadbalancer works on layer four so it doesnt give any ssl/tls termination, i.e connection cannot be made through https instead only on http
+to have https connection use either application gateway or ingress service which works on layer 7
+Azure kubernetes service
+
+#Imperative approach - using kubectl
+#declarative approach - using yaml
+#aks cluster will be in a resource group which we created and microsoft creates another resource group in which service nodes pods of an aks 
+will be listed 
+
+
+Youtube commands:
+
+
+RekhuGopal AKS App deploy
+Latest commit ec83574 on Aug 18, 2022
+ History
+ 0 contributors
+39 lines (27 sloc)  1.43 KB
+
+## Az login to azure account.
+az login --use-device-code
+
+## Create RG
+az group create --name myResourceGroup --location eastus
+
+## Configuring the Client and Generating a Key Pair [with powershell admin access]
+Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+
+## Generating ssh-keygen [With user access]
+ssh-keygen
+
+## Create AKS Cluster
+az aks create -g myResourceGroup -n myAKSCluster --enable-managed-identity --node-count 1 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys
+
+## Update ~/.kube/config
+az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
+
+## Create an NGINX Ingress Controller
+# Create a K8s namespace for the ingress resources
+kubectl create namespace ingress-basic
+
+# Add the ingress-nginx repository 
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx  
+
+# Use Helm to deploy an NGINX ingress controller 
+helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-basic --set controller.replicaCount=2 --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+
+## Deploy app
+kubectl apply -f ./App.yaml --namespace ingress-basic
+
+## Deploy Ingress
+kubectl apply -f ./ingress.yaml
+
+## Get public IP
+kubectl --namespace ingress-basic get services -o wide -w nginx-ingress-ingress-nginx-controller
+
+## Delete all
+az group delete --name myResourceGroup --yes --no-wait
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+YAML for deploying both backend api and frontend website
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: chonyy/calculator_api:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: website
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      containers:
+      - name: website
+        image: chonyy/calculator_website:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website
+spec:
+  ports:
+  - port: 3000
+  selector:
+    app: website
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+for react application
+
+# Fetching the latest node image on alpine linux
+FROM node:alpine AS development
+
+# Declaring env
+ENV NODE_ENV development
+
+# Setting up the work directory
+WORKDIR /react-app
+
+# Installing dependencies
+COPY ./package.json /react-app
+RUN npm install
+
+# Copying all the files in our project
+COPY . .
+
+# Starting our application
+CMD npm start

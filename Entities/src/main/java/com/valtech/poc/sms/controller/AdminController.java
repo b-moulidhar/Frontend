@@ -91,7 +91,6 @@ public class AdminController {
 		Employee emp = employeeService.findById(eId);
 		System.out.println(emp.getEmpName());
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
-		System.out.println(sb);
 		String code = sb.getCode();
 		System.out.println(code);
 		return code;

@@ -100,7 +100,7 @@ public class SeatBookingController {
 
 		
 		if(from.equals(to)) {
-			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,stId,from,to));
+			return ResponseEntity.ok(seatService.createSeatsBookedDaily(eId,sId,stId,stDate,edDate));
 		}
 	
 		else {
@@ -113,6 +113,39 @@ public class SeatBookingController {
 	public String notifStatus(@PathVariable int sbId) {
 		seatService.notifStatus(sbId);
 		return "Notification Sent";
+	}
+	@ResponseBody
+	@GetMapping("/{stId}")
+    public ResponseEntity<List<SeatsBooked>> getSeatsBookedByShiftTimingBetweenDates(
+            @PathVariable int stId,
+            @RequestParam("startDate") String startDateStr,
+	        @RequestParam("endDate") String endDateStr) {
+		
+		LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    
+	    List<SeatsBooked> seatsBooked = seatService.getSeatsBookedByShiftTimingBetweenDates(stId, startDate, endDate);
+	    
+	    return ResponseEntity.ok(seatsBooked);
+    }
+	
+	@ResponseBody
+	@GetMapping("/booked/byshift/report")
+	public ResponseEntity<byte[]> generateSeatsBookedByShiftReport(@RequestParam("stId") int stId,
+	                                                         @RequestParam("startDate") String startDateStr,
+	                                                         @RequestParam("endDate") String endDateStr) throws Exception {
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+	    byte[] pdfBytes = seatService.generateSeatsBookedByShiftReportPDF(stId, startDate, endDate);
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_PDF);
+	    headers.setContentDisposition(ContentDisposition.builder("attachment")
+	            .filename("seats_booked_by_employee.pdf")
+	            .build());
+
+	    return ResponseEntity.ok().headers(headers).body(pdfBytes);
 	}
 	
 	@ResponseBody
@@ -160,6 +193,33 @@ public class SeatBookingController {
 	    List<SeatsBooked> seatsBookedList = seatService.getSeatsBookedByEmployeeAndDate(empId, startDate, endDate);
 	    return new ResponseEntity<>(seatsBookedList, HttpStatus.OK);
 	}
+	@ResponseBody
+	@GetMapping("/booked/byemployee/report")
+	public ResponseEntity<byte[]> generateSeatsBookedByEmployeeReport(@RequestParam("empId") int empId,
+	                                                         @RequestParam("startDate") String startDateStr,
+	                                                         @RequestParam("endDate") String endDateStr) throws Exception {
+	    LocalDateTime startDate = LocalDateTime.parse(startDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	    LocalDateTime endDate = LocalDateTime.parse(endDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+	    byte[] pdfBytes = seatService.generateSeatsBookedByEmployeeReportPDF(empId, startDate, endDate);
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_PDF);
+	    headers.setContentDisposition(ContentDisposition.builder("attachment")
+	            .filename("seats_booked_by_employee.pdf")
+	            .build());
+
+	    return ResponseEntity.ok().headers(headers).body(pdfBytes);
+	}
+
+
+
+//	 @GetMapping("/popular")
+//	    public ResponseEntity<List<Object[]>> getTopFivePopularSeats() {
+//	        List<Object[]> popularSeats = seatService.getTopFivePopularSeats();
+//	        return ResponseEntity.ok(popularSeats);
+//	   }
+
 
 	@ResponseBody
 	@PostMapping("/GettingDetailsOfViwPass/{eid}")
@@ -168,7 +228,13 @@ public class SeatBookingController {
 		return empdata;
 	}
 	
-}	
+
+	@GetMapping("/popular")
+    public List<Seat> getTopFivePopularSeats() {
+        return seatService.getTopFivePopularSeats();
+    }
+}
+
 //	@GetMapping("/recurring/{eId}")
 //	public ResponseEntity<List<SeatsBooked>>  getSeatBookingsByEId(@PathVariable ("eId") int eId) {
 //			List<SeatsBooked> booking = seatService.getSeatBookingsByEId(eId);

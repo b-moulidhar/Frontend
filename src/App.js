@@ -25,6 +25,7 @@ import ThirdFloor from './components/layouts/thirdFloor';
 
 
 
+
 function App() {
 
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -55,9 +56,9 @@ function App() {
     <Route path="/forget/reset/:email" element={<Reset/>}/>    
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
     <Route path="/admin/:id" element={<AdminDashboard/>}/> 
-    <Route path="/admin" element={<AdminDashboard/>}/>    
+  
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
-    <Route path="/admin" element={<AdminDashboard/>}/>
+ 
     <Route path="/navbar" element={<Navbar/>}/>    
     <Route path="/profile/:id" element={<Profile/>}/>    
      {/* <Route path="/sidebar" element={<Sidebar/>}/>      */}
