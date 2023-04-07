@@ -1,140 +1,121 @@
-// import React, { useState } from 'react';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-// const EmployeeList = ({ employees }) => {
-//   const [query, setQuery] = useState('');
+const EmployeeList = ({ employees }) => {
+  const [data, setData] = useState([{}]);
+  const [id,setid] = useState(window.localStorage.getItem("EId"))
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-//   const handleInputChange = (event) => {
-//     setQuery(event.target.value);
-//   };
-
-//   const filteredEmployees = employees.filter((employee) => {
-//     return employee.name.toLowerCase().includes(query.toLowerCase());
-//   });
-
-//   return (
-//     <div>
-//       <h2>Employee Table</h2>
-//       <form>
-//         <input
-//           type="text"
-//           placeholder="Search employee"
-//           value={query}
-//           onChange={handleInputChange}
-//         />
-//       </form>
-//       <table>
-//         <thead>
-//           <tr>
-//             <th>ID</th>
-//             <th>Name</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {filteredEmployees.map((employee) => (
-//             <tr key={employee.id}>
-//               <td>{employee.id}</td>
-//               <td>{employee.name}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default EmployeeList;
-
-import React from 'react';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import DataTable, {defaultThemes} from 'react-data-table-component';
-
-function EmployeeList(){
-    const customStyles = {
-        headRow: {
-          style: {
-            backgroundColor: 'blue',
-            color: "white"
+  async function handleLogout() {
+      setIsLoggingOut(true);
+    
+      try {
+        const response = await fetch('http://localhost:7001/api/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
-        },
-        headCells: {
-          style: {
-            fontSize: '16px',
-            fontWeight: '600',
-            textTransform: 'uppercase'
-          }
-        },
-        cells: {
-          style: {
-            fontSize:  '15px'
-          }
+        });
+    
+        if (response.ok) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('EId');
+          localStorage.removeItem('role');
+          window.location = '/';
+        } else {
+          throw new Error('Logout failed.');
         }
+      } catch (error) {
+        console.error(error);
+        setIsLoggingOut(false);
       }
-      const column = [
-        {
-          name: "ID",
-          selector: row => row.id,
-          sortable: true
-        },
-        {
-          name: "Name",
-          selector: row => row.name,
-          sortable: true
-        },
-        {
-          name: "Email",
-          selector: row => row.email
-        },
-        {
-          name: "City",
-          selector: row => row.address.city
-        }
-      ]
+    }
+  
+  
+  useEffect(() => {
     
-      // useEffect(()=> {
-      //   const fetchData = async () => {
-      //     axios.get('https://jsonplaceholder.typicode.com/users')
-      //     .then(res => setRecords(res.data))
-      //     .catch(err=>console.log(err));
-      //   }
-      //   fetchData();
-      // },[])
-    
-      useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const res = await axios.get('https://jsonplaceholder.typicode.com/users');
-            setRecords(res.data);
-            setFilterRecords(res.data);
-          } catch (err) {
-            console.log(err);
+    try {
+      //axios.get('https://jsonplaceholder.typicode.com/users');
+      axios
+        .get(
+          `http://10.191.80.104:7001/employee/getAllEmployeesUnderTheManager/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role": localStorage.getItem("role"),
+              "X-Eid": localStorage.getItem("eid"),
+            },
           }
-        };
-        fetchData();
-      }, []);
-    
-      const [records,setRecords] = useState([])
-      const [filterRecords,setFilterRecords] = useState([])
+        )
+        .then((text) => {
+          // setData(JSON.parse(text));
+          setData(text.data)
+        });
      
-      const handleFilter = (event) => {
-        const newData = filterRecords.filter(row => row.name.toLowerCase().includes(event.target.value.toLowerCase()))
-        setRecords(newData);
-      }
-    return(
-        <div style={{padding: "50px 10px", backgroundColor:"crimson"}}>
-        <div style={{display:'flex', justifyContent: 'right'}}>
-          <input type='text' placeholder='Search...' onChange={handleFilter} style={{padding: '6px 10px'}}/>
-        </div>
-        <DataTable 
-        columns={column}
-        data={records}
-        customStyles={customStyles}
-        pagination
-        selectableRows
-        >
-        </DataTable>
-      </div>
-    )
-}
+    } catch (err) {
+      console.log(err);
+    }
+   
+  }, []);
+  return (
+    <div>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+   
+   <a className="navbar-brand" href="#">SMS</a>
+   <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+     <span className="navbar-toggler-icon" />
+   </button>
+   <div className="collapse navbar-collapse" id="navbarNavDropdown">
+     <ul className="navbar-nav mr-auto">
+       <li className="nav-item active">
+         <a className="nav-link" href={`/manager/${id}`}>Approval <span className="sr-only"></span></a>
+       </li>
+       <li className="nav-item">
+         <a className="nav-link" href="#">Employee List</a>
+       </li>
+       <li className="nav-item">
+         <a className="nav-link" href={`/bookseat/${id}`}>Book Seat</a>
+       </li>
+     </ul>
+     <ul className="navbar-nav ml-auto">
+       <li className="nav-item" >
+         <a className="nav-link ml-auto" href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+       </li>
+     </ul>
+   </div>
+ </nav>
+ 
+      <h2>Employee Table</h2>
+     
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+       
+        <tbody>
+          {data.map((item) => {
+            return (
+              <tr key={item.id}>
+                <td>{item.e_id}</td>
+                <td>{item.emp_name}</td>
+                <td>{item.mail_id}</td>
+                <td>{item.ph_num}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 export default EmployeeList;
+
+

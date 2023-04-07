@@ -13,7 +13,6 @@
    background-position: center ;
    background-repeat: no-repeat;
    background-size: cover;
-   display: flex;
   margin: 0;
   padding: 0;
   text-decoration: none;
@@ -23,7 +22,7 @@
   display: flex;
   justify-content: space-evenly;
   margin: auto;
-  margin-top: 100px;
+  margin-top: 150px;
 }
 
 .dashboard_bottom{
@@ -75,7 +74,7 @@ ul li {
   box-shadow: 10px 5px 5px grey;
 } */
 
-.sidebar{
+/* .sidebar{
   background-color: rgb(255, 165, 165);
   color: rgb(0, 0, 0);
   height: 100vh;
@@ -121,7 +120,7 @@ ul li {
 
 .icon, .link_text{
   font-size: 20px;
-}
+} */
 
 /* Styles for screens smaller than 768px */
 @media screen and (max-width: 768px) {
@@ -291,4 +290,13 @@ ul li {
   font-size: 20px;
   padding: 20px;
   
+}
+nav{
+  background-color: crimson;
+  height: 70px;
+  justify-content: space-between;
+}
+
+.app_name{
+  color: white;
 }

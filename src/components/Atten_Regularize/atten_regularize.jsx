@@ -1,47 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import "./atten_regularize.css"
+import { useParams } from 'react-router-dom';
 
 function Atten_Regularize(){
+
+  const [id,setid] = useState(window.localStorage.getItem("EId"))
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    async function handleLogout() {
+        setIsLoggingOut(true);
+      
+        try {
+          const response = await fetch('http://localhost:7001/api/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+      
+          if (response.ok) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('EId');
+            localStorage.removeItem('role');
+            window.location = '/';
+          } else {
+            throw new Error('Logout failed.');
+          }
+        } catch (error) {
+          console.error(error);
+          setIsLoggingOut(false);
+        }
+      }
+
+  function seatBook(){
+  window.location="/bookseat/"+id;
+  }
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  // const [shiftStart, setShiftStart] = useState("");
-  // const [shiftEnd, setShiftEnd] = useState("");
-  // const [dutyType, setDutyType] = useState("");
-  // const [comment, setComment] = useState("");
-  var shiftStart = [];
-  var shiftEnd = [];
+  const [shiftStart, setShiftStart] = useState([]);
+  const [shiftEnd, setShiftEnd] = useState([]);
   var shift_Start;
   var shift_End;
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-    
-  //   try {
-  //     const response = await axios.post("", {
-  //       start_date,
-  //       end_date,
-  //       shift_start,
-  //       shift_end,
-  //     });
-      
-  //     console.log(response.data); 
-  //   } 
-    
-  //   catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   useEffect(() => {
-    axios.get('http://10.191.80.104:7001/shiftStart',{
+    axios.get('http://10.191.80.102:7001/shiftStart',{
       headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "X-Role":localStorage.getItem("role"),
           "X-Eid":localStorage.getItem("eid")
       }
   }).then(function (response) {
-         shiftStart = response.data;
-        return axios.get('http://10.191.80.104:7001/shiftEnd',{
+        //  shiftStart = response.data;
+        setShiftStart(response.data)
+         console.log(shiftStart)
+        return axios.get('http://10.191.80.102:7001/shiftEnd',{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),
@@ -50,19 +65,8 @@ function Atten_Regularize(){
       });
       })
       .then(function (response) {
-         shiftEnd = response.data;
-         return axios.post('',{
-          startDate,
-          endDate,
-          shift_Start,
-          shift_End,
-         },{
-          headers:{
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "X-Role":localStorage.getItem("role"),
-              "X-Eid":localStorage.getItem("eid")
-          }
-        })
+        setShiftEnd(response.data)
+         console.log(shiftEnd)
       })
       .catch(function (error) {
         console.log(error);
@@ -72,6 +76,19 @@ function Atten_Regularize(){
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    axios.post(`http://10.191.80.104:7001/attendanceRegularization/${id}`,{
+         params:{
+          startDate:startDate,
+          endDate:endDate,
+          stTime:`${shift_Start}-${shift_End}`,
+         }
+         },{
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+        })
   };
 
   const StartShiftTime =(e) => {
@@ -82,6 +99,36 @@ function Atten_Regularize(){
   }
 
     return(
+      <div>
+         
+         <nav className="navbar navbar-expand-lg navbar-light bg-light">
+              <a className="navbar-brand" href="#">SMS</a>
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon" />
+                {/* {console.log(id)} */}
+              </button>
+              <div className="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul className="navbar-nav mr-auto">
+                  <li className="nav-item active">
+                    <a className="nav-link" href={`/dashboard/${id}`}>DashBoard <span className="sr-only"></span></a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href={`/profile/${id}`}>Profile</a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="">Regularization</a>
+                  </li>
+                </ul>
+                <ul className="navbar-nav ml-auto">
+                  <li className="nav-item" >
+                    <a className="nav-link ml-auto" href={`/notify/${id}`}>Notification</a>
+                  </li>
+                  <li className="nav-item" >
+                    <a className="nav-link ml-auto" href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
 
         <form onSubmit={handleSubmit}>
           <label>
@@ -103,9 +150,10 @@ function Atten_Regularize(){
                 <option value="" disabled>--Select--</option>
                 {
           
-          shiftEnd.map((start,idx)=>{
+          shiftStart.map((start,idx)=>{
+            console.log(start)
             return <option key={idx} value={start}>{start}</option>
-            // return console.log(start);
+            
           })
         }
             </select>
@@ -123,43 +171,13 @@ function Atten_Regularize(){
           
           shiftEnd.map((end,idx)=>{
             return <option key={idx} value={end}>{end}</option>
-            // return console.log(end);
           })
         }
             </select>
           </label>
-          {/* <label>
-            Shift End:
-            <input type="time" value={shiftEnd} onChange={(e) => setShiftEnd(e.target.value)} />
-          </label> */}
-          <br />
-          {/* <label>
-            Duty Type:
-            <select value={dutyType} onChange={(e) => setDutyType(e.target.value)}>
-              <option value="">Select a duty type</option>
-              <option value="Bank Related Work">Bank Related Work</option>
-              <option value="Caring For Family Member">Caring For Family Member</option>
-              <option value="Customer/Vendor Meeting">Customer/Vendor Meeting</option>
-              <option value="Forgot to Punch In">Forgot to Punch In</option>
-              <option value="Off Duty">Off Duty</option>
-              <option value="Official Tour/Travel">Official Tour/Travel</option>
-              <option value="Official Training">Official Training</option>
-              <option value="On Duty">On Duty</option>
-              <option value="Others">Others</option>
-              <option value="Personal">Personal</option>
-              <option value="School PTM">School PTM</option>
-              <option value="Sick">Sick</option>
-              <option value="Work From Home">Work From Home</option>
-            </select>
-          </label> */}
-          {/* <br />
-          <label>
-            Employee Comments:
-            <textarea value={comment} onChange={(e) => setComment(e.target.value)} />
-          </label>
-          <br /> */}
           <button type="submit">Regularize</button>
         </form>
+        </div>
   );
 }
 

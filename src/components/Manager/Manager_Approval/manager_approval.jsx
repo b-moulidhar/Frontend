@@ -1,119 +1,101 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import cors from 'cors';
-
-// enable CORS for all requests
-app.use(cors())
 
 function Manager_Approval(){
-    const [managerEmp, setManagerEmp] = useState([])
-    const { id } = useParams()
+    const [users,setUser] = useState([])
 
     useEffect(()=>{
-        //axios.get("http://10.191.80.104:7001/seats/total")
-        axios.get(`http://10.191.80.102:7001/attendanceApprovalList/${id}`, {}, {
-            headers: {
+        axios.get("http://10.191.80.104:7001/registrationApprovalList",{
+            headers:{
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Role": localStorage.getItem("role"),
-                "X-Eid": localStorage.getItem("eid")
+                "X-Role":localStorage.getItem("role"),
+                "X-Eid":localStorage.getItem("eid")
             }
         })
-        .then((response) => {
-            setManagerEmp(response.data)
-            console.log(response.data)
+        .then((res)=>{
+            setUser(res.data)
+            // console.log(role)
+        }).catch((err)=>{
+            console.log(err)
         })
-        .catch(err => console.log("Error ", err))
-    },[id])
+    },[])
 
-    function approve(atid){
-        axios.put(`http://10.191.80.102:7001/attendanceApproval/${atid}`, {}, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Role": localStorage.getItem("role"),
-                "X-Eid": localStorage.getItem("eid")
-            }
-        })
-        .then(response => {
-            console.log(response.data);
-            // window.location.reload();
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
-    function disapprove(atid){
-        alert(atid)
-        axios.delete(`http://10.191.80.104:7001/disapproveAttendance/${atid}`, {}, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Role": localStorage.getItem("role"),
-                "X-Eid": localStorage.getItem("eid")
-            }
-        })
-        .then(response => {
-            console.log(response.data);
-            // window.location.reload();
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
+function approve(empid){
+    axios.put(`http://10.191.80.73:7001/registrationApproval/${empid}`, {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role": localStorage.getItem("role"),
+            "X-Eid": localStorage.getItem("eid")
+        }
+    })
+    .then(response => {
+        console.log(response.data);
+        // window.location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+function disapprove(empid){
+    alert(empid)
+    axios.delete(`http://10.191.80.73:7001/registrationDisapproval/${empid}`, {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role": localStorage.getItem("role"),
+            "X-Eid": localStorage.getItem("eid")
+        }
+    })
+    .then(response => {
+        console.log(response.data);
+        // window.location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+     
     return(
-        <div>
-            <table className="table1">
-        <thead>
-            <tr>
-            <th scope="col">Attendence ID</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
-            <th scope="col">Shift Start</th>
-            <th scope="col">Shift End</th>
-            <th scope="col">Approve</th>
-            <th scope="col">Decline</th>
-            
-            </tr>
-        </thead>
-        <tbody>
-            {/* <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>12</td>
-            <td>22</td>
-            <td>09:00am</td>
-            <td>18:00pm</td>
-        </tr>    */}
-            {managerEmp.map((emp,idx)=>(
-                <tr key={idx}>
-                    <th scope="row">{emp.atid}</th>
-                    <td>{emp.startdate}</td>
-                    <td>{emp.endDate}</td>
-                    <td>{emp.shiftStart}</td>
-                    <td>{emp.shiftEnd}</td>
-                    <td>
-                        {!emp.approved && (
-                            <button 
-                                type="button" 
-                                className="btn btn-success manager_approve" 
-                                onClick={() => approve(emp.atid)}>
-                                    Approve
-                                </button>
-                        )}
-                    </td>
-                    <td>
-                        {!emp.approved && (
-                            <button 
-                                type="button" 
-                                className="btn btn-danger manager_approve" 
-                                onClick={() => disapprove(emp.atid)}>
-                                    Decline
-                            </button>
-                        )}
-                    </td>
-                </tr>
-            ))}
-        </tbody>
-        </table>
+        
+        <div className='manager'>
+            <div>
+            </div>
+            <div>
+                <h2>Employee Approval for SMS</h2>
+                <table className="table1">
+                    <thead>
+                        <tr>
+                            <th scope="col">Employee ID</th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">Employee Email</th>
+                            <th scope="col">Employee Phone Number</th>
+                            <th scope="col">Approve</th>
+                            <th scope="col">Decline</th>   
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map((user)=>{
+                            return (
+                                <tr key={user.emp_id}>
+                                    <th scope="row" value={user.emp_id}>{user.emp_id}</th>
+                                    <td>{user.emp_name}</td>
+                                    <td>{user.mail_id}</td>
+                                    <td>{user.ph_num}</td>
+                                    <td>
+                                        <button onClick={()=>approve(user.emp_id)} className="btn btn-success manager_approve">Approve </button>
+                                    </td>
+                                    <td>
+  <button type="button" onClick={() => disapprove(user.emp_id)} className="btn btn-danger manager_approve">
+    Disapprove
+  </button>
+</td>
+
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }
