@@ -12,7 +12,7 @@ public interface FloorService {
 
 	public void addFloor(Floors floor);
 
-	public void deleteFloor(int fId);
+	public void deleteFloor(int fId, String f_name);
 
 	public void addFloorSeats(int f_id, int seatsToAdd);
 
