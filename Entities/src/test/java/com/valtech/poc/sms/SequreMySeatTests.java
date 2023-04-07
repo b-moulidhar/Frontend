@@ -1,14 +1,25 @@
 package com.valtech.poc.sms;
 
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,9 +28,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
+import java.util.List;
+import java.util.Map;
 import com.valtech.poc.sms.controller.SeatBookingController;
+import com.valtech.poc.sms.dao.AdminDao;
+import com.valtech.poc.sms.dao.EmployeeDAO;
+import com.valtech.poc.sms.dao.HolidayDao;
 import com.valtech.poc.sms.dao.UserDAO;
+import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Roles;
 import com.valtech.poc.sms.entities.User;
 import com.valtech.poc.sms.repo.EmployeeRepo;
@@ -31,6 +47,8 @@ import com.valtech.poc.sms.security.JwtUtil;
 import com.valtech.poc.sms.service.AdminService;
 import com.valtech.poc.sms.service.SeatBookingService;
 import com.valtech.poc.sms.service.UserServiceImpl;
+
+import io.swagger.v3.oas.models.examples.Example;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
@@ -57,6 +75,8 @@ class SequreMySeatTests {
 	    @InjectMocks
 	    private SeatBookingController seatBookingController;
 	    
+	
+
 	    @InjectMocks
 	    private UserServiceImpl userService;
 
@@ -76,48 +96,23 @@ class SequreMySeatTests {
 	    @Mock
 	    private JwtUtil jwtUtil;
 	   
+	    @Mock
+	    private EmployeeDAO employeeDAO;
 	    
 	    @Mock
 	    private UserDetails userDetails;
+	   
+	    @Mock
+	    private AdminDao adminDao;
 	    
+	    @InjectMocks
+	    private Example example;
 	    
-//	    @InjectMocks
-//	    private UserService userService;
-	    
-//	    @Test
-//	    public void testCreateSeatsBooked() {
-//	        // Mock data
-//	        int eId = 1;
-//	        int sId = 2;
-//	        Employee emp = new Employee();
-//	        emp.seteId(eId);
-//	        Seat seat = new Seat();
-//	        seat.setsId(sId);
-//	        String code = "QR Code";
-//	        LocalDateTime now = LocalDateTime.now();
-//	        SeatsBooked sb = new SeatsBooked(now, now, now, true, code, seat, emp, false,false);
-////	        SeatsBooked savedSeatsBooked = new SeatsBooked();
-//	        sb.setSbId(10);
-//
-//	        // Mock behavior
-//	        Mockito.when(employeeRepo.findById(eId)).thenReturn(Optional.of(emp));
-//	        Mockito.when(seatRepo.findById(sId)).thenReturn(Optional.of(seat));
-//	        Mockito.when(adminService.generateQrCode(eId)).thenReturn(code);
-//	        Mockito.when(seatBookingService.saveSeatsBookedDetails(sb)).thenReturn(sb);
-//
-//	        // Call API
-////	        ResponseEntity<String> response = seatBookingController.createSeatsBooked(eId, sId);
-//
-//	        // Verify behavior
-//	        Mockito.verify(employeeRepo).findById(eId);
-//	        Mockito.verify(seatRepo).findById(sId);
-//	        Mockito.verify(adminService).generateQrCode(eId);
-//	        Mockito.verify(seatBookingService).saveSeatsBookedDetails(sb);
-//
-//	        // Assert response
-////	        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-////	        Assert.assertEquals("Seats booked created successfully with ID: 1", response.getBody());
-//	    }
+	    private String ftDate;
+	    private LocalDateTime dateTime;
+
+	    private int eId;
+	    private List<Map<String, Object>> employees;
 	    
 	    @Test
 	    public void testLoadUserByUsername() {
@@ -193,11 +188,97 @@ class SequreMySeatTests {
 	        assertThrows(RuntimeException.class, () ->userService.login(empId, pass));
 	    }
 
-
-
+	    @Before
+	    public void setUp() {
+	        ftDate = "2022-12-31 23:59:59";
+	        dateTime = LocalDateTime.parse(ftDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	        eId = 1234;
+	        
+	        employees = new ArrayList<>();
+	        
+	        Map<String, Object> employee1 = new HashMap<>();
+	        employee1.put("id", 1);
+	        employee1.put("name", "John Doe");
+	        employee1.put("title", "Developer");
+	        
+	        Map<String, Object> employee2 = new HashMap<>();
+	        employee2.put("id", 2);
+	        employee2.put("name", "Jane Smith");
+	        employee2.put("title", "Designer");
+	        
+	        employees.add(employee1);
+	        employees.add(employee2);
+	    }
 	    
+	    @Test
+	    public void testGetFoodCount() {
+	        when(adminDao.getFoodCount(any(LocalDateTime.class))).thenReturn(0);
+	        
+	        int result = adminDao.getFoodCount(dateTime);
+	        
+	        Assert.assertEquals(0, result);
+	    }
 
+	    @Test
+	    public void testGetSeatBookedCount() {
+	        when(adminDao.getSeatBookedCount(any(LocalDateTime.class))).thenReturn(0);
+	        
+	        int result = adminDao.getSeatBookedCount(dateTime);
+	        
+	        Assert.assertEquals(0, result);
+	    }
+	   
 
+	  
+	    	@Test
+	    	public void testFindeIdByMailId() {
+	    		// Create a mock EmployeeRepository object
+	    		EmployeeRepo empRepoMock = mock(EmployeeRepo.class);
+	    		
+	    		// Create a sample Employee object
+	    		Employee emp = new Employee();
+	    		emp.seteId(123);
+	    		emp.setMailId("test@example.com");
+	    		
+	    		// Configure the mock to return the sample Employee object when findByMailId is called
+	    		when(empRepoMock.findByMailId("test@example.com")).thenReturn(emp);
+	    		
+	    		// Call the method being tested
+	    		int result = findeIdByMailId("test@example.com", empRepoMock);
+	    		
+	    		// Verify that the expected result is returned
+	    		assertEquals(123, result);
+	    		
+	    		// Verify that findByMailId was called exactly once with the correct argument
+	    		verify(empRepoMock, times(1)).findByMailId("test@example.com");
+	    	}
+	    	
+	    	private int findeIdByMailId(String email, EmployeeRepo empRepo) {
+	    		return empRepo.findByMailId(email).geteId();
+	    	}
+	    
+	    	@Test
+	    	public void testIsHoliday() {
+	    		// Create a mock HolidayDao object
+	    		HolidayDao holidayDaoMock = mock(HolidayDao.class);
+	    		
+	    		// Configure the mock to return 1 when checkHoliday is called with a specific date
+	    		when(holidayDaoMock.checkHoliday(LocalDate.of(2023, 4, 25))).thenReturn(1);
+	    		
+	    		// Call the method being tested with the mocked HolidayDao object
+	    		boolean result = isHoliday(LocalDate.of(2023, 4, 25), holidayDaoMock);
+	    		
+	    		// Verify that the expected result is returned
+	    		assertTrue(result);
+	    		
+	    		// Verify that checkHoliday was called exactly once with the correct argument
+	    		verify(holidayDaoMock, times(1)).checkHoliday(LocalDate.of(2023, 4, 25));
+	    	}
+	    	
+	    	private boolean isHoliday(LocalDate date, HolidayDao holidayDao) {
+	    		int count = holidayDao.checkHoliday(date);
+	    		return count > 0;
+	    	}
 	@Test
 	void contextLoads() {
 	}
