@@ -186,8 +186,8 @@ public class AdminController {
 		
 	@ResponseBody
 	@GetMapping("/profileDetailsAdmin/{admnId}")
-    public Employee getAdminById(@PathVariable int eId) {
-        return employeeService.getEmployeeByeId(eId);
+    public Employee getAdminById(@PathVariable int e_id) {
+        return employeeService.getEmployeeByeId(e_id);
     }
 	
 	
