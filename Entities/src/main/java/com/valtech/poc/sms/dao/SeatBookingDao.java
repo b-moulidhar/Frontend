@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
 
@@ -15,11 +16,11 @@ public interface SeatBookingDao {
 
 //	List<Integer> getAllSeats();
 
-	List<Integer> availableSeats();
+	List<String> availableSeats();
 
 //	List<SeatsBooked> findAllByEId(Employee emp);
 
-	SeatsBooked findCurrentSeat(Employee emp);
+	List<SeatsBooked> findCurrentSeat(Employee emp);
 
 	List<Integer> countTotalSeats();
 
@@ -44,9 +45,9 @@ public interface SeatBookingDao {
 
 	boolean canEmployeeBookSeat(int eId,int sId, LocalDate sbDate);
 
-	boolean checkIfEmployeeAlredyBookTheSeat(int eId, LocalDateTime from, LocalDateTime to) throws DataAccessException;
+	boolean checkIfEmployeeAlreadyBookTheSeat(int eId,LocalDateTime from, LocalDateTime to) throws DataAccessException;
 
-	boolean checkIfEmployeeAlredyBookTheSeatDaily(int eId, LocalDateTime from) throws DataAccessException;
+	boolean checkIfEmployeeAlreadyBookTheSeatDaily(int eId,  LocalDateTime from) throws DataAccessException;
 
 
 	List<SeatsBooked> getSeatsBookedByEmployeeAndDate(int empId, LocalDateTime startDate, LocalDateTime endDate);
@@ -55,6 +56,27 @@ public interface SeatBookingDao {
 	List<SeatsBooked> getSeatsBookedByDate(LocalDateTime startDate, LocalDateTime endDate);
 
 	byte[] generateSeatsBookedPDF(List<SeatsBooked> seatsBooked) throws Exception;
+
+	void updatFoodCount(LocalDateTime sbDate);
+
+
+	List<Map<String, Object>> GettingDetailsOfViwPass(int eid);
+
+	List<SeatsBooked> getSeatsBookedByShiftTimingBetweenDates(int stId, LocalDateTime startDate, LocalDateTime endDate);
+	List<Seat> getTopFivePopularSeats();
+
+
+	List<Seat> findBookedSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findAvailableSeatsByWeek(LocalDate fromDate, LocalDate toDate);
+
+	List<Seat> findBookedSeatsByDate(LocalDate date);
+
+	List<SeatsBooked> findSBIdByShiftTimingsAndDate(int stStart, String date);
+
+	int findIdBysName(String sname);
+
+
 
 
 

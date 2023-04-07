@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.valtech.poc.sms.entities.AttendanceTable;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.Mail;
 import com.valtech.poc.sms.entities.SeatsBooked;
@@ -75,10 +74,9 @@ public class MailContentImpl implements MailContent {
 	}
 
 	@Override
-	public void attendanceApprovalRequest(AttendanceTable attendanceTable) {
-		String email = attendanceTable.geteId().getManagerDetails().getManagerDetails().getMailId();
+	public void attendanceApprovalRequest(String mail) {
+		String email =mail;
 		String subject = "Approval Request recieved";
-		System.out.println("test data: " + attendanceTable);
 		String body = "Hello, \nYour Attendance Request form is received, "
 				+ " You will be notified regarding the approval soon. \n-admin";
 		sendMail.sendMail(email, subject, body);

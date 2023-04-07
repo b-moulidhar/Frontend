@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,38 +51,16 @@ public class UserController {
 	
 	@Autowired
 	private RolesService rolesService;
-	
-	@Autowired
-	private JwtUtil jwtUtil;
-	
-	@Autowired
-	private UserDAO userDAO;
-	
 
+
+	// Get all manager names
 	@ResponseBody
 	@GetMapping("/gettingAllManagernames")
 	public List<String> getAllManagerNames(){
 		return userService.getManagerNames();
 	}
 
-
-//	@PostMapping("/api/login")
-//	public ResponseEntity<Map<String,String>> login(@RequestBody Map<String, String> request) {
-//		String empId = request.get("empId");
-//		String pass = request.get("pass");
-//
-//		String token = userService.login(Integer.parseInt(empId), pass);
-//		User user=userService.findByEmpId(Integer.parseInt(empId));
-//		String role = user.getRoles().iterator().next().getRole();
-//		System.out.println(user.getEmpDetails().getMailId());
-//		Map<String, String> response = new HashMap<>();
-//		response.put("token", token);
-//		response.put("EId", String.valueOf(user.getEmpDetails().geteId()));
-//		response.put("role", role);
-//
-//		return ResponseEntity.ok(response);
-//	}
-	
+	// Login API
 	@PostMapping("/api/login")
 	public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> request) {
 	    String empId = request.get("empId");
@@ -93,8 +70,8 @@ public class UserController {
 	        String token = userService.login(Integer.parseInt(empId), pass);
 	        User user = userService.findByEmpId(Integer.parseInt(empId));
 	        String role = user.getRoles().iterator().next().getRole();
-	        System.out.println(user.getEmpDetails().getMailId());
-
+	        // Log successful login attempt
+	        logger.info("User " + empId + " successfully logged in");
 	        Map<String, String> response = new HashMap<>();
 	        response.put("token", token);
 	        response.put("EId", String.valueOf(user.getEmpDetails().geteId()));
@@ -114,28 +91,6 @@ public class UserController {
 	    }
 	}
 
-
-
-
-
-	@GetMapping("/user")
-	public ResponseEntity<User> getUser(@RequestHeader("Authorization") String token) {
-		int username = jwtUtil.extractEmpId(token);
-		User user = userService.findByEmpId(username);
-		return ResponseEntity.ok(user);
-	}
-
-	@GetMapping("/my-protected-endpoint")
-	public String myProtectedEndpoint() {
-		// logic for your protected API endpoint here
-		return "Hello, this is a protected endpoint!";
-	}
-	@GetMapping("/welcome")
-	public String welcome() {
-		String text = "this is private page";
-		text+="this page is not allowed to unauthenticated users";
-		return text;
-	}
 //	@PutMapping("/{empId}")
 //    public String updateUserApproval(@PathVariable("empId") int empId) {
 //        User user = userService.findByEmpId(empId);

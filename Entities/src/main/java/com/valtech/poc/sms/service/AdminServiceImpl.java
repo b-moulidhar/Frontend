@@ -80,14 +80,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public int getCount(String ftDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime dateTime = LocalDateTime.parse(ftDate, formatter);
-		Food f= adminRepository.getFoodByFtDate(dateTime);
-		return f.getCount();
-	}
-	
-	@Override
 	public List<String> findShiftStartTimings() {
 		return adminDao.findShiftStartTimings();
 	}
@@ -132,8 +124,14 @@ public class AdminServiceImpl implements AdminService{
 		System.out.println(emp.getEmpName());
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
 		String key = sb.getCode();
+		System.out.println(key);
+		System.out.println(code);
 		if(key.equals(code)) {
 			sb.setVerified(true);
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
+			sb.setPunchIn(dateTime);
 			seatsBookedRepo.save(sb);
 			return true;
 		}

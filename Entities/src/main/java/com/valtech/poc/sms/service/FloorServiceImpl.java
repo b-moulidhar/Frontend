@@ -12,29 +12,6 @@ import com.valtech.poc.sms.entities.Floors;
 @Service
 public class FloorServiceImpl implements FloorService {
 
-//	@Autowired
-//	private FloorDao floorDAO;
-//
-//	@Transactional
-//	@Override
-//	public void addFloorSeats(Floors floor) {
-//		floorDAO.addFloorSeats(floor);
-//	}
-//
-//	@Transactional
-//	@Override
-//	public void updateFloorSeats(Floors floor) {
-//		floorDAO.updateFloorSeats(floor);
-//	}
-//
-//	@Transactional
-//	@Override
-//	public void deleteFloorSeats(int floorId) {
-//		floorDAO.deleteFloorSeats(floorId);
-//	}
-
-//	---------------------------------------------------------------------------------------------------------
-
 	@Autowired
 	private FloorDao floorDao;
 
@@ -46,6 +23,16 @@ public class FloorServiceImpl implements FloorService {
 	@Override
 	public Floors getFloorById(int f_id) {
 		return floorDao.getFloorById(f_id);
+	}
+
+	@Override
+	public void addFloor(Floors floor) {
+		floorDao.addFloor(floor);
+	}
+
+	@Override
+	public void deleteFloor(int fId) {
+		floorDao.deleteFloor(fId);
 	}
 
 	@Override
@@ -72,13 +59,15 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
-	public void updateFloorSeats(int f_id, int updatedNumberOfSeats) {
+	public void updateFloorAndSeats(int f_id, String f_name, int updatedNumberOfSeats) {
 		Floors floor = floorDao.getFloorById(f_id);
 		if (floor == null) {
 			throw new RuntimeException("Floor not found");
 		}
 		floor.setfSeats(updatedNumberOfSeats);
+		floor.setfName(f_name);
 		floorDao.updateFloor(floor);
+
 	}
 
 }
