@@ -73,7 +73,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 		attendance.setShiftEnd("" + sb.getSt().getStEnd());
 		attendance.seteId(sb.geteId());
 		attendanceRepository.save(attendance);
-		mailContent.attendanceApprovalRequest(attendance);
+		String email = attendance.geteId().getManagerDetails().getManagerDetails().getMailId();
+		mailContent.attendanceApprovalRequest(email);
 	}
 
 	/*Save the attendance details of the employees*/
@@ -111,7 +112,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 			saveAtt(attendance, emp, fromDate, shiftStart, shiftEnd);
 			System.out.println("saved");
 			logger.info("Sending the mail");
-			mailContent.attendanceApprovalRequest(attendance);
+			String email = attendance.geteId().getManagerDetails().getManagerDetails().getMailId();
+			mailContent.attendanceApprovalRequest(email);
 			logger.debug(attendance.geteId().getManagerDetails().getManagerDetails().getMailId());
 			return "saved";
 		}
@@ -183,9 +185,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	                saveAtt(attendance, emp, date, shiftStart, shiftEnd);
 	            }
 	        }
-	      
-	            mailContent.attendanceApprovalRequest(attendance1);
-	            return "saved";
+	        String email = attendance1.geteId().getManagerDetails().getManagerDetails().getMailId();
+	        mailContent.attendanceApprovalRequest(email);
+	            return "test";
 	        }
 	    }
 	    }
@@ -229,8 +231,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	/*Get attendance details of each employee by eId for approval*/
 	@Override
 	public List<Map<String, Object>> getAttendanceListForApproval(int eId) {
-//		Employee e = employeeRepo.findById(eId).get();
-//		int employeeId = e.getManagerDetails().getManagerDetails().geteId();
 		return attendanceDao.getAttendanceListForApproval(eId);
 	}
 
