@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,14 +25,24 @@ import com.valtech.poc.sms.entities.Manager;
 @Repository
 public class EmployeeDAOImpl implements EmployeeDAO {
 
+	private static final Logger logger = LoggerFactory.getLogger(EmployeeDAOImpl.class);
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Employee getEmployeeByeId(int id) {
-		String sql = "SELECT * FROM Employee WHERE e_id = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new EmployeeRowMapper());
+	public Employee getEmployeeByeId(int id) throws Exception {
+		try {
+			String sql = "SELECT * FROM Employee WHERE e_id = ?";
+			return jdbcTemplate.queryForObject(sql, new Object[] { id }, new EmployeeRowMapper());
+		} catch (EmptyResultDataAccessException e) {
+			logger.error("Employee with id {} does not exist in the database", id);
+			throw new Exception("Employee with Id " + id + " does not exist in the database!", e);
+		} catch (Exception e) {
+			logger.error("An error occurred while fetching employee with id {}", id, e);
+			throw new Exception("An error occurred while fetching employee with Id " + id, e);
+		}
 	}
 
 	private class EmployeeRowMapper implements RowMapper<Employee> {

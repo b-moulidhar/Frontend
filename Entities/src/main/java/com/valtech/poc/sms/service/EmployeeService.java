@@ -7,7 +7,7 @@ import com.valtech.poc.sms.entities.Employee;
 
 public interface EmployeeService {
 
-	Employee getEmployeeByeId(int eId);
+	Employee getEmployeeByeId(int eId) throws Exception;
 
 	Employee findByEmpName(String empName);
 
