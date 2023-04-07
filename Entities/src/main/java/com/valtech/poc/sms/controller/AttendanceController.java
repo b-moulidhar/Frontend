@@ -25,7 +25,6 @@ import com.valtech.poc.sms.entities.AttendanceTable;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.repo.AttendanceRepository;
 import com.valtech.poc.sms.service.AttendanceService;
-import com.valtech.poc.sms.service.MailContent;
 import com.valtech.poc.sms.service.ShiftTimingsService;
 
 @Controller
@@ -41,9 +40,6 @@ public class AttendanceController {
 	@Autowired
 	private ShiftTimingsService shiftTimingsService;
 
-	@Autowired
-	private MailContent mailContent;
-
 	private final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
 	@ResponseBody
@@ -52,7 +48,6 @@ public class AttendanceController {
 		Employee employee = attendanceService.getSpecificEmployee(attendance);
 		attendance.seteId(employee);
 		attendanceRepository.save(attendance);
-		mailContent.attendanceApprovalRequest(attendance);
 		return "saved";
 	}
 
