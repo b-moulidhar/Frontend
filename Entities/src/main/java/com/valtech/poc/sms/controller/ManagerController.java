@@ -39,7 +39,7 @@ public class ManagerController {
 	
 	@ResponseBody
 	@GetMapping("/profileDetailsManager/{mgrId}")
-    public Employee getManagerById(@PathVariable int eId) {
+    public Employee getManagerById(@PathVariable int eId) throws Exception {
         return employeeService.getEmployeeByeId(eId);
     }
 	

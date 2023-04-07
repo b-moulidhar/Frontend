@@ -19,7 +19,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private EmployeeDAO employeeDAO;
 
 	@Override
-	public Employee getEmployeeByeId(int eId) {
+	public Employee getEmployeeByeId(int eId) throws Exception {
 		return employeeDAO.getEmployeeByeId(eId);
 	}
 
