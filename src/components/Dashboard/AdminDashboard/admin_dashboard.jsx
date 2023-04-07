@@ -5,22 +5,20 @@ import './admin_dashboard.css';
 function AdminDashboard(){
     const [count,setCount] = useState(0)
     const [foodCount,setFoodCount] = useState(0)
-
  // const currentDate = new Date().toLocaleDateString();
-
-const dateObj = new Date();
-
+ const dateObj = new Date();
  const year = dateObj.getFullYear();
-
  const month = dateObj.getMonth() + 1;
-
  const day = dateObj.getDate();
  const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-   
+    // useEffect(() => {
+    //   axios.get("http://10.191.80.104:7001/seats/total").then((response) => {
+    //     setCount(response.data);alert(typeof response.url);
+    //   }); 
+    // }, []);
     useEffect(() => {
-      
 
-      axios.get(`http://10.191.80.104:7001/seatCount/${currentDate}`,{
+      axios.get(`http://10.191.80.73:7001/seatCount/${currentDate}`,{
         headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "X-Role":localStorage.getItem("role"),
@@ -29,24 +27,26 @@ const dateObj = new Date();
     }).then((response)=>{  
         setCount(response.data);
 
-      });
-      axios.get(`http://10.191.80.104:7001/foodCountBasedOnDates`, {
-  params: {
-    sbDate: currentDate
-  },
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-    "X-Role": localStorage.getItem("role"),
-    "X-Eid": localStorage.getItem("eid")
-  }
-})
-.then(response => {
-  setFoodCount(response.data);
-})
-.catch(error => {
-  console.log(error);
-});
-
+        // responseType: "json",
+      })
+      }, []);
+      useEffect(() => {
+ 
+        axios.get(`http://10.191.80.73:7001/foodCount/${currentDate}`,{
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+      }).then((response) => {
+          setFoodCount(response.data);
+  
+          console.log();
+          // alert(typeof response.url);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }, []);
     
 
