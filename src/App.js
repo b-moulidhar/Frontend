@@ -22,7 +22,8 @@ import { useEffect, useState } from 'react';
 import FirstFloor from './components/layouts/firstFloor';
 import SecondFloor from './components/layouts/secondFloor';
 import ThirdFloor from './components/layouts/thirdFloor';
-import Manager from './components/Manager/manager';
+import Atten_Regularize from './components/Atten_Regularize/atten_regularize';
+import Manager_Approval from './components/Manager/Manager_Approval/manager_approval';
 
 
 
@@ -74,6 +75,7 @@ function App() {
     <Route path="/sfloor" element={<SecondFloor/>}/>    
     <Route path="/tfloor" element={<ThirdFloor/>}/>    
     <Route path="/admin/approval" element={<Registration_Approval/>}/>    
+    <Route path="/manager/approval" element={<Manager_Approval/>}/>    
 
     </Routes>
      {/* <Routes>

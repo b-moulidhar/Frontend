@@ -23,7 +23,7 @@ function Registration_Approval(){
       },[])
 
 function approve(empid){
-    axios.put(`http://10.191.80.104:7001/registrationApproval/${empid}`, {}, {
+    axios.put(`http://10.191.80.73:7001/registrationApproval/${empid}`, {}, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "X-Role": localStorage.getItem("role"),
@@ -40,7 +40,7 @@ function approve(empid){
 }
 function disapprove(empid){
     alert(empid)
-    axios.put(`http://10.191.80.104:7001/registrationDisapproval/${empid}`, {}, {
+    axios.delete(`http://10.191.80.73:7001/registrationDisapproval/${empid}`, {}, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "X-Role": localStorage.getItem("role"),

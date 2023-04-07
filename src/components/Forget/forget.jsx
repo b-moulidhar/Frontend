@@ -22,7 +22,7 @@ export default function Forget(){
           .then((res)=>{
               console.log(res)
           })
-          nav(`/forget/reset/${email.email}`);
+          window.location=`/forget/reset/${email.email}`;
         }
       }
 

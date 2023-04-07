@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./bookSeat.css";
 import axios from "axios";
-import Api from "../Api/api";
+
 
 function BookSeat() {
   const [branchName, setBranchName] = useState("");
@@ -10,53 +10,63 @@ function BookSeat() {
   const [differenceDay,setDifferenceDay] = useState(0)
   const [toDate, setToDate] = useState("");
   const [firstDate, setFirstDate] = useState("");
-  const [meal, setMeal] = useState("");
+  const [meal, setMeal] = useState(false);
   var startTime = [];
   var endTime = [];
+  var timeRange = []
   // const [fromDate, setfromDate] = useState('');
 
   const [shiftTiming, setShiftTiming] = useState("");
   const [request, setRequest] = useState("");
 
-    useEffect(()=>{
-      axios
-        .get("http://10.191.80.73:7001/shiftStart", {
-          headers: {
+ 
+  
+
+    const [timeRange1, setTimeRange] = useState([]);
+    const concatenate=()=>{
+      startTime.map((time,idx)=>{
+            return timeRange[idx] = `${time} - ${endTime[idx]}`
+
+      })
+    }
+    useEffect(() => {
+      axios.get('http://10.191.80.73:7001/shiftStart',{
+        headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role": localStorage.getItem("role"),
-            "X-Eid": localStorage.getItem("eid"),
-          },
-
-          responseType: "json",
-        })
-        .then((res) => {
-          console.log(res.data);
-          // startTime = res.data
-        })
-        .catch((err) => {
-          console.log(err);
+            "X-Role":localStorage.getItem("role"),
+            "X-Eid":localStorage.getItem("eid")
+        }
+    }).then(function (response) {
+           startTime = response.data;
+          return axios.get('http://10.191.80.73:7001/shiftEnd',{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Role":localStorage.getItem("role"),
+                "X-Eid":localStorage.getItem("eid")
+            }
         });
+        })
+        .then(function (response) {
+           endTime = response.data;
+          // const timeRange = startTime + ' - ' + endTime;
+          // setTimeRange(timeRange);
+          concatenate();
+          setTimeRange(timeRange)
+          // console.log(timeRange)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }, []);
 
-      axios.get("http://10.191.80.73:7001/shiftEnd",{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "X-Role": localStorage.getItem("role"),
-          "X-Eid": localStorage.getItem("eid"),
-        },
+    
 
-        responseType: "json",
-      })
-      .then((response)=>{
-        console.log(response.data)
-        // endTime = response.data
-      })
-    },[])
   const handleSubmit = (e) => {
     e.preventDefault();
   };
 
   function todayDate() {
-    const now = new window.Date("yyyy-mm-dd");
+    const now = new window.Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
     const day = now.getDate();
@@ -74,10 +84,27 @@ function BookSeat() {
     if(diffDays>7){
       alert("Not allowed to book for more than 7 days");
     }
+    setToDate(e.target.value)
   }
    const nextPage=()=>{
-    window.location="/floorlist"
-   }
+    if(request==="Daily"){
+      localStorage.setItem("from_date",firstDate);
+      localStorage.setItem("to_date",firstDate);
+      window.location="/floorlist"
+    }else if(request==="Weekly"){
+      localStorage.setItem("from_date",firstDate);
+      localStorage.setItem("to_date",toDate);
+      window.location="/floorlist"
+    }
+
+      localStorage.setItem("lunch",meal);
+      localStorage.setItem("shift_timing",shiftTiming)
+
+   } 
+  //  const sameDate=()=>{
+  //   setToDate(firstDate);
+  //   console.log(to)
+  //  }
 
   // var date = new Date();
 
@@ -116,7 +143,7 @@ function BookSeat() {
         <option value="Daily">Daily</option>
         <option value="Weekly">Weekly</option>
       </select>
-      <label htmlFor="shift-timing-input">Shift Start Timing:</label>
+      <label htmlFor="shift-timing-input">Shift Timing:</label>
       <select
         id="shift-timing-input"
         value={shiftTiming}
@@ -126,26 +153,21 @@ function BookSeat() {
       >
         <option value="" disabled>--Select--</option>
         {
-          startTime.map((start)=>{
-            return <option value={start}>{start}</option>
-
+          // console.log(timeRange1)
+          
+          timeRange1.map((start,idx)=>{
+            return <option key={idx} value={start}>{start}</option>
+            // return console.log(start);
           })
         }
         
       </select>
-      <label htmlFor="shift-timing-input">Shift End Timing:</label>
-      <select
-        id="shift-timing-input"
-        value={shiftTiming}
-        onChange={(e) => setShiftTiming(e.target.value)}
-        className="form-input"
-        required
-      >
-        <option value="" disabled>--Select--</option>
+      
+        {/* <option value="" disabled>--Select--</option>
         <option value="Morning">9:00AM - 6:00PM</option>
         <option value="Afternoon">2:00PM - 10:00PM</option>
-        <option value="night">10:00PM - 6:00AM</option>
-      </select>
+        <option value="night">10:00PM - 6:00AM</option> */}
+      {/* </select> */}
       <label htmlFor="meal-name-input">Meal:</label>
       <select
         id="meal-name-input"
@@ -155,8 +177,8 @@ function BookSeat() {
         required
       >
         <option value="select">Select</option>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
+        <option value={true}>Yes</option>
+        <option value={false}>No</option>
       </select>
 
       {request === "Daily" && (
@@ -166,9 +188,9 @@ function BookSeat() {
           <input
             id="from-date-input"
             type="date"
-            value={toDate}
+            value={firstDate}
             min={todayDate()}
-            onChange={(e) => setToDate(e.target.value)}
+            onChange={(e) => setFirstDate(e.target.value)}
             className="form-input"
             required
           />
@@ -176,10 +198,10 @@ function BookSeat() {
           <input
             id="to-date-input"
             type="date"
-            value={toDate}
+            value={firstDate}
             min={todayDate()}
             // onChange={(e) => setToDate(e.target.value)}
-            onChange={(e) => setToDate(e.target.value)}
+            // onChange={sameDate}
             className="form-input"
             required
           />
@@ -193,6 +215,7 @@ function BookSeat() {
           <input
             id="from-date-input"
             type="date"
+            value={firstDate}
             min={todayDate()}
             onChange={(e) => setFirstDate(e.target.value)}
             className="form-input"
@@ -203,6 +226,7 @@ function BookSeat() {
             id="to-date-input"
             type="date"
             min={todayDate()}
+            value={toDate}
             // onChange={(e) => setToDate(e.target.value)}
             // onChange={(e) => setToDate(e.target.value)}
             onChange={(e) => weeklydate(e)}
