@@ -12,7 +12,7 @@ function Dashboard() {
         setIsLoggingOut(true);
       
         try {
-          const response = await fetch('http://20.253.3.209:7001/api/logout', {
+          const response = await fetch('http://10.191.80.73:7001/api/logout', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -35,12 +35,7 @@ function Dashboard() {
       }
 
   function seatBook(){
-    console.log(id);
-  window.location=`/bookseat/${id}`;
-  }
-  function viewPass(){
-    console.log(id);
-  window.location=`/viewpass/${id}`;
+  window.location="/bookseat/"+id;
   }
   return (
     <div className="dashboard_container">
@@ -102,17 +97,39 @@ function Dashboard() {
                   </div>
                 </div>
                 <div className="dashboard">
-                  
-                    <button type="button" onClick={seatBook} className="btn btn-primary seat">
+                  <a href="/bookseat/2">
+                    <button type="button" onChange={seatBook} className="btn btn-primary seat">
                       Book Seat
                     </button>
-                  
-                 
-                    <button type="button" onClick={viewPass} className="btn btn-success seat">
-                      View Pass
+                  </a>
+                  <a href="/viewpass">
+                    <button type="button" className="btn btn-success seat">
+                      View Booking
                     </button>
-                  
+                  </a>
                 </div>
+
+                {/* <div className="dashboard_bottom">
+                  <div>
+                    <img
+                      style={{ margin: "" }}
+                      src="https://png.pngtree.com/png-clipart/20210309/original/pngtree-3d-furniture-modern-office-chair-png-image_5892659.jpg"
+                      width="50"
+                      height="50"
+                      alt=""
+                    />
+                  </div>
+                  <div>
+                    <p>date:29-03-2022</p>
+                    <p>seat number:1005</p>
+                    <p>shift time:09:00-18:00</p>
+                  </div>
+                  <div>
+                    <a href="">
+                      <button className="btn btn-danger">Cancel</button>
+                    </a>
+                  </div>
+                </div> */}
         </div>
       
     </div>

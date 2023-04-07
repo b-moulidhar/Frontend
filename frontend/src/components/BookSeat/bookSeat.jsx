@@ -32,7 +32,7 @@ function BookSeat() {
       })
     }
     useEffect(() => {
-      axios.get('http://20.253.3.209:7001/shiftStart',{
+      axios.get('http://10.191.80.73:7001/shiftStart',{
         headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "X-Role":localStorage.getItem("role"),
@@ -40,7 +40,7 @@ function BookSeat() {
         }
     }).then(function (response) {
            startTime = response.data;
-          return axios.get('http://20.253.3.209:7001/shiftEnd',{
+          return axios.get('http://10.191.80.73:7001/shiftEnd',{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role":localStorage.getItem("role"),

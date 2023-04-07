@@ -13,7 +13,7 @@ function Manager_Approval(){
 
     useEffect(()=>{
         //axios.get("http://10.191.80.104:7001/seats/total")
-        axios.get(`http://20.253.3.209:7001/attendanceApprovalList/${localStorage.getItem("EId")}`, {
+        axios.get(`http://10.191.80.73:7001/attendanceApprovalList/3`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role": localStorage.getItem("role"),
@@ -28,7 +28,7 @@ function Manager_Approval(){
     },[id])
 
     function approve(atid){
-        axios.put(`http://20.253.3.209:7001/attendanceApproval/${atid}`, {}, {
+        axios.put(`http://10.191.80.73:7001/attendanceApproval/${atid}`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role": localStorage.getItem("role"),
@@ -45,7 +45,7 @@ function Manager_Approval(){
     }
     function disapprove(atid){
         alert(atid)
-        axios.delete(`http://20.253.3.209:7001/disapproveAttendance/${atid}`, {}, {
+        axios.delete(`http://10.191.80.73:7001/disapproveAttendance/${atid}`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role": localStorage.getItem("role"),

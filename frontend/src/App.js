@@ -25,6 +25,7 @@ import ThirdFloor from './components/layouts/thirdFloor';
 import Atten_Regularize from './components/Atten_Regularize/atten_regularize';
 import Manager_Approval from './components/Manager/Manager_Approval/manager_approval';
 import EmployeeList from './components/Manager/EmployeeList/EmployeeList';
+import Report from './components/report/report';
 
 
 
@@ -75,6 +76,7 @@ function App() {
     <Route path="/ffloor" element={<FirstFloor/>}/>    
     <Route path="/sfloor" element={<SecondFloor/>}/>    
     <Route path="/tfloor" element={<ThirdFloor/>}/>    
+    <Route path="/report" element={<Report/>}/>    
     <Route path="/admin/approval" element={<Registration_Approval/>}/>    
     <Route path="/manager/approval" element={<Manager_Approval/>}/>    
     <Route path="/atten_regularize/:id" element={<Atten_Regularize/>}/>    
