@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.valtech.poc.sms.entities.AttendanceTable;
@@ -27,6 +26,7 @@ import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.repo.AttendanceRepository;
 import com.valtech.poc.sms.service.AttendanceService;
 import com.valtech.poc.sms.service.MailContent;
+import com.valtech.poc.sms.service.ShiftTimingsService;
 
 @Controller
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
@@ -37,6 +37,9 @@ public class AttendanceController {
 
 	@Autowired
 	private AttendanceRepository attendanceRepository;
+	
+	@Autowired
+	private ShiftTimingsService shiftTimingsService;
 
 	@Autowired
 	private MailContent mailContent;
@@ -55,15 +58,19 @@ public class AttendanceController {
 
 	@ResponseBody
 	@PostMapping("/attendanceRegularization/{eId}")
-	public String saveAttendance(@PathVariable("eId") int eId,@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,@RequestParam("shiftStart")String shiftStart,@RequestParam("shiftEnd")String shiftEnd ) {
+	public String saveAttendance(@PathVariable("eId") int eId,@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate, @RequestParam("stTime") String stTime ) {
 		logger.info("Request to save the attendance");
+		String[] times = stTime.split("-");
+		String startTime = times[0];
+		String endTime = times[1];
+		int stId = shiftTimingsService.getStId(startTime, endTime);
 		if(startDate.equals(endDate)) {
 			System.out.println("daily");
-		return attendanceService.saveAttendance(eId,startDate,endDate,shiftStart,shiftEnd);
+		return attendanceService.saveAttendance(eId,startDate,endDate,stId);
 		}
 		else {
 			System.out.println("weekly");
-	   return attendanceService.saveAttendanceForMultipleDays(eId,startDate,endDate,shiftStart,shiftEnd);
+	   return attendanceService.saveAttendanceForMultipleDays(eId,startDate,endDate,stId);
 		}
 	}
 
