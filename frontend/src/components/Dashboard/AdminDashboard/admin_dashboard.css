@@ -1,0 +1,198 @@
+.admin_body{
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,64,121,1) 35%, rgba(0,212,255,1) 100%);
+  color:white;
+  /* background-image: url('D:/PoC/SMS/sms/sms_frontend/src/assets/logo.png'); */
+}
+
+
+.admin_mainpage {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;  
+  height: 100vh;
+}
+
+.admin_head{
+color: white;
+text-align: center;
+margin: 70px;
+}
+
+/* .dashboard_head{
+  margin-left: 100px;
+  margin-top: 20px;
+  background-color: rgb(27, 3, 55);
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  box-shadow: 10px 5px 5px grey;
+} */
+/* .dashboard_container{
+   background-image: url('https://media.glassdoor.com/l/ef/9a/d9/3f/valtech-india.jpg');
+   background-position: center ;
+   background-repeat: no-repeat;
+   background-size: cover;
+   width: 100%;
+   height: 100%;
+}  */
+
+.admin_dashboard{
+  display: flex;
+  justify-content: space-evenly;
+  margin: auto;
+  margin-top: 100px;
+  color: aliceblue;
+
+  
+}
+
+
+ul li {
+  list-style-type: none;
+}
+
+.a_approval {
+  width: 200px;
+  height: 100px;
+  border: none;
+  outline: none;
+  background-color: hsl(260, 56%, 68%);
+  align-items: center; 
+  display: flex;
+  justify-content: center;
+  color: black;
+  margin: auto;
+  padding: 50px;
+}
+
+
+
+/* .status{
+  text-align: center;
+  justify-content: center;
+  background-color: rgb(69, 3, 69);
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 25px 0px #fadfdf; 
+  color: white;
+} */
+
+.admin_cards{
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px;
+  margin: auto;
+}
+
+/* .attenstatus{
+  flex: 1;
+  margin: 20px;
+
+  
+  
+} */
+
+/* .statusbtn{
+  width: 250px;
+  height: 150px;
+  justify-content: center; 
+  margin: 0 100px;
+  color: white;
+  box-shadow: 10px 5px 5px grey;
+} */
+
+/* .sidebar{
+  background-color: rgb(255, 165, 165);
+  color: rgb(0, 0, 0);
+  height: 100vh;
+  width: 200px;
+  transition: all 0.5s;
+}
+
+.top_section{
+  display: flex;
+  align-items: center;
+  padding: 20px 15px;
+}
+
+.logo{
+  font-size: 25px;
+}
+
+.bars{
+  display: flex;
+  font-size: 25px;
+  margin-left: 50px;
+}
+
+.link{
+  display: flex;
+  color: black;
+  padding: 10px 15px;
+  gap: 15px;
+  transition: all 0.5s;
+  text-decoration: none;
+}
+
+.link:hover{
+  background-color: crimson;
+  color: white;
+  transition: all 0.5s;
+}
+
+.active{
+  background-color: crimson;
+  color: white;
+}
+
+.icon, .link_text{
+  font-size: 20px;
+} */
+
+/* Styles for screens smaller than 768px */
+@media screen and (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+  }
+  .dashboard_head {
+    margin-left: 20px;
+  }
+  .dashboard_bottom {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+
+/* Styles for screens smaller than 480px */
+@media screen and (max-width: 480px) {
+  .dashboard_head {
+    font-size: 14px;
+  }
+  .dashboard_container {
+    background-size: contain;
+  }
+  .seat {
+    width: 100px;
+    height: 50px;
+    padding: 20px;
+  }
+  .statusbtn {
+    width: 150px;
+    height: 100px;
+    margin: 0 50px;
+  }
+  .sidebar {
+    width: 100px;
+  }
+  .bars {
+    margin-left: 20px;
+  }
+  .link {
+    padding: 5px 10px;
+    gap: 10px;
+  }
+  .icon,
+  .link_text {
+    font-size: 16px;
+  }
+}
