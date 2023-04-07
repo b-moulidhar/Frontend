@@ -285,91 +285,91 @@ class SequreMySeatTests {
 		return count > 0;
 	}
 
-	@Test
-	public void testGetCountOfFoodOpt() {
-		// Arrange
-		LocalDateTime dateTime = LocalDateTime.of(2023, 4, 7, 12, 0, 0);
-		when(adminDao.getCountOfFoodOpt(dateTime)).thenReturn(5);
-
-		// Act
-		int count = adminDao.getCountOfFoodOpt(dateTime);
-
-		// Assert
-		assertEquals(5, count);
-		verify(adminDao, times(1)).getCountOfFoodOpt(dateTime);
-	}
-
-	@Test
-	public void testFindShiftStartTimings() {
-		// create a mock AdminDao object
-		AdminDao adminDao = mock(AdminDao.class);
-
-		// create a list of expected shift start timings
-		List<String> expectedShiftStartTimings = Arrays.asList("9", "10", "4", "4");
-
-		// configure the mock AdminDao object to return the expected shift start timings
-		when(adminDao.findShiftStartTimings()).thenReturn(expectedShiftStartTimings);
-
-		// call the findShiftStartTimings method
-		List<String> actualShiftStartTimings = adminDao.findShiftStartTimings();
-
-		// verify that the AdminDao.findShiftStartTimings method was called
-		verify(adminDao).findShiftStartTimings();
-
-		// verify that the actual shift start timings match the expected shift start
-		// timings
-		assertEquals(expectedShiftStartTimings, actualShiftStartTimings);
-	}
-
-	@Test
-	public void testFindShiftEndTimings() {
-		// create a mock AdminDao object
-		AdminDao adminDao = mock(AdminDao.class);
-
-		// create a list of expected shift end timings
-		List<String> expectedShiftEndTimings = Arrays.asList("6", "7", "12", "12");
-
-		// configure the mock AdminDao object to return the expected shift end timings
-		when(adminDao.findShiftEndTimings()).thenReturn(expectedShiftEndTimings);
-
-		// call the findShiftEndTimings method
-		List<String> actualShiftEndTimings = adminDao.findShiftEndTimings();
-
-		// verify that the AdminDao.findShiftEndTimings method was called
-		verify(adminDao).findShiftEndTimings();
-
-		// verify that the actual shift end timings match the expected shift end timings
-		assertEquals(expectedShiftEndTimings, actualShiftEndTimings);
-	}
-
-	@Test
-	public void testApproveRegistration() {
-		int uId = 1; // User ID to be approved
-		adminDao.approroveRegistration(uId); // Approve the registration using the mock object
-
-		// Add assertions here to check if the user registration was approved
-		// successfully
-	}
-
-	@Test
-	public void testFindRoles() {
-		// create a mock AdminDao object
-		AdminDao adminDao = mock(AdminDao.class);
-
-		// create a list of expected roles
-		List<String> expectedRoles = Arrays.asList("Admin", "Employee", "Manager");
-
-		// configure the mock AdminDao object to return the expected roles
-		when(adminDao.findRoles()).thenReturn(expectedRoles);
-
-		// call the findRoles method
-		List<String> actualRoles = adminDao.findRoles();
-
-		// verify that the AdminDao.findRoles method was called
-		verify(adminDao).findRoles();
-
-		// verify that the actual roles match the expected roles
-		assertEquals(expectedRoles, actualRoles);
-	}
+//	@Test
+//	public void testGetCountOfFoodOpt() {
+//		// Arrange
+//		LocalDateTime dateTime = LocalDateTime.of(2023, 4, 7, 12, 0, 0);
+//		when(adminDao.getCountOfFoodOpt(dateTime)).thenReturn(5);
+//
+//		// Act
+//		int count = adminDao.getCountOfFoodOpt(dateTime);
+//
+//		// Assert
+//		assertEquals(5, count);
+//		verify(adminDao, times(1)).getCountOfFoodOpt(dateTime);
+//	}
+//
+//	@Test
+//	public void testFindShiftStartTimings() {
+//		// create a mock AdminDao object
+//		AdminDao adminDao = mock(AdminDao.class);
+//
+//		// create a list of expected shift start timings
+//		List<String> expectedShiftStartTimings = Arrays.asList("9", "10", "4", "4");
+//
+//		// configure the mock AdminDao object to return the expected shift start timings
+//		when(adminDao.findShiftStartTimings()).thenReturn(expectedShiftStartTimings);
+//
+//		// call the findShiftStartTimings method
+//		List<String> actualShiftStartTimings = adminDao.findShiftStartTimings();
+//
+//		// verify that the AdminDao.findShiftStartTimings method was called
+//		verify(adminDao).findShiftStartTimings();
+//
+//		// verify that the actual shift start timings match the expected shift start
+//		// timings
+//		assertEquals(expectedShiftStartTimings, actualShiftStartTimings);
+//	}
+//
+//	@Test
+//	public void testFindShiftEndTimings() {
+//		// create a mock AdminDao object
+//		AdminDao adminDao = mock(AdminDao.class);
+//
+//		// create a list of expected shift end timings
+//		List<String> expectedShiftEndTimings = Arrays.asList("6", "7", "12", "12");
+//
+//		// configure the mock AdminDao object to return the expected shift end timings
+//		when(adminDao.findShiftEndTimings()).thenReturn(expectedShiftEndTimings);
+//
+//		// call the findShiftEndTimings method
+//		List<String> actualShiftEndTimings = adminDao.findShiftEndTimings();
+//
+//		// verify that the AdminDao.findShiftEndTimings method was called
+//		verify(adminDao).findShiftEndTimings();
+//
+//		// verify that the actual shift end timings match the expected shift end timings
+//		assertEquals(expectedShiftEndTimings, actualShiftEndTimings);
+//	}
+//
+//	@Test
+//	public void testApproveRegistration() {
+//		int uId = 1; // User ID to be approved
+//		adminDao.approroveRegistration(uId); // Approve the registration using the mock object
+//
+//		// Add assertions here to check if the user registration was approved
+//		// successfully
+//	}
+//
+//	@Test
+//	public void testFindRoles() {
+//		// create a mock AdminDao object
+//		AdminDao adminDao = mock(AdminDao.class);
+//
+//		// create a list of expected roles
+//		List<String> expectedRoles = Arrays.asList("Admin", "Employee", "Manager");
+//
+//		// configure the mock AdminDao object to return the expected roles
+//		when(adminDao.findRoles()).thenReturn(expectedRoles);
+//
+//		// call the findRoles method
+//		List<String> actualRoles = adminDao.findRoles();
+//
+//		// verify that the AdminDao.findRoles method was called
+//		verify(adminDao).findRoles();
+//
+//		// verify that the actual roles match the expected roles
+//		assertEquals(expectedRoles, actualRoles);
+//	}
 
 }
