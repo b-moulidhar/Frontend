@@ -1,21 +1,80 @@
-
-import Navbar from "../Navbar/navbar";
-import Sidebar from "../Sidebar/sidebar";
 import "./dashboard.css";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
+import Navbar from "../Navbar/navbar";
 
 function Dashboard() {
-  const {id} = useParams();
+
+  const [id,setid] = useState(window.localStorage.getItem("EId"))
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    async function handleLogout() {
+        setIsLoggingOut(true);
+      
+        try {
+          const response = await fetch('http://localhost:7001/api/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+      
+          if (response.ok) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('EId');
+            localStorage.removeItem('role');
+            window.location = '/';
+          } else {
+            throw new Error('Logout failed.');
+          }
+        } catch (error) {
+          console.error(error);
+          setIsLoggingOut(false);
+        }
+      }
+
   function seatBook(){
   window.location="/bookseat/"+id;
   }
   return (
     <div className="dashboard_container">
-      <Navbar/>
-      <div className="mainpage">
+      {/* <Navbar/> */}
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+              <a className="navbar-brand" href="#">SMS</a>
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon" />
+                {/* {console.log(id)} */}
+              </button>
+              <div className="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul className="navbar-nav mr-auto">
+                  <li className="nav-item active">
+                    <a className="nav-link" href="#">DashBoard <span className="sr-only"></span></a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href={`/profile/${id}`}>Profile</a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href={`/atten_regularize/${id}`}>Regularization</a>
+                  </li>
+                </ul>
+                <ul className="navbar-nav ml-auto">
+                  <li className="nav-item" >
+                    <a className="nav-link ml-auto" href={`/notify/${id}`}>Notification</a>
+                  </li>
+                  <li className="nav-item" >
+                    <a className="nav-link ml-auto" href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+      {/* <div className="mainpage">
               
                 <Sidebar/>
-      </div>      
+      </div>       */}
+     
+
+        
         <div className="container">
        
                 <div className="dashboard_head">
@@ -37,7 +96,6 @@ function Dashboard() {
                     <span class="char">Rejected</span>
                   </div>
                 </div>
-
                 <div className="dashboard">
                   <a href="/bookseat">
                     <button type="button" onChange={seatBook} className="btn btn-primary seat">
@@ -51,7 +109,7 @@ function Dashboard() {
                   </a>
                 </div>
 
-                <div className="dashboard_bottom">
+                {/* <div className="dashboard_bottom">
                   <div>
                     <img
                       style={{ margin: "" }}
@@ -71,7 +129,7 @@ function Dashboard() {
                       <button className="btn btn-danger">Cancel</button>
                     </a>
                   </div>
-                </div>
+                </div> */}
         </div>
       
     </div>

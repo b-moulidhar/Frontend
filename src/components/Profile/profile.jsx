@@ -1,164 +1,110 @@
-// import React, {useState, useEffect} from "react";
-// import "./profile.css";
-// import axios from 'axios';
-
-// import {
-//   MDBCol,
-//   MDBContainer,
-//   MDBRow,
-//   MDBCard,
-//   MDBCardText,
-//   MDBCardBody,
-//   MDBCardImage,
-//   MDBBtn
-// } from "mdb-react-ui-kit";
-// import Sidebar from "../Sidebar/sidebar";
-
-// export default function ProfilePage() {
-//   const [profile, setProfile] = useState({
-//      name: "",
-//      email:"",
-//      emp_id:Number,
-//      phone:Number,
-//      role:""
-//   })
-//   useEffect(()=>{
-//     axios.get(`http://10.191.80.112:7001/employee/getAllEmployees/`,{
-//        headers : {
-//          Accept: 'application/json'
-//        }
-//     })
-//     .then((response) => {
-//           // setProfile({
-//           //   ...profile,name:"abc",
-//           //   ...profile,email:response.data.email
-//           // })
-//       setProfile(JSON.stringify(response.data))})
-//       // console.log(JSON.stringify(response.data))})
-//     .catch((err) => console.log(err))
-//   },[]);
-//   return (
-//     <div className="profilepage">
-//       <div>
-//         <Sidebar />
-//       </div>
-//       <div>
-//         <section
-//           className="details_profile"
-//           style={{ backgroundColor: "#eee" }}
-//         >
-//           <MDBContainer className="py-5">
-//             <MDBRow>
-//               <MDBCol lg="4">
-//                 <MDBCard className="mb-4">
-//                   <MDBCardBody className="text-center">
-//                      <MDBCardImage
-//                       src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-//                       alt="avatar"
-//                       className="rounded-circle"
-//                       style={{ width: "150px" }}
-//                       fluid
-//                     />
-//                    <p className="text-muted mb-1">Full Stack Developer</p>
-//                     <p className="text-muted mb-4">
-//                       Bay Area, San Francisco, CA
-//                     </p>
-//                     <div className="d-flex justify-content-center mb-2">
-//                       <MDBBtn>Follow</MDBBtn>
-//                       <MDBBtn outline className="ms-1">
-//                         Message
-//                       </MDBBtn> 
-//                     </div>
-//                   </MDBCardBody>
-//                 </MDBCard>
-//               </MDBCol>
-//               <MDBCol lg="8">
-//                 <MDBCard className="mb-4">
-//                   <MDBCardBody>
-//                     <MDBRow>
-//                       <MDBCol sm="3">
-//                         <MDBCardText>Full Name</MDBCardText>
-//                       </MDBCol>
-//                       <MDBCol sm="9">
-//                         <MDBCardText className="text-muted">
-//                           {profile.name}
-//                         </MDBCardText>
-//                       </MDBCol>
-//                     </MDBRow>
-//                     <hr />
-//                     <MDBRow>
-//                       <MDBCol sm="3">
-//                         <MDBCardText>Email</MDBCardText>
-//                       </MDBCol>
-//                       <MDBCol sm="9">
-//                         <MDBCardText className="text-muted">
-//                           {profile.email}
-//                         </MDBCardText>
-//                       </MDBCol>
-//                     </MDBRow>
-//                     <hr />
-//                     <MDBRow>
-//                       <MDBCol sm="3">
-//                         <MDBCardText>Employee Id</MDBCardText>
-//                       </MDBCol>
-//                       <MDBCol sm="9">
-//                         <MDBCardText className="text-muted">
-//                           {profile.emp_id}
-//                         </MDBCardText>
-//                       </MDBCol>
-//                     </MDBRow>
-//                     <hr />
-//                     <MDBRow>
-//                       <MDBCol sm="3">
-//                         <MDBCardText>Mobile</MDBCardText>
-//                       </MDBCol>
-//                       <MDBCol sm="9">
-//                         <MDBCardText className="text-muted">
-//                           {profile.phone}
-//                         </MDBCardText>
-//                       </MDBCol>
-//                     </MDBRow>
-//                     <hr />
-//                     <MDBRow>
-//                       <MDBCol sm="3">
-//                         <MDBCardText>Role</MDBCardText>
-//                       </MDBCol>
-//                       <MDBCol sm="9">
-//                         <MDBCardText className="text-muted">
-//                           {profile.role}
-//                         </MDBCardText>
-//                       </MDBCol>
-//                     </MDBRow>
-//                   </MDBCardBody>
-//                 </MDBCard>
-//               </MDBCol>
-//             </MDBRow>
-//           </MDBContainer>
-//         </section>
-//       </div>
-//     </div>
-//   );
-// }
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './profile.css';
+import { useParams } from 'react-router-dom';
+import Navbar from '../Navbar/navbar';
 
 function Profile() {
-  const [userData, setUserData] = useState({});
 
+  const [id,setid] = useState(window.localStorage.getItem("EId"))
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    async function handleLogout() {
+        setIsLoggingOut(true);
+      
+        try {
+          const response = await fetch('http://localhost:7001/api/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+      
+          if (response.ok) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('EId');
+            localStorage.removeItem('role');
+            window.location = '/';
+          } else {
+            throw new Error('Logout failed.');
+          }
+        } catch (error) {
+          console.error(error);
+          setIsLoggingOut(false);
+        }
+      }
+
+  function seatBook(){
+  window.location="/bookseat/"+id;
+  }
+
+  const [userData, setUserData] = useState({});
+  // const eId = useParams();
   useEffect(() => {
-    axios.get('')
-      .then(response => {
+    axios.get(`http://10.191.80.102:7001/employee/profileDetailsEmployee/${id}`,{
+      headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "X-Role":localStorage.getItem("role"),
+          "X-Eid":localStorage.getItem("eid")
+      }
+  })
+  .then(response => {
         setUserData(response.data);
+        console.log(response.data);
       })
-      .catch(error => {
+  .catch(error => {
         console.log(error);
       });
   }, []);
 
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await axios.get(`http://10.191.80.102:7001/employee/profileDetailsEmployee/${eId}`);
+  //       setUserData(response.data);
+  //       console.log(response.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   fetchData();
+  // }, [eId]);
+
   return (
     <div>
+      {/* <Navbar/> */}
+
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+              <a className="navbar-brand" href="#">SMS</a>
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon" />
+                {/* {console.log(id)} */}
+              </button>
+              
+              <div className="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul className="navbar-nav mr-auto">
+                  <li className="nav-item active">
+                    <a className="nav-link" href={`/dashboard/${id}`}>DashBoard <span className="sr-only"></span></a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="#">Profile</a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href={`/atten_regularize/${id}`}>Regularization</a>
+                  </li>
+                </ul>
+                <ul className="navbar-nav ml-auto">
+                  <li className="nav-item" >
+                    <a className="nav-link ml-auto" href={`/notify/${id}`}>Notification</a>
+                  </li>
+                  <li className="nav-item" >
+                    <a className="nav-link ml-auto" href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+
       <section className="vh-100" style={{backgroundColor: '#f4f5f7'}}>
         <div className="container py-5 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
@@ -167,8 +113,9 @@ function Profile() {
                 <div className="row g-0">
                   <div className="col-md-4 text-center gradient-custom text-white" style={{borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem'}}>
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="Avatar" className="img-fluid my-5" style={{width: 80}} />
-                    <h5>{userData.name}</h5>
-                    <p>{userData.jobTitle}</p>
+                    <h5>User</h5>
+                    <h5>{userData.empName}</h5>
+                    {/* <p>{userData.jobTitle}</p> */}
                     <i className="far fa-edit mb-5" />
                   </div>
                   <div className="col-md-8">
@@ -178,23 +125,23 @@ function Profile() {
                       <div className="row pt-1">
                         <div className="col-6 mb-3">
                           <h6>Email</h6>
-                          <p className="text-muted">{userData.email}</p>
+                          <p className="text-muted">{userData.mailId}</p>
                         </div>
                         <div className="col-6 mb-3">
                           <h6>Phone</h6>
-                          <p className="text-muted">{userData.phone}</p>
+                          <p className="text-muted">{userData.phNum}</p>
                         </div>
                       </div>
-                      <h6>Projects</h6>
+                      {/* <h6>Projects</h6> */}
                       <hr className="mt-0 mb-4" />
                       <div className="row pt-1">
                         <div className="col-6 mb-3">
-                          <h6>Recent</h6>
-                          <p className="text-muted">{userData.recentProject}</p>
+                          {/* <h6>Recent</h6> */}
+                          {/* <p className="text-muted">{userData.recentProject}</p> */}
                         </div>
                         <div className="col-6 mb-3">
-                          <h6>Most Viewed</h6>
-                          <p className="text-muted">{userData.mostViewedProject}</p>
+                          {/* <h6>Most Viewed</h6> */}
+                          {/* <p className="text-muted">{userData.mostViewedProject}</p> */}
                         </div>
                       </div>
                       {/* <div className="d-flex justify-content-start">
