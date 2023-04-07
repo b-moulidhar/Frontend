@@ -37,7 +37,7 @@ public class FloorController {
 	public ResponseEntity<List<Floors>> getAllFloors() {
 		try {
 			List<Floors> floors = floorService.getAllFloors();
-			logger.info("Successfully fetched all floors");
+			logger.info("Successfully fetched all floors' details.");
 			return new ResponseEntity<>(floors, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("Error occurred while fetching all floors: {}", e.getMessage());
@@ -54,10 +54,10 @@ public class FloorController {
 				logger.info("Floor with id {} not found", f_id);
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-			logger.info("Successfully fetched floor with id {}", f_id);
+			logger.info("Successfully fetched floor details with Id '{}'.", f_id);
 			return new ResponseEntity<>(floor, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("Error occurred while fetching floor with id {}: {}", f_id, e.getMessage());
+			logger.error("Error occurred while fetching floors' details with Id '{}'. Id does not exist!", f_id, e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -69,23 +69,23 @@ public class FloorController {
 		try {
 			Floors floor = new Floors(f_id, f_name, f_seats);
 			floorService.addFloor(floor);
-			logger.info("Successfully added floor with id {} under name '{}'", f_id, f_name);
+			logger.info("Successfully added floor with Id '{}' under name '{}'.", f_id, f_name);
 			return new ResponseEntity<>(floor, HttpStatus.CREATED);
 		} catch (Exception e) {
-			logger.error("Error occurred while adding floor with id {}: {}", f_id, e.getMessage());
+			logger.error("Error occurred while adding floor with Id '{}'. Duplicate Id exists! : {}", f_id, e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@ResponseBody
 	@DeleteMapping("/deleteFloor/{f_id}")
-	public ResponseEntity<Void> deleteFloor(@PathVariable int f_id, String f_name) {
+	public ResponseEntity<Void> deleteFloor(@PathVariable int f_id) {
 		try {
-			floorService.deleteFloor(f_id, f_name);
-			logger.info("Successfully deleted floor with id {}", f_id);
+			floorService.deleteFloor(f_id);
+			logger.info("Successfully deleted floor with id '{}'.", f_id);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("Error occurred while deleting floor with id {}: {}", f_id, e.getMessage());
+			logger.error("Error occurred while deleting floor with Id '{}'. Id does not exist!", f_id, e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -95,10 +95,10 @@ public class FloorController {
 	public ResponseEntity<Void> addFloorSeats(@PathVariable int f_id, @RequestParam int seatsToAdd) {
 		try {
 			floorService.addFloorSeats(f_id, seatsToAdd);
-			logger.info("Successfully added {} seats to floor with id {}", seatsToAdd, f_id);
+			logger.info("Successfully added {} seats to floor with Id '{}'.", seatsToAdd, f_id);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("Error occurred while adding seats to floor with id {}: {}", f_id, e.getMessage());
+			logger.error("Error occurred while adding seats to floor with Id '{}'. ID does not exist!", f_id, e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -108,7 +108,7 @@ public class FloorController {
 	public ResponseEntity<Void> deleteFloorSeats(@PathVariable int f_id, @RequestParam int seatsToDelete) {
 		try {
 			floorService.deleteFloorSeats(f_id, seatsToDelete);
-			logger.info("Successfully deleted {} seats from floor with id {}", seatsToDelete, f_id);
+			logger.info("Successfully deleted {} seats from floor with Id '{}'.", seatsToDelete, f_id);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("Error occurred while deleting seats from floor with ID: " + f_id, e);

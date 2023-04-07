@@ -1,5 +1,6 @@
 package com.valtech.poc.sms.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.valtech.poc.sms.entities.Floors;
@@ -12,7 +13,7 @@ public interface FloorService {
 
 	public void addFloor(Floors floor);
 
-	public void deleteFloor(int fId, String f_name);
+	void deleteFloor(int fId) throws SQLException;
 
 	public void addFloorSeats(int f_id, int seatsToAdd);
 

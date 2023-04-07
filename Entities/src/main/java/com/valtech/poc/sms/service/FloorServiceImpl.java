@@ -1,10 +1,14 @@
 package com.valtech.poc.sms.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.valtech.poc.sms.dao.FloorDao;
@@ -17,12 +21,14 @@ public class FloorServiceImpl implements FloorService {
 
 	@Autowired
 	private FloorDao floorDao;
+	
+	private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public List<Floors> getAllFloors() {
 		try {
 			List<Floors> floors = floorDao.getAllFloors();
-			logger.info("Found all floors' details successfully");
+			logger.info("Found all floors' details successfully.");
 			return floors;
 		} catch (Exception ex) {
 			logger.error("Error occurred while getting all floors", ex);
@@ -34,7 +40,7 @@ public class FloorServiceImpl implements FloorService {
 	public Floors getFloorById(int f_id) {
 		try {
 			Floors floor = floorDao.getFloorById(f_id);
-			logger.info("Floor details with id {} found successfully", f_id);
+			logger.info("Found floor details with Id '{}' successfully.", f_id);
 			return floor;
 		} catch (Exception ex) {
 			logger.error("Error occurred while getting floor with id {}", f_id, ex);
@@ -46,7 +52,7 @@ public class FloorServiceImpl implements FloorService {
 	public void addFloor(Floors floor) {
 		try {
 			floorDao.addFloor(floor);
-			logger.info("Adding floor {}...", floor.getfName());
+			logger.info("Adding floor with name '{}'...", floor.getfName());
 		} catch (Exception ex) {
 			logger.error("Error occurred while adding floor {}", floor.getfName(), ex);
 			throw new RuntimeException("Error occurred while adding floor " + floor.getfName(), ex);
@@ -54,14 +60,20 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
-	public void deleteFloor(int fId, String f_name) {
-		try {
-			floorDao.deleteFloor(fId);
-			logger.info("Deleting floor with name '{}'...", f_name);
-		} catch (Exception ex) {
-			logger.error("Error occurred while deleting floor with id {}", fId, ex);
-			throw new RuntimeException("Error occurred while deleting floor with id " + fId, ex);
-		}
+	public void deleteFloor(int fId) throws SQLException {
+	    try {
+	        logger.info("Deleting floor with Id '{}' from database...", fId);
+	        String sql = "DELETE FROM Floors WHERE f_id = ?";
+	        jdbcTemplate.update(sql, fId);
+	    } catch (DataAccessException ex) {
+	        if (ex.getCause() instanceof CannotGetJdbcConnectionException) {
+	            logger.error("Unable to connect to the database: {}", ex.getMessage());
+	            throw new SQLException("Unable to connect to the database: " + ex.getMessage());
+	        } else {
+	            logger.error("Error in deleting floor with id {}: {}", fId, ex.getMessage());
+	            throw new SQLException("Error in deleting floor with id " + fId + ": " + ex.getMessage());
+	        }
+	    }
 	}
 
 	@Override
@@ -74,9 +86,9 @@ public class FloorServiceImpl implements FloorService {
 			}
 			floor.setfSeats(floor.getfSeats() + seatsToAdd);
 			floorDao.updateFloor(floor);
-			logger.info("Adding {} seats to floor with id {}", seatsToAdd, f_id);
+			logger.info("Adding {} seats to floor with Id '{}'...", seatsToAdd, f_id);
 		} catch (Exception ex) {
-			logger.error("Error occurred while adding seats to floor with id {}", f_id, ex);
+			logger.error("Error occurred while adding seats to floor with Id '{}'.", f_id, ex);
 			throw new RuntimeException("Error occurred while adding seats to floor with id " + f_id, ex);
 		}
 	}
@@ -95,7 +107,7 @@ public class FloorServiceImpl implements FloorService {
 			}
 			floor.setfSeats(floor.getfSeats() - seatsToDelete);
 			floorDao.updateFloor(floor);
-			logger.info("Deleting {} seats from floor with ID {}", seatsToDelete, f_id);
+			logger.info("Deleting {} seats from floor with ID '{}'...", seatsToDelete, f_id);
 		} catch (Exception ex) {
 			logger.error("Error occurred while deleting seats from floor with ID {}", f_id, ex);
 			throw new RuntimeException("Error occurred while deleting seats from floor with id " + f_id, ex);
@@ -113,7 +125,7 @@ public class FloorServiceImpl implements FloorService {
 			floor.setfSeats(updatedNumberOfSeats);
 			floor.setfName(f_name);
 			floorDao.updateFloor(floor);
-			logger.info("Updating floor with ID {} with new name '{}' or/and {} seats", f_id, f_name, updatedNumberOfSeats);
+			logger.info("Updated floor with ID '{}' with name '{}' and '{}' seats.", f_id, f_name, updatedNumberOfSeats);
 		} catch (Exception ex) {
 			logger.error("Error occurred while updating floor with ID {}", f_id, ex);
 			throw new RuntimeException("Error occurred while updating floor with id " + f_id, ex);
