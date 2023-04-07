@@ -19,91 +19,61 @@ function ViewPass(){
     // })
     // const [empName, setEmpName] = useState('');
     // const [code, setCode] = useState('');
-    const [empData, setEmpData] = useState([]);
+    const [empData, setEmpData] = useState([{}]);
   
     useEffect(() => {
+      // const fetchPasscode = async () => {
+      //   const response = await axios.get(`http://10.191.80.104:7001/viewPass/${id}`, {
+      //     headers:{
+      //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+      //         "X-Role":localStorage.getItem("role"),
+      //         "X-Eid":localStorage.getItem("eid")
+      //     }
+      // });
+      // console.log( typeof response.data)
+      //   let imgData = JSON.stringify(response.data)
+      //   console.log(imgData)
+      //   const image = qrcode.toDataURL(imgData)
+      //    setImageQR(image);
+      // };
       const fetchPasscode = async () => {
-        const response = await axios.get(`/viewPass/${id}`, {
-          headers:{
+        try {
+          const response = await axios.get(`http://10.191.80.104:7001/viewPass/${id}`, {
+            headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "X-Role":localStorage.getItem("role"),
-              "X-Eid":localStorage.getItem("eid")
+              "X-Role": localStorage.getItem("role"),
+              "X-Eid": localStorage.getItem("eid")
+            }
+          });
+         
+          let imgData = JSON.stringify(response.data)
+          if (typeof imgData === "string") {
+            const image = qrcode.toDataURL(imgData);
+            setImageQR(image);
+          } else {
+            throw new Error("Invalid response data type");
           }
-      });
-        const image = qrcode.toDataURL(response.data)
-         setImageQR(image);
+        } catch (error) {
+          console.error(error);
+        }
       };
+      
       const fetchEmpData = async () => {
-        const response = await axios.post(`/GettingDetailsOfViwPass/${id}`, {
+        const response = await axios.post(`http://10.191.80.104:7001/seats/GettingDetailsOfViwPass/${id}`, {},{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),
               "X-Eid":localStorage.getItem("eid")
           }
       });
-        setEmpData(response.data);
+      setEmpData(response.data);
+      console.log(response.data);
+      console.log(empData)
       };
       fetchPasscode();
       fetchEmpData();
     }, []);
-    // const generateQrCode  = async ()=>{
-    //     const image = await qrcode.toDataURL(text)
-    //     setImageQR(image)
-    // }
-    // useEffect(() => {
-    //   axios.get(`http://10.191.80.104:7001/viewPass/${id}`, {}, {
-    //     headers:{
-    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //         "X-Role":localStorage.getItem("role"),
-    //         "X-Eid":localStorage.getItem("eid")
-    //     }
-    // }).then((response) => {
-    //   console.log(response.data)
-    //     const image = qrcode.toDataURL(response.data)
-    //     setImageQR(image);
-    //   }); 
-    //   axios.get(`http://10.191.80.104:7001/seats/GettingDetailsOfViwPass/${id}`, {}, {
-    //     headers:{
-    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //         "X-Role":localStorage.getItem("role"),
-    //         "X-Eid":localStorage.getItem("eid")
-    //     }
-    // })
-    //   .then((res)=>{
-    //     console.log(res.data)
-    //     // setData({
-         
-    //     // })
-    //   })
-    // }, []);
-
-    // const openDialog = ()=>{
-    //     qrRef.current.openImageDialog()
-    // }
-    // const fileError = (error)=>{
-    //     if(error){
-    //         console.log(error);
-
-    //     }
-    // }
-
-    // const fileScan = (result)=>{
-    //     if(result){
-    //         setFileResult(result)
-    //     }
-    // }
-    // const webCamError = (error)=>{
-    //     if(error){
-    //         console.log(error);
-
-    //     }
-    // }
-
-    // const webCamScan = (result)=>{
-    //     if(result){
-    //         setwebcamResult(result)
-    //     }
-    // }
+ 
     return (
       <div className="container mx-auto mt-2">
         <div className="row">
@@ -111,22 +81,13 @@ function ViewPass(){
             QrCode generator
           </h2>
           <div className="details">
-            <div>Name:{empData.name} </div>
-            <div>Emp Id:{empData.emp_id}</div>
-            <div>Booked Seat: {empData.sName} </div>
-            <div>Booked shift:{empData.st_start}"-"{empData.st_end} </div>
+            <div>Name:{empData[0].emp_name} </div>
+            <div>Emp Id:{empData[0].emp_id}</div>
+            <div>Booked Seat: {empData[0].s_name} </div>
+            <div>Booked shift:{empData[0].st_start}-{empData[0].st_end} </div>
           </div>
         </div>
-        {/* <div className="row">
-            <h3 className="col-sm-12">
-                Enter text for Qr-code
-            </h3>
-        </div> */}
-        {/* <div className="row">
-            <input type="text" className="col-sm-5" value={text} onChange={(e)=>setText(e.target.value)}/>
-            <button className="col-sm-2 btn btn-primary btn-sm m-2" onClick={generateQrCode}>Generate Qr-code</button>
-        </div> */}
-     
+       
         <div class="card col-sm-3 m-2">
           <div class="card-header m-1 rounded text-center">
             <h3 class="badges bg-secondary rounded text-center text-light">

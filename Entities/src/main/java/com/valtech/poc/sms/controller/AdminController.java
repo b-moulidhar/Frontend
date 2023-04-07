@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.valtech.poc.sms.dao.SeatBookingDao;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.SeatsBooked;
 import com.valtech.poc.sms.entities.User;
@@ -31,7 +32,8 @@ import com.valtech.poc.sms.service.SeatBookingService;
 import com.valtech.poc.sms.service.UserService;
 
 @Controller
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+		RequestMethod.DELETE })
 public class AdminController {
 
 	@Autowired
@@ -48,7 +50,10 @@ public class AdminController {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
+	@Autowired
+	SeatBookingDao seatBookingDao;
+
 	@Autowired
 	AttendanceService attendanceService;
 
@@ -66,42 +71,55 @@ public class AdminController {
 	@Autowired
 	SeatsBookedRepo seatsBookedRepo;
 
+	// This method handles the punch out of an employee
 	@ResponseBody
 	@GetMapping("/checkout")
 	public String checkOut(@RequestParam("empId") int empId) {
+		// Find the user associated with the employee ID
 		User usr = userService.findByEmpId(empId);
+		// Get the employee details
 		Employee emp = usr.getEmpDetails();
+		// Find the current seat booking details for the employee
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
+		// Get the current date and time
 		LocalDateTime now = LocalDateTime.now();
+		// Format the date and time as a string with a specific format
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(formatter.format(now), formatter);
-//		LocalDateTime dateTime = formatter.format(now);
+		// Set the current seat booking status to false and set the punch out time to the current date and time
 		sb.setCurrent(false);
 		sb.setPunchOut(dateTime);
+		// Save the updated seat booking details to the database
 		seatsBookedRepo.save(sb);
+		// Automatically regularize the attendance for the seat booking
 		attendanceService.automaticRegularization(sb.getSbId());
 		return "checked out";
 	}
 
+
+	// This method retrieves the current passcode for an employee's seat booking
 	@ResponseBody
 	@GetMapping("/viewPass/{eId}")
 	public String viewPasscode(@PathVariable("eId") int eId) {
-//		User usr = userService.findByEId(eId);
-//		Employee emp = usr.getEmpDetails();
+		// Find the employee associated with the employee ID
 		Employee emp = employeeService.findById(eId);
 		System.out.println(emp.getEmpName());
+		// Find the current seat booking details for the employee
 		SeatsBooked sb = seatBookingService.findCurrentSeatBookingDetails(emp);
 		String code = sb.getCode();
 		System.out.println(code);
 		return code;
 	}
-	
+
+	// This method verifies a QR code for an employee's seat booking
 	@ResponseBody
 	@PostMapping("/qr/verification/{eId}")
 	public boolean verifyQrCode(@PathVariable("eId") int eId, @RequestParam("code") String code) {
+		// Call the AdminService to verify the QR code
 		boolean b = adminService.verifyQr(eId, code);
 		return b;
 	}
+
 
 	@ResponseBody
 	@GetMapping("/qr/codeGenerator/{empId}")
@@ -111,13 +129,6 @@ public class AdminController {
 		String qrCodeKey = adminService.generateQrCode(empId);// this generates new code everytime (for test purpose
 																// only)
 		return qrCodeKey;
-	}
-
-	@ResponseBody
-	@GetMapping("/foodCountWithJpa/{ftDate}")
-	public int getCountByFtdate(@PathVariable("ftDate") String ftDate) {
-		String foodDate = ftDate + " 00:00:00";
-		return adminService.getCount(foodDate);
 	}
 
 	@ResponseBody
@@ -176,27 +187,41 @@ public class AdminController {
 
 	}
 
-	
 	@ResponseBody
 	@GetMapping("/registrationApprovalList")
 	public List<Map<String, Object>> getRegistrationListForApproval() {
 		logger.info("fetching the list of Approval Request");
 		return adminService.getRegistrationListForApproval();
 	}
-		
+
 	@ResponseBody
 	@GetMapping("/profileDetailsAdmin/{admnId}")
-    public Employee getAdminById(@PathVariable int e_id) {
-        return employeeService.getEmployeeByeId(e_id);
-    }
-	
-	
+
+	public Employee getAdminById(@PathVariable int eId) {
+		return employeeService.getEmployeeByeId(eId);
+	}
+
 	@ResponseBody
 	@GetMapping("/foodCountBasedOnDates")
-	public int getCountByDate(@RequestParam("sbDate")String sbDate) {
+	public int getCountByDate(@RequestParam("sbDate") String sbDate) {
 		String SeatDate = sbDate + " 00:00:00";
 		int count = adminService.getCountOfFoodOpt(SeatDate);
 		return count;
 	}
-	
+
+	@ResponseBody
+	@GetMapping("/test/sb/shift/{start}")
+	public List<SeatsBooked> testList(@PathVariable("start") int start, @RequestParam("date") String date) {
+//		return seatBookingDao.findSBIdByShiftTimingsAndDate(start, date);
+		return seatBookingService.getSBBySTAndDate(start, date);
+	}
+
+	@ResponseBody
+	@GetMapping("/foodCountBasedOnDates/{sbDate}")
+	public int getCountByDates(@PathVariable("sbDate") String sbDate) {
+		String SeatDate = sbDate + " 00:00:00";
+		int count = adminService.getCountOfFoodOpt(SeatDate);
+		return count;
+	}
+
 }

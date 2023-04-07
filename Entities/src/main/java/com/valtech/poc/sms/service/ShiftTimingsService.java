@@ -8,4 +8,6 @@ public interface ShiftTimingsService {
 	
 	Optional<ShiftTimings> findById(int stId);
 
+	int getStId(String startTime, String endTime);
+
 }

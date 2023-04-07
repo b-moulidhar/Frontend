@@ -1,147 +1,186 @@
-import React, { useEffect, useState } from "react";
-import "./ground.css"
-import axios from "axios";
+import React from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import "./ground.css";
+import axios from 'axios';
 
-const FirstFloor = () => {
-  const [seats,setSeats]= useState([
-    { id: 1, name: "1001", booked: false, selected:false},
-    { id: 2, name: "1002", booked: false, selected:false},
-    { id: 3, name: "1003", booked: false, selected:false},
-    { id: 4, name: "1004", booked: false, selected:false},
-    { id: 5, name: "1005", booked: false, selected:false},
-    { id: 6, name: "1006", booked: false, selected:false},
-    { id: 7, name: "1007", booked: false, selected:false},
-    { id: 8, name: "1008", booked: false, selected: false},
-    { id: 9, name: "1009", booked: false, selected:false},
-    { id: 10, name: "1010", booked: false, selected:false},
-    { id: 11, name: "1011", booked: false, selected:false},
-    { id: 12, name: "1012", booked: false, selected:false},
-    { id: 13, name: "1013", booked: false, selected:false},
-    { id: 14, name: "1014", booked: false, selected:false},
-    { id: 15, name: "1015", booked: false, selected:false},
-    { id: 16, name: "1016", booked: false, selected:false},
-  ]);
+function FirstFloor() {
+  
+ // Define state variables using the useState hook
+  const [seats, setSeats] = useState([]);
+  const [data, setData] = useState([]);
+  const [seatBooked,setSeatBooked] = useState([{}])
+  const [token, setToken] = useState(window.localStorage.getItem("token"));
+  const gfloorPat = /^1[0-9]{3}$/
+  const [newSeats,setNewSeats] = useState([])
 
+   const storedData = localStorage.getItem('from date');
+let seatTemp = []
 
-  const [selected,setSelected] = useState({})
+// Use the useEffect hook to fetch data from the server 
+   useEffect(() => {
+     axios.get("http://10.191.80.73:7001/seats/total", {
+
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+    })
+      // .then((response) => {
+      //   if (!response.ok) {
+      //     throw new Error(`HTTP error: ${response.status}`);
+      //   }
+
+      //   return response.text();
+      // })
+      .then((res) => {
+        // console.log(res.data)
+        setData(res.data);
+        // setSeatBooked(JSON.parse(text))
+        
+       
+        
+      });
+      
+  },[]);
   
   useEffect(()=>{
-    axios.get("http://localhost:7001/seats/available/2023-04-03",{
-        headers:{
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role":localStorage.getItem("role"),
-            "X-Eid":localStorage.getItem("eid")
-        }
-    })
-    .then((res)=>{
-        // setUser(res.data)
-        console.log(res)
-    }).catch((err)=>{
-        console.log(err)
-    })
-  },[])
+    
+    data.map((seats,idx)=>{
+      if(gfloorPat.test(seats)){
+        // console.log(seats)
+        const seatName = `${seats}`;
+      
+          const isBooked = seatBooked.some((seat) =>seat === seatName);
+          seatTemp.push({
+            id: idx,
+            name: seatName,
+            booked: isBooked,
+            selected: false,
+          });
 
+          setNewSeats(seatTemp)
+
+      }
+    //  return console.log(seats);
+ 
+    })
+  },[data])
+// Use another useEffect hook to create an array of seat objects
+  // useEffect(()=>{
+  //   const numSeats = data.length; 
+  //   const newSeats = [];
+  //   // for (let i = 0; i < numSeats; i++) {
+  //   //   const seatName = `${data[i]}`;
+      
+  //   //   const isBooked = seatBooked.some((seat) =>seat === seatName);
+  //   //   newSeats.push({
+  //   //     id: i,
+  //   //     name: seatName,
+  //   //     booked: isBooked,
+  //   //     selected: false,
+  //   //   });
+  //   // }
+  //   // data.map((seats,idx)=>{
+  //   //   if(data[idx]===gfloorPat){
+  //   //       console.log(seats)
+  //   //   }
+
+  //   // })
+  //   setSeats(newSeats);
+  // },[seatBooked])
+ 
+ 
+
+  const [selected, setSelected] = useState({});
+// Define a function to handle the click event on a seat
   const handleSeatClick = (name) => {
-    console.log(name)
+    // console.log(name);
     //logic for deselection
     setSelected({
       seatId: name,
-    })
+      floorId: "GF",
+    });
   };
 
-  const sendData = ()=>{
-    if(selected.seatId!=null){
-      localStorage.setItem("seat_name", selected.seatId)
-      window.location="/viewpass"
-    }else{
-      alert("please select a seat")
+  const sendData = () => {
+    if (selected.seatId != null) {
+      localStorage.setItem("seat_name", selected.seatId);
+      window.location = "/";
+    } else {
+      alert("please select a seat");
     }
-  }
+  };
 
   return (
+   
     <div className="seat-booking-app">
       <div>
-      <h1>Seat Matrix</h1>
-
-      <h2>First Floor</h2>
-
+        <h1>Ground Floor</h1>
       </div>
-
+       {/* Map over the seats array and render the seats */}
       <div className="seat-map">
-        {seats.map((seat) => (
-          seat.booked ? <div><label>  
-            {seat.name}
-            <input
-            id={seat.id}
-            className="seat booked"
-            disabled
-            >
-            {/* {console.log(seat.booked)} */}
-          </input>
-            </label> </div>: <div>
-          <label >
-              {seat.name}
-              <input
-              className="seat"
-              name="test"
-                // checked={}
-                value={seat.name}
-              onClick={() => handleSeatClick(seat.name)}
-              type="radio"
-              />
-            </label>
-          </div> 
-
-          
-          
-            // }
-))}
+      
+        {newSeats.map((seat) =>
+       
+          seat.booked ? (
+           <div>
+              <p>
+                {seat.name}
+                <input id={seat.id} className="seat booked" disabled>
+                </input>
+              </p>{" "}
+            </div>
+          ) : (
+            <div>
+              <label>
+                {seat.name}
+                <input
+                  className="seat"
+                  name="test"
+                  // checked={}
+                  value={seat.name}
+                  onClick={() => handleSeatClick(seat.name)}
+                  type="radio"
+                />
+              </label>
+            </div>
+          )         
+         ) }
       </div>
       <br />
       <div id="legend">
-            <label>
-             Available seats
-              <input
-              className="seat"
-              name="test"
-              type="radio"
-              disabled
-              />
-            </label>
-            <label >
-             selected seats
-              <input
-              className="seat select"
-              name="test"
-              type="radio"
-              disabled
-              />
-            </label>    
-            <label >
-             Booked seats
-              <input
-              className="seat booked"
-              name="test"
-              type="radio"
-              disabled
-              />
-            </label>    
-        <div>Your Chosen Seats
-       {!seats.booked && <div>{selected.seatId}</div>}
-       </div>
-        {/* {
-     seats.map((seat)=>(
-        <div className='seat-map'>
-         <div className='seat'> {seat.id}</div>
+        <label>
+          Available seats
+          <input className="seat" name="test" type="radio" disabled />
+        </label>
+        <label>
+          selected seats
+          <input
+            className="seat select"
+            name="test"
+            type="radio"
+            disabled
+          />{" "}
+        </label>{" "}
+        <label>
+          Booked seats
+          <input className="seat booked" name="test" type="radio" disabled />
+        </label>
+        <div>
+          Your Chosen Seats
+          {!seats.booked && <div>{selected.seatId}</div>}
         </div>
-    )
-    )
-    } */}
-    <button onClick={sendData} className="btn btn-warning">submit</button>
+       
       </div>
+      <button onClick={sendData} className="btn btn-warning Nextbtn">
+        submit
+      </button>
       
     </div>
   );
-};
+}
+
+
 
 export default FirstFloor;

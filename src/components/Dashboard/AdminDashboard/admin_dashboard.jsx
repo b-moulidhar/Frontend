@@ -5,15 +5,10 @@ import './admin_dashboard.css';
 function AdminDashboard(){
     const [count,setCount] = useState(0)
     const [foodCount,setFoodCount] = useState(0)
-
  // const currentDate = new Date().toLocaleDateString();
-
-const dateObj = new Date();
-
+ const dateObj = new Date();
  const year = dateObj.getFullYear();
-
  const month = dateObj.getMonth() + 1;
-
  const day = dateObj.getDate();
  const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     // useEffect(() => {
@@ -22,9 +17,8 @@ const dateObj = new Date();
     //   }); 
     // }, []);
     useEffect(() => {
-      
 
-      axios.get(`http://10.191.80.104:7001/seatCount/${currentDate}`,{
+      axios.get(`http://10.191.80.73:7001/seatCount/${currentDate}`,{
         headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "X-Role":localStorage.getItem("role"),
@@ -38,7 +32,7 @@ const dateObj = new Date();
       }, []);
       useEffect(() => {
  
-        axios.get(`http://10.191.80.104:7001/foodCountBasedOnDates/${currentDate}`,{
+        axios.get(`http://10.191.80.73:7001/foodCount/${currentDate}`,{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),
@@ -54,16 +48,7 @@ const dateObj = new Date();
           console.log(error);
         });
     }, []);
-    // useEffect(()=>{
-    //     axios.get("http://10.191.80.104:7001/seats/total").then((res)=>{
-    //             setCount({
-    //                 ...count,counts:res.data.length
-    //             }
-    //             )
-    //             console.log(res.data)
-    //             alert(res.data);
-    //     })
-    // },[])
+    
 
     function reportGen(evt){
         if(evt=="weekly"){
@@ -94,11 +79,7 @@ const dateObj = new Date();
         <div>
         </div>
         <div>
-          {/* <h2 className="status">Status</h2> */}
-          {/* <div className="dashboard_head">
-            <h3>your name</h3>
-            <p>your seat for today is 1 at ground floor</p>
-          </div> */}
+       
           <div className=" atten">
             <div className="attenstatus">
             <div className="card" style={{ width: "18rem" }}>
@@ -108,7 +89,7 @@ const dateObj = new Date();
                        Food count
                      </h6>
                      <p className="card-text">
-                       {count.counts}
+                       {foodCount}
                      </p>
                    </div>
                  </div>
