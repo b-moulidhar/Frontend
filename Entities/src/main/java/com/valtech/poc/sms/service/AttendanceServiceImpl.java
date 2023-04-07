@@ -19,10 +19,12 @@ import com.valtech.poc.sms.entities.CalendarUtil;
 import com.valtech.poc.sms.entities.DateUtil;
 import com.valtech.poc.sms.entities.Employee;
 import com.valtech.poc.sms.entities.SeatsBooked;
+import com.valtech.poc.sms.entities.ShiftTimings;
 import com.valtech.poc.sms.exception.ResourceNotFoundException;
 import com.valtech.poc.sms.repo.AttendanceRepository;
 import com.valtech.poc.sms.repo.EmployeeRepo;
 import com.valtech.poc.sms.repo.SeatsBookedRepo;
+import com.valtech.poc.sms.repo.ShiftTimingsRepo;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
@@ -36,6 +38,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Autowired
 	private EmployeeRepo employeeRepo;
+	
+	@Autowired
+	private ShiftTimingsRepo shiftTimingsRepo;
 
 	@Autowired
 	private HolidayService holidayService;
@@ -73,10 +78,13 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	/*Save the attendance details of the employees*/
 	@Override
-	public String saveAttendance(int eId, String startDate, String endDate, String shiftStart, String shiftEnd) {
+	public String saveAttendance(int eId, String startDate, String endDate, int stId) {
 		logger.info("Fetching employee by id");
 		logger.debug("Fetching employee by id" + eId);
 		Employee emp = employeeRepo.findById(eId).get();
+		ShiftTimings st=shiftTimingsRepo.findById(stId).get();
+		String shiftStart=st.getStStart();
+		String shiftEnd=st.getStEnd();
 		logger.info("setting the values for attendance");
 		String StDate = startDate + " 00:00:00";
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -141,10 +149,13 @@ public class AttendanceServiceImpl implements AttendanceService {
 	
 	/*Regularizing the attendance for multiple days*/
 	@Override
-	public String saveAttendanceForMultipleDays(int eId, String startDate, String endDate, String shiftStart, String shiftEnd) {
+	public String saveAttendanceForMultipleDays(int eId, String startDate, String endDate, int stId) {
 	    Employee emp = employeeRepo.findById(eId).get();
 	    AttendanceTable attendance1 = new AttendanceTable();
 	    attendance1.seteId(emp);
+	    ShiftTimings st=shiftTimingsRepo.findById(stId).get();
+		String shiftStart=st.getStStart();
+		String shiftEnd=st.getStEnd();
 	    String StDate = startDate + " 00:00:00";
 	    String edDate = endDate + " 00:00:00";
 	    if (attendanceDao.checkIfTheAttendanceIsRegularised(eId, StDate, edDate)) {
