@@ -23,8 +23,7 @@ export default function Forget(){
               console.log(email);
               window.location=`/forget/reset/${email.email}`;
           })
-          
-        
+          window.location=`/forget/reset/${email.email}`;
         }
       }
 

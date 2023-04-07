@@ -10,7 +10,7 @@ function BookSeat() {
   const [differenceDay,setDifferenceDay] = useState(0)
   const [toDate, setToDate] = useState("");
   const [firstDate, setFirstDate] = useState("");
-  const [meal, setMeal] = useState("");
+  const [meal, setMeal] = useState(false);
   var startTime = [];
   var endTime = [];
   var timeRange = []
@@ -30,7 +30,7 @@ function BookSeat() {
       })
     }
     useEffect(() => {
-      axios.get('http://10.191.80.104:7001/shiftStart',{
+      axios.get('http://10.191.80.73:7001/shiftStart',{
         headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "X-Role":localStorage.getItem("role"),
@@ -38,7 +38,7 @@ function BookSeat() {
         }
     }).then(function (response) {
            startTime = response.data;
-          return axios.get('http://10.191.80.104:7001/shiftEnd',{
+          return axios.get('http://10.191.80.73:7001/shiftEnd',{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "X-Role":localStorage.getItem("role"),
@@ -66,7 +66,7 @@ function BookSeat() {
   };
 
   function todayDate() {
-    const now = new window.Date("yyyy-mm-dd");
+    const now = new window.Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
     const day = now.getDate();
@@ -84,10 +84,27 @@ function BookSeat() {
     if(diffDays>7){
       alert("Not allowed to book for more than 7 days");
     }
+    setToDate(e.target.value)
   }
    const nextPage=()=>{
-    window.location="/floorlist"
-   }
+    if(request==="Daily"){
+      localStorage.setItem("from_date",firstDate);
+      localStorage.setItem("to_date",firstDate);
+      window.location="/floorlist"
+    }else if(request==="Weekly"){
+      localStorage.setItem("from_date",firstDate);
+      localStorage.setItem("to_date",toDate);
+      window.location="/floorlist"
+    }
+
+      localStorage.setItem("lunch",meal);
+      localStorage.setItem("shift_timing",shiftTiming)
+
+   } 
+  //  const sameDate=()=>{
+  //   setToDate(firstDate);
+  //   console.log(to)
+  //  }
 
   // var date = new Date();
 
@@ -160,8 +177,8 @@ function BookSeat() {
         required
       >
         <option value="select">Select</option>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
+        <option value={true}>Yes</option>
+        <option value={false}>No</option>
       </select>
 
       {request === "Daily" && (
@@ -171,9 +188,9 @@ function BookSeat() {
           <input
             id="from-date-input"
             type="date"
-            value={toDate}
+            value={firstDate}
             min={todayDate()}
-            onChange={(e) => setToDate(e.target.value)}
+            onChange={(e) => setFirstDate(e.target.value)}
             className="form-input"
             required
           />
@@ -181,10 +198,10 @@ function BookSeat() {
           <input
             id="to-date-input"
             type="date"
-            value={toDate}
+            value={firstDate}
             min={todayDate()}
             // onChange={(e) => setToDate(e.target.value)}
-            onChange={(e) => setToDate(e.target.value)}
+            // onChange={sameDate}
             className="form-input"
             required
           />
@@ -198,6 +215,7 @@ function BookSeat() {
           <input
             id="from-date-input"
             type="date"
+            value={firstDate}
             min={todayDate()}
             onChange={(e) => setFirstDate(e.target.value)}
             className="form-input"
@@ -208,6 +226,7 @@ function BookSeat() {
             id="to-date-input"
             type="date"
             min={todayDate()}
+            value={toDate}
             // onChange={(e) => setToDate(e.target.value)}
             // onChange={(e) => setToDate(e.target.value)}
             onChange={(e) => weeklydate(e)}
