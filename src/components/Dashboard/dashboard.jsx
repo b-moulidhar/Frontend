@@ -7,7 +7,12 @@ import { useParams } from "react-router-dom";
 function Dashboard() {
   const {id} = useParams();
   function seatBook(){
-  window.location="/bookseat/"+id;
+    console.log(id);
+  window.location=`/bookseat/${id}`;
+  }
+  function viewPass(){
+    console.log(id);
+  window.location=`/viewpass/${id}`;
   }
   return (
     <div className="dashboard_container">
@@ -39,16 +44,16 @@ function Dashboard() {
                 </div>
 
                 <div className="dashboard">
-                  <a href="/bookseat">
-                    <button type="button" onChange={seatBook} className="btn btn-primary seat">
+                  
+                    <button type="button" onClick={seatBook} className="btn btn-primary seat">
                       Book Seat
                     </button>
-                  </a>
-                  <a href="/viewpass">
-                    <button type="button" className="btn btn-success seat">
-                      View Booking
+                  
+                 
+                    <button type="button" onClick={viewPass} className="btn btn-success seat">
+                      View Pass
                     </button>
-                  </a>
+                  
                 </div>
 
                 <div className="dashboard_bottom">

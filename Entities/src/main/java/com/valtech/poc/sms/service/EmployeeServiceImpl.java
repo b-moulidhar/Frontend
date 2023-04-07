@@ -1,6 +1,7 @@
 package com.valtech.poc.sms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +14,15 @@ import com.valtech.poc.sms.repo.EmployeeRepo;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-	
+
 	@Autowired
 	private EmployeeDAO employeeDAO;
-	
-	
+
 	@Override
-    public Employee getEmployeeByeId(int eId) {
-        return employeeDAO.getEmployeeByeId(eId);
-    }
-	
+	public Employee getEmployeeByeId(int eId) {
+		return employeeDAO.getEmployeeByeId(eId);
+	}
+
 	@Autowired
 	private EmployeeRepo empRepo;
 
@@ -33,12 +33,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 //		System.out.println("ESI "+empRepo.findByEmpName(empName));
 		return empRepo.findByEmpName(empName);
 	}
-	
+
 	@Override
 	public Employee findById(int id) {
 		return empRepo.findById(id).get();
 	}
-	
+
 	@Override
 	public List<Employee> getAllEmployees(int eID) {
 		logger.info("Getting All Employee Details by manager");
@@ -52,10 +52,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
+	public List<Map<String, Object>> getAllEmployeesUnderTheManager(int eId) {
+		return employeeDAO.getAllEmployeesUnderTheManager(eId);
+	}
+
 	public int findeIdByMailId(String email) {
 		// TODO Auto-generated method stub
 		return empRepo.findByMailId(email).geteId();
 	}
 
-	
 }

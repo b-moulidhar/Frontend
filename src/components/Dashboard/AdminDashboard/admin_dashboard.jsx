@@ -48,16 +48,7 @@ function AdminDashboard(){
           console.log(error);
         });
     }, []);
-    // useEffect(()=>{
-    //     axios.get("http://10.191.80.104:7001/seats/total").then((res)=>{
-    //             setCount({
-    //                 ...count,counts:res.data.length
-    //             }
-    //             )
-    //             console.log(res.data)
-    //             alert(res.data);
-    //     })
-    // },[])
+    
 
     function reportGen(evt){
         if(evt=="weekly"){
@@ -88,11 +79,7 @@ function AdminDashboard(){
         <div>
         </div>
         <div>
-          {/* <h2 className="status">Status</h2> */}
-          {/* <div className="dashboard_head">
-            <h3>your name</h3>
-            <p>your seat for today is 1 at ground floor</p>
-          </div> */}
+       
           <div className=" atten">
             <div className="attenstatus">
             <div className="card" style={{ width: "18rem" }}>
@@ -102,7 +89,7 @@ function AdminDashboard(){
                        Food count
                      </h6>
                      <p className="card-text">
-                       {count.counts}
+                       {foodCount}
                      </p>
                    </div>
                  </div>

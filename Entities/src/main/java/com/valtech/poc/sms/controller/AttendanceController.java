@@ -9,14 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.valtech.poc.sms.entities.AttendanceTable;
@@ -26,6 +29,7 @@ import com.valtech.poc.sms.service.AttendanceService;
 import com.valtech.poc.sms.service.MailContent;
 
 @Controller
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class AttendanceController {
 
 	@Autowired
@@ -51,17 +55,15 @@ public class AttendanceController {
 
 	@ResponseBody
 	@PostMapping("/attendanceRegularization/{eId}")
-	public void saveAttendance(@PathVariable("eId") int eId,@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,@RequestParam("shiftStart")String shiftStart,@RequestParam("shiftEnd")String shiftEnd ) {
+	public String saveAttendance(@PathVariable("eId") int eId,@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,@RequestParam("shiftStart")String shiftStart,@RequestParam("shiftEnd")String shiftEnd ) {
 		logger.info("Request to save the attendance");
-		String stDate = startDate + " 00:00:00";
-		String edDate = endDate + " 00:00:00";
 		if(startDate.equals(endDate)) {
 			System.out.println("daily");
-		attendanceService.saveAttendance(eId,startDate,endDate,shiftStart,shiftEnd);
+		return attendanceService.saveAttendance(eId,startDate,endDate,shiftStart,shiftEnd);
 		}
 		else {
 			System.out.println("weekly");
-	    attendanceService.saveAttendanceForMultipleDays(eId,stDate,edDate,shiftStart,shiftEnd);
+	   return attendanceService.saveAttendanceForMultipleDays(eId,startDate,endDate,shiftStart,shiftEnd);
 		}
 	}
 
@@ -128,7 +130,6 @@ public class AttendanceController {
 		}
 
 	}
-
 	@ResponseBody
 	@GetMapping("/attendanceApprovalList/{eId}")
 	public List<Map<String, Object>> getAttendanceListForApproval(@PathVariable("eId") int eId) {
@@ -141,33 +142,5 @@ public class AttendanceController {
 
 	}
 
-//	@ResponseBody
-//	@PostMapping("/WeeklySeatBooking/{eId}")
-//	public synchronized ResponseEntity<String> HandlingWeeklySeatBooking(@PathVariable("eId") int eId,@RequestParam("sId") int sId,@RequestParam("from") String from,@RequestParam("to")String to) {
-//		Employee emp = employeeRepo.findById(eId).get();
-//		Seat seat = seatRepo.findById(sId).get();
-//		
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-//		LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-//		LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-//		 LocalDate fromDate = fromDateTime.toLocalDate();
-//	        LocalDate toDate = toDateTime.toLocalDate();
-//		  List<LocalDate> dates = DateUtil.getDatesBetween(fromDate, toDate);
-//		  System.out.println(dates);
-//		  for (LocalDate date : dates) {
-//			  System.out.println(date);
-//			  SeatsBooked sb= new SeatsBooked();
-//			  LocalDateTime localDateTime = date.atStartOfDay();
-//			  sb.seteId(emp);
-//			  sb.setSbDate(localDateTime);
-//			  sb.setsId(seat);
-//			  String code = adminService.generateQrCode(eId);
-//			  sb.setCode(code);
-//			  sb.setNotifStatus(false);
-//			  sb.setCurrent(true);
-//			  seatsBookedRepo.save(sb);
-//				}
-//		  return ResponseEntity.ok("Seats booked successfully " ); 
-//	}
 }
 

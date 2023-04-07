@@ -1,6 +1,5 @@
 package com.valtech.poc.sms.dao;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import java.util.Map;
@@ -92,9 +91,9 @@ String query="select *from attendance_table a JOIN employee e ON a.e_id = e.e_id
 
 	@Override
 	public List<Map<String, Object>> getAttendanceListForApproval(int eId) {
-String query="select * from attendance_table a JOIN employee e ON a.e_id = e.e_id JOIN manager m ON e.m_id = m.m_id	WHERE a.e_id=? and approval=?";
+String query="SELECT at_id,start_date,end_date,shift_start,shift_end,e_id FROM attendance_table WHERE approval = ? AND e_id IN ( SELECT e_id FROM employee  WHERE m_id = (SELECT m_id  FROM manager  WHERE e_id = ?))";
 		
-    	List<Map<String, Object>> result = jdbcTemplate.queryForList(query, eId,false);
+    	List<Map<String, Object>> result = jdbcTemplate.queryForList(query, false,eId);
 		return result;
 	}
 	
@@ -113,12 +112,12 @@ String query="select * from attendance_table a JOIN employee e ON a.e_id = e.e_i
 	}
 
 	@Override
-	public boolean checkIfTheAttendanceIsRegularized(int eId, String startDate, String endDate) {
-		String sql= "SELECT COUNT(*) FROM attendance_table WHERE e_id = ? AND start_date = ? AND end_date=? ";
+	public boolean checkIfTheAttendanceIsRegularized(int eId, String startDate) {
+		String sql= "SELECT COUNT(*) FROM attendance_table WHERE e_id = ? AND start_date = ? ";
 	       
 		try {
 			@SuppressWarnings("deprecation")
-			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,startDate,endDate }, Integer.class);
+			int cnt = jdbcTemplate.queryForObject(sql,new Object[] { eId,startDate}, Integer.class);
 		
         if(cnt>0)
         	return true;
