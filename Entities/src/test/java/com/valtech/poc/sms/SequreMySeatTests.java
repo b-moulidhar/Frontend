@@ -279,6 +279,22 @@ class SequreMySeatTests {
 	    		int count = holidayDao.checkHoliday(date);
 	    		return count > 0;
 	    	}
+	    	
+	    	 @Test
+	    	    public void testGetCountOfFoodOpt() {
+	    	        // Arrange
+	    	        String seatDate = "2023-04-07 12:00:00";
+	    	        LocalDateTime dateTime = LocalDateTime.of(2023, 4, 7, 12, 0, 0);
+	    	        when(adminDao.getCountOfFoodOpt(dateTime)).thenReturn(5);
+
+	    	        // Act
+	    	        int count = adminDao.getCountOfFoodOpt(dateTime);
+
+	    	        // Assert
+	    	        assertEquals(5, count);
+	    	        verify(adminDao, times(1)).getCountOfFoodOpt(dateTime);
+	    	    }
+	      
 	@Test
 	void contextLoads() {
 	}

@@ -187,7 +187,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	        }
 	        String email = attendance1.geteId().getManagerDetails().getManagerDetails().getMailId();
 	        mailContent.attendanceApprovalRequest(email);
-	            return "saved";
+	            return "test";
 	        }
 	    }
 	    }
