@@ -76,7 +76,7 @@ function Atten_Regularize(){
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`http://10.191.80.104:7001/attendanceRegularization/${id}`,{
+    axios.post(`http://10.191.80.102:7001/attendanceRegularization/${id}`,{
          params:{
           startDate:startDate,
           endDate:endDate,
@@ -116,7 +116,7 @@ function Atten_Regularize(){
                     <a className="nav-link" href={`/profile/${id}`}>Profile</a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="">Regularization</a>
+                    <a className="nav-link" href="#">Regularization</a>
                   </li>
                 </ul>
                 <ul className="navbar-nav ml-auto">
