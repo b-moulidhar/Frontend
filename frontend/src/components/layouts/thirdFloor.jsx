@@ -44,28 +44,40 @@ let seatTemp = []
       
   },[]);
   
-  useEffect(()=>{
-    
-    data.map((seats,idx)=>{
-      if(gfloorPat.test(seats)){
-        // console.log(seats)
-        const seatName = `${seats}`;
-      
-          const isBooked = seatBooked.some((seat) =>seat === seatName);
-          seatTemp.push({
-            id: idx,
-            name: seatName,
-            booked: isBooked,
-            selected: false,
-          });
-
-          setNewSeats(seatTemp)
-
+  useEffect(() => {
+    const numSeats = data.length;
+    const newSeats = [];
+    for (let i = 0; i < numSeats; i++) {
+      if (gfloorPat.test(data[i])) {
+        const seatName = `${data[i]}`;
+        const isBooked = seatBooked.some((seat) => seat.sName === seatName);
+        newSeats.push({
+          id: i,
+          name: seatName,
+          booked: isBooked,
+          selected: false,
+        }); 
       }
-    //  return console.log(seats);
- 
-    })
-  },[data])
+    }
+    
+    setNewSeats(newSeats);
+  }, [data]);
+
+
+  useEffect(() => {
+    axios
+      .get(`http://20.253.3.209:7001/seats/booked/2023-04-10`, {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setSeatBooked(res.data);
+        // console.log(seatBooked[0])
+      });
+  }, []);
 // Use another useEffect hook to create an array of seat objects
   // useEffect(()=>{
   //   const numSeats = data.length; 

@@ -46,7 +46,7 @@ let seatTemp = []
       
   },[]);
   useEffect(()=>{
-    axios.get("http://20.253.3.209:7001/seats/booked/2023-04-07",{
+    axios.get("http://20.253.3.209:7001/seats/booked/2023-04-10",{
 
     headers: {
       Authorization: "Bearer " + token,
@@ -54,7 +54,7 @@ let seatTemp = []
     },
   }).then((res)=>{
       console.log(res.data)
-      // setSeatBooked(res.data)
+      setSeatBooked(res.data)
   })
   },[]);
   
@@ -62,7 +62,7 @@ let seatTemp = []
     
     data.map((seats,idx)=>{
       if(gfloorPat.test(seats)){
-        // console.log(seats)
+        console.log(seats)
         const seatName = `${seats}`;
           const isBooked = seatBooked.some((seat) =>seat === seatName);
           console.log(isBooked);
@@ -91,27 +91,60 @@ let seatTemp = []
   //       })
   //   }
   // })
+  useEffect(() => {
+    const numSeats = data.length;
+    const newSeats = [];
+    for (let i = 0; i < numSeats; i++) {
+      if (gfloorPat.test(data[i])) {
+        const seatName = `${data[i]}`;
+        const isBooked = seatBooked.some((seat) => seat.sName === seatName);
+        newSeats.push({
+          id: i,
+          name: seatName,
+          booked: isBooked,
+          selected: false,
+        }); 
+      }
+    }
+    
+    setNewSeats(newSeats);
+  }, [data]);
+
+  useEffect(() => {
+    axios
+      .get(`http://20.253.3.209:7001/seats/booked/2023-04-10`, {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setSeatBooked(res.data);
+        // console.log(seatBooked[0])
+      });
+  }, []);
 // Use another useEffect hook to create an array of seat objects
   // useEffect(()=>{
   //   const numSeats = data.length; 
   //   const newSeats = [];
-  //   // for (let i = 0; i < numSeats; i++) {
-  //   //   const seatName = `${data[i]}`;
+  //   for (let i = 0; i < numSeats; i++) {
+  //     const seatName = `${data[i]}`;
       
-  //   //   const isBooked = seatBooked.some((seat) =>seat === seatName);
-  //   //   newSeats.push({
-  //   //     id: i,
-  //   //     name: seatName,
-  //   //     booked: isBooked,
-  //   //     selected: false,
-  //   //   });
-  //   // }
-  //   // data.map((seats,idx)=>{
-  //   //   if(data[idx]===gfloorPat){
-  //   //       console.log(seats)
-  //   //   }
+  //     const isBooked = seatBooked.some((seat) =>seat === seatName);
+  //     newSeats.push({
+  //       id: i,
+  //       name: seatName,
+  //       booked: isBooked,
+  //       selected: false,
+  //     });
+  //   }
+  //   data.map((seats,idx)=>{
+  //     if(data[idx]===gfloorPat){
+  //         console.log(seats)
+  //     }
 
-  //   // })
+  //   })
   //   setSeats(newSeats);
   // },[seatBooked])
  
@@ -138,7 +171,8 @@ let seatTemp = []
               "X-Eid":localStorage.getItem("eid")
           }
         }).then((res)=>{
-          console.log(res.data)
+          alert(res.data)
+          window.location("/viewpass")
         }).catch((err)=>{
           console.log(err)
         })
