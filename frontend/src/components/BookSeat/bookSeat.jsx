@@ -335,12 +335,12 @@ function BookSeat() {
 
   return (
     <form onSubmit={handleSubmit} className="seat-booking-form">
-      <label htmlFor="branch-name-input">Branch Name:</label>
+      <label htmlFor="branch-name-input" className="form-label">Branch Name:</label>
       <select
         id="branch-name-input"
         value={branchName}
         onChange={(e) => setBranchName(e.target.value)}
-        className="form-input"
+        className="form-input col-sm-10 col-md-10 col-xl-12"
         required
       >
         <option value="Bangalore">Bangalore</option>
@@ -351,7 +351,7 @@ function BookSeat() {
         id="building-name-input"
         value={buildingName}
         onChange={(e) => setBuildingName(e.target.value)}
-        className="form-input"
+        className="form-input col-sm-10 col-md-10 col-xl-12"
         required
       >
         <option value="JP Nagar">JP Nagar</option>
@@ -361,7 +361,7 @@ function BookSeat() {
         id="request-input"
         value={request}
         onChange={(e) => setRequest(e.target.value)}
-        className="form-input"
+        className="form-input col-sm-10 col-md-10 col-xl-12"
         required
       >
         <option value="select">Select</option>
@@ -373,7 +373,7 @@ function BookSeat() {
         id="shift-timing-input"
         value={shiftTiming}
         onChange={(e) => setShiftTiming(e.target.value)}
-        className="form-input"
+        className="form-input col-sm-10 col-md-10 col-xl-12"
         required
       >
         <option value="" disabled>--Select--</option>
@@ -398,7 +398,7 @@ function BookSeat() {
         id="meal-name-input"
         value={meal}
         onChange={(e) => setMeal(e.target.value)}
-        className="form-input"
+        className="form-input col-sm-10 col-md-10 col-xl-12"
         required
       >
         <option value="select">Select</option>
@@ -416,7 +416,7 @@ function BookSeat() {
             value={firstDate}
             min={todayDate()}
             onChange={(e) => setFirstDate(e.target.value)}
-            className="form-input"
+            className="form-input col-sm-10 col-md-10 col-xl-12"
             required
           />
           <label htmlFor="to-date-input">To Date:</label>
@@ -427,7 +427,7 @@ function BookSeat() {
             min={todayDate()}
             // onChange={(e) => setToDate(e.target.value)}
             // onChange={sameDate}
-            className="form-input"
+            className="form-input col-sm-10 col-md-10 col-xl-12"
             required
           />
         </>
@@ -443,7 +443,7 @@ function BookSeat() {
             value={firstDate}
             min={todayDate()}
             onChange={(e) => setFirstDate(e.target.value)}
-            className="form-input"
+            className="form-input col-sm-10 col-md-10 col-xl-12"
             required
           />
           <label htmlFor="to-date-input">To Date:</label>
@@ -455,13 +455,13 @@ function BookSeat() {
             // onChange={(e) => setToDate(e.target.value)}
             // onChange={(e) => setToDate(e.target.value)}
             onChange={(e) => weeklydate(e)}
-            className="form-input"
+            className="form-input col-sm-10 col-md-10 col-xl-12"
             required
           />
         </>
       )}
 
-      <button onClick={nextPage} className="btn btn-primary">Next</button>
+      <button onClick={nextPage} className=" col-8 btn btn-primary">Next</button>
     </form>
   );
 }

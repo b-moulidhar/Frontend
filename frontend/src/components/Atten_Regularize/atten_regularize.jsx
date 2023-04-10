@@ -47,7 +47,7 @@ function Atten_Regularize(){
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    axios.get('http://10.191.80.73:7001/shiftStart',{
+    axios.get('http://20.253.3.209:7001/shiftStart',{
       headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "X-Role":localStorage.getItem("role"),
@@ -57,7 +57,7 @@ function Atten_Regularize(){
         //  shiftStart = response.data;
         setShiftStart(response.data)
         //  console.log(shiftStart)
-        return axios.get('http://10.191.80.73:7001/shiftEnd',{
+        return axios.get('http://20.253.3.209:7001/shiftEnd',{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),
@@ -78,7 +78,7 @@ function Atten_Regularize(){
   const handleSubmit = (e) => {
     
     e.preventDefault();
-    axios.post(`http://10.191.80.73:7001/attendanceRegularization/${localStorage.getItem("EId")}?startDate=${startDate}&endDate=${endDate}&stTime=${sttime}`,{},{
+    axios.post(`http://20.253.3.209:7001/attendanceRegularization/${localStorage.getItem("EId")}?startDate=${startDate}&endDate=${endDate}&stTime=${sttime}`,{},{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),
@@ -130,18 +130,18 @@ function Atten_Regularize(){
               </div>
             </nav>
 
-        <form onSubmit={handleSubmit}>
-          <label>
+        <form onSubmit={handleSubmit} className='col-sm-10 regularize_form'>
+          <label className='form-label'>
             Start Date:
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            <input type="date" className='form-control' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
           </label>
         
-          <label>
+          <label className='form-label'>
             End Date:
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <input type="date" className='form-control' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
           </label>
           <br />
-          <label htmlFor="shift-start-input">
+          <label htmlFor="shift-start-input"  className='form-label'>
             Shift Start:
             <select id="shift-start-input"
             value={Start}
@@ -158,9 +158,9 @@ function Atten_Regularize(){
           })
         }
             </select>
-          </label>
+          </label >
           <br />
-          <label htmlFor="shift-end-input">
+          <label htmlFor="shift-end-input" className='form-label'>
             Shift End:
             <select id="shift-end-input"
             value={End}
@@ -176,7 +176,7 @@ function Atten_Regularize(){
         }
             </select>
           </label>
-          <button type="submit">Regularize</button>
+          <button type="submit" className=' col-6 btn btn-primary rbtn'>Regularize</button>
           {console.log(startDate)}
           {console.log(endDate)}
           {console.log(Start)}

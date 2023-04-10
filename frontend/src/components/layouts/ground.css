@@ -5,6 +5,7 @@
   background-color: #032B43;
   padding: 20px;
   color: beige;
+  align-items: center;
 }
 
 .seat-map {
@@ -95,10 +96,9 @@
 }
 input[type=radio]{
     /* width: -9999px; */
-    width: 100px;
-
+  width: 100px;
   height: 100px;
-    -webkit-appearance: none;
+-webkit-appearance: none;
 -moz-appearance: none;
 -ms-appearance: none;
 -o-appearance: none;
@@ -107,4 +107,8 @@ appearance: none;
 input[type=radio]:checked{
   background-color: #87ff96;
    
+}
+button{
+  margin: 50px auto;
+  align-self: center;
 }

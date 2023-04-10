@@ -50,14 +50,17 @@ function AdminDashboard(){
     }, []);
     
 
-    function reportGen(evt){
-        if(evt=="weekly"){
-          console.log(evt);
-        }
-        else if(evt=="monthly"){
-          console.log(evt);
-        }
-    }
+    // function reportGen(evt){
+    //     if(evt=="weekly"){
+    //       console.log(evt);
+    //     }
+    //     else if(evt=="monthly"){
+    //       console.log(evt);
+    //     }
+    // }
+   const reportDirect = ()=>{
+    window.location='/report'
+   }
     return (
       <div className="dashboard_container">
         <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
@@ -103,7 +106,7 @@ function AdminDashboard(){
           </div>
 
           <div className="admin_dashboard">
-                <button onClick={window.location='/report'}>Generate Report</button>
+                <button onClick={reportDirect}>Generate Report</button>
             <a href="/admin/approval">
               <button type="button" className="btn btn-primary a_approval">
                 Registration approval
