@@ -43,9 +43,8 @@ function Atten_Regularize() {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://20.253.3.209:7001/shiftStart", {
-        headers: {
+    axios.get('http://20.253.3.209:7001/shiftStart',{
+      headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "X-Role": localStorage.getItem("role"),
           "X-Eid": localStorage.getItem("eid"),
@@ -55,13 +54,13 @@ function Atten_Regularize() {
         //  shiftStart = response.data;
         setShiftStart(response.data);
         //  console.log(shiftStart)
-        return axios.get("http://20.253.3.209:7001/shiftEnd", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role": localStorage.getItem("role"),
-            "X-Eid": localStorage.getItem("eid"),
-          },
-        });
+        return axios.get('http://20.253.3.209:7001/shiftEnd',{
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+      });
       })
       .then(function (response) {
         setShiftEnd(response.data);
@@ -74,25 +73,17 @@ function Atten_Regularize() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post(
-        `http://20.253.3.209:7001/attendanceRegularization/${localStorage.getItem(
-          "EId"
-        )}?startDate=${startDate}&endDate=${endDate}&stTime=${sttime}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role": localStorage.getItem("role"),
-            "X-Eid": localStorage.getItem("eid"),
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        // console.log("hello")
-        setSuccessMessage("Regularization request submitted successfully.");
-      });
+    axios.post(`http://20.253.3.209:7001/attendanceRegularization/${localStorage.getItem("EId")}?startDate=${startDate}&endDate=${endDate}&stTime=${sttime}`,{},{
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+        }).then((res) => {
+          console.log(res.data);
+          // console.log("hello")
+          setSuccessMessage("Regularization request submitted successfully.");
+        });
   };
 
   // const StartShiftTime =(e) => {

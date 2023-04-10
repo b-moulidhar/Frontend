@@ -137,7 +137,7 @@ function BookSeat() {
           </div>
         </nav>
     <form onSubmit={handleSubmit} className="seat-booking-form">
-      <label htmlFor="branch-name-input">Branch Name:</label>
+      <label htmlFor="branch-name-input" className="form-label">Branch Name:</label>
       <select
         id="branch-name-input"
         value={branchName}
@@ -263,7 +263,7 @@ function BookSeat() {
         </>
       )}
 
-      <button onClick={nextPage} className="btn btn-primary">Next</button>
+      <button onClick={nextPage} className=" col-8 btn btn-primary">Next</button>
     </form>
     </div>
   );

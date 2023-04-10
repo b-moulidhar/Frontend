@@ -47,7 +47,7 @@ function ThirdFloor() {
 
 // Use the useEffect hook to fetch data from the server 
    useEffect(() => {
-     axios.get("http://10.191.80.102:7001/seats/total", {
+     axios.get("http://20.253.3.209:7001/seats/total", {
 
       headers: {
         Authorization: "Bearer " + token,
@@ -134,7 +134,7 @@ function ThirdFloor() {
   const sendData = () => {
     if (selected.seatId != null) {
       localStorage.setItem("seat_name", selected.seatId);
-      axios.post(`http://10.191.80.73:7001/seats/create/${localStorage.getItem("EId")}?sname=00${localStorage.getItem("seat_name")}&sttime=${localStorage.getItem("shift_timing")}&from=${localStorage.getItem("from_date")}&to=${localStorage.getItem("to_date")}`,{},{
+      axios.post(`http://20.253.3.209:7001/seats/create/${localStorage.getItem("EId")}?sname=00${localStorage.getItem("seat_name")}&sttime=${localStorage.getItem("shift_timing")}&from=${localStorage.getItem("from_date")}&to=${localStorage.getItem("to_date")}`,{},{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),

@@ -1,37 +1,43 @@
-import React, { useState } from 'react';
-import { QrReader } from 'react-qr-reader';
+import React, { useEffect } from "react";
+import { QrReader } from "react-qr-reader";
+import { useState } from "react";
 
-export default function QrCodeScan(props){
-  const [id,setid] = useState(window.localStorage.getItem("EId"))
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [data, setData] = useState('No result');
-
-  async function handleLogout() {
-    setIsLoggingOut(true);
-  
-    try {
-      const response = await fetch('http://20.253.3.209:7001/api/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+function QrCodeScan(props) {
+  const [webcamResult, setwebcamResult] = useState('');
+  const [qrdata, setqrdata] = useState([])
+  const [token, setToken] = useState(window.localStorage.getItem("token"))
+  useEffect(()=>{
+    props.data(webcamResult)
+    fetch(`http://10.191.80.98:9090/api/admin/validateToken/?token=${webcamResult}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        } 
+        return response.json();
+      })
+      .then((data) => {
+        // setShifts(newShifts);
+        // console.log(data)
+        setqrdata(data)
+        
+      })
+      .catch((error) => {
+        console.error("There was an error deleting the shift:", error);
       });
-  
-      if (response.ok) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('EId');
-        localStorage.removeItem('role');
-        window.location = '/';
-      } else {
-        throw new Error('Logout failed.');
-      }
-    } catch (error) {
-      console.error(error);
-      setIsLoggingOut(false);
-    }
-  }
+  },[webcamResult])
 
+  useEffect(()=>{
+    props.emp(qrdata)
+  },[qrdata])
+
+
+
+  
 
   return (
     <div>
@@ -58,4 +64,7 @@ export default function QrCodeScan(props){
       <p>{data}</p>
     </div>
   );
-};
+}
+
+export default QrCodeScan;
+
