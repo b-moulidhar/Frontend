@@ -1,94 +1,94 @@
-import Sidebar from "../Sidebar/sidebar";
 import './manager.css';
-import EmployeeList from "./EmployeeList/EmployeeList";
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import Navbar from '../Navbar/navbar'
 
 
 function Manager(){
-  const [id,setid] = useState(window.localStorage.getItem("EId"))
 
-     const [managerEmp, setManagerEmp] = useState([])
-     const [isLoggingOut, setIsLoggingOut] = useState(false);
+  // using useState hook to set and get employee ID from local storage
+  const [id,setid] = useState(window.localStorage.getItem("EId")) 
+  
+  // using useState hook to set and get manager's employee list
+  const [managerEmp, setManagerEmp] = useState([]) 
+  // using useState hook to set and get logout status
+  const [isLoggingOut, setIsLoggingOut] = useState(false); 
 
-    async function handleLogout() {
-        setIsLoggingOut(true);
-      
-        try {
-          const response = await fetch('http://localhost:7001/api/logout', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-      
-          if (response.ok) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('EId');
-            localStorage.removeItem('role');
-            window.location = '/';
-          } else {
-            throw new Error('Logout failed.');
-          }
-        } catch (error) {
-          console.error(error);
-          setIsLoggingOut(false);
+  // handling logout by making a POST request to the server
+  async function handleLogout() {
+    setIsLoggingOut(true);
+    try {
+      const response = await fetch('http://20.253.3.209:7001/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
+      });
+      if (response.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('EId');
+        localStorage.removeItem('role');
+        window.location = '/';
+      } else {
+        throw new Error('Logout failed.');
       }
-    // let id=useParams()  
-
-    useEffect(()=>{
-        //axios.get("http://10.191.80.104:7001/seats/total")
-        axios.get(`http://10.191.80.104:7001/attendanceApprovalList/${id.id}`, {}, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Role": localStorage.getItem("role"),
-                "X-Eid": localStorage.getItem("eid")
-            }
-            })
-        .then((response) => {
-            // setManagerEmp(response.data)
-            console.log(response.data)
-        })
-        .catch(err => console.log("Error ", err))
-    },[])
-
-    function approve(atid){
-        axios.put(`http://10.191.80.104:7001/attendanceApproval/${atid}`, {}, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Role": localStorage.getItem("role"),
-                "X-Eid": localStorage.getItem("eid")
-            }
-        })
-        .then(response => {
-            console.log(response.data);
-            // window.location.reload();
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    } catch (error) {
+      console.error(error);
+      setIsLoggingOut(false);
     }
-    function disapprove(atid){
-        alert(atid)
-        axios.put(`http://20.253.3.209:7001/disapproveAttendance/${atid}`, {}, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Role": localStorage.getItem("role"),
-                "X-Eid": localStorage.getItem("eid")
-            }
-        })
-        .then(response => {
-            console.log(response.data);
-            // window.location.reload();
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
+  }
+
+  // fetching attendance approval list using axios and setting the state
+  useEffect(()=>{
+    axios.get(`http://20.253.3.209:7001/attendanceApprovalList/${localStorage.getItem("EId")}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role": localStorage.getItem("role"),
+            "X-Eid": localStorage.getItem("eid")
+        }
+    })
+    .then((response) => {
+        setManagerEmp(response.data)
+        console.log(response.data[0])
+    })
+    .catch(err => console.log("Error ", err))
+  },[id])
+
+  // approving attendance by making a PUT request to the server
+  function approve(atid){
+    axios.put(`http://20.253.3.209:7001/attendanceApproval/${atid}`, {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role": localStorage.getItem("role"),
+            "X-Eid": localStorage.getItem("eid")
+        }
+    })
+    .then(response => {
+        console.log(response.data);
+        // window.location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+  }
+
+  // disapproving attendance by making a PUT request to the server
+  function disapprove(atid){
+    alert(atid)
+    axios.put(`http://20.253.3.209:7001/disapproveAttendance/${atid}`, {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role": localStorage.getItem("role"),
+            "X-Eid": localStorage.getItem("eid")
+        }
+    })
+    .then(response => {
+        console.log(response.data);
+    })
+    .catch(error => {
+        console.error(error);
+    });
+  }
     
 
     return(
@@ -96,12 +96,8 @@ function Manager(){
         
         <div className='manager'>
            
-        {/* <div>
-        <Sidebar/>
-        </div> */}
-        <div>
-
-        {/* <Navbar/> */}
+      
+      
   <nav className="navbar navbar-expand-lg navbar-light bg-light">
    
   <a className="navbar-brand" href="#">SMS</a>
@@ -146,14 +142,6 @@ function Manager(){
             </tr>
         </thead>
         <tbody>
-            {/* <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>12</td>
-            <td>22</td>
-            <td>09:00am</td>
-            <td>18:00pm</td>
-        </tr>    */}
             {managerEmp.map((emp,idx)=>(
                 <tr key={idx}>
                     <th scope="row">{emp.atid}</th>
@@ -186,14 +174,8 @@ function Manager(){
         </tbody>
         </table>
         </div>
-        
-            {/* <a href="/bookseat/:id"><button>Book Seat</button></a>
-            <a href="/manager/manager_approval/"><button>Approve Attendance</button></a>
-            <a href="/manager/employeeList"><button>Employee List</button></a>
-         */}
         </div>
         
-    </div>
     
     )
 }

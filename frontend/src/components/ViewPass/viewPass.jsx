@@ -5,12 +5,10 @@ import "./viewPass.css"
 import { useParams } from "react-router";
 // import {QrReader} from "react-qr-reader"
 function ViewPass(){
-    // const qrRef = useRef(null)
-    // const [fileResult, setFileResult] = useState()
-    // const [webcamResult, setwebcamResult] = useState()
-
+  const [id,setid] = useState(window.localStorage.getItem("EId"))
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
     // const [text,setText] = useState("");
-    const {id} = useParams();
+    // const {id} = useParams();
     const [imgQR, setImageQR] = useState();
     // const [data,setData] = useState({
     //   name:"",
@@ -21,6 +19,32 @@ function ViewPass(){
     // const [code, setCode] = useState('');
     const [empData, setEmpData] = useState([{}]);
   
+    async function handleLogout() {
+      setIsLoggingOut(true);
+    
+      try {
+        const response = await fetch('http://20.253.3.209:7001/api/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+    
+        if (response.ok) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('EId');
+          localStorage.removeItem('role');
+          window.location = '/';
+        } else {
+          throw new Error('Logout failed.');
+        }
+      } catch (error) {
+        console.error(error);
+        setIsLoggingOut(false);
+      }
+    }
+
     useEffect(() => {
       let imgData = "5414098754"
           // if (typeof imgData === "string") {
@@ -80,9 +104,18 @@ function ViewPass(){
     }, []);
  
     return (
+      <div>
+        <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
+          <div className="navbar-left">
+            <a href="#">SMS</a>
+          </div>
+          <div className="navbar-right">
+            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+          </div>
+        </nav>
       <div className="container mx-auto mt-2">
         <div className="row">
-          <h2 className="col-sm-10 badges bg-danger text-center text-white">
+          <h2 className="col-sm-10 badges  text-center text-black QR-gene">
             QrCode generator
           </h2>
           <div className="details">
@@ -93,44 +126,25 @@ function ViewPass(){
           </div>
         </div>
        
-        <div class="card col-sm-3 m-2">
-          <div class="card-header m-1 rounded text-center">
-            <h3 class="badges bg-secondary rounded text-center text-light">
-              Qrcode Image
-            </h3>
-          </div>
-          <div class="card-body text-center">
-            {imgQR && (
-              <a href={imgQR} download>
-                <img src={imgQR} width="100%" alt="qr code pic is here" />
-              </a>
-            )}
-          </div>
+        <div className="card col-sm-3 m-2">
+        <div className="card-header m-1 rounded text-center">
+          <h3 className="badges bg-secondary rounded text-center text-light ">
+            Qrcode Image
+          </h3>
+        </div>
+        <div className="card-body text-center">
+          {'{'}imgQR &amp;&amp; (
+          <a href="{imgQR}" download>
+            <img src="{imgQR}" width="100%" alt="qr code pic is here" />
+          </a>
+          ){'}'}
         </div>
       </div>
+
+      </div>
+      </div>
+      
     );
 }
 export default ViewPass;
 
-// import QRCode from 'qrcode';
-// import { useEffect, useState } from 'react';
-
-//  function ViewPass(){
-//   const [qrCode, setQRCode] = useState('');
-//   useEffect(async()=>{
-//     try {
-//       const qrCodeData = await QRCode.toDataURL("66753443");
-//       setQRCode(qrCodeData);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   })
-//   return (
-//     <>
-//     {qrCode && <img src={qrCode} alt="QR Code" />}
-
-//     </>
-//   )
-// }
-
-// export default ViewPass;

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import Navbar from "../Navbar/navbar";
-import { Link } from "react-router-dom";
-
 import "./login.css";
 import axios from "axios";
 
-export default function Login(){
+// Define the Login component
+export default function Login() {
+  // Define state variables for the employee ID, password, and error message
   const [empId, setEmpId] = useState("");
   const [pass, setPass] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -37,8 +36,7 @@ export default function Login(){
   },[])
 
   const handleLogin = (e) => {
-    e.preventDefault()
-    // console.log("hello");
+    e.preventDefault();
     try {
       const res = axios.post("http://20.253.3.209:7001/api/login", { empId, pass })
       .then((res)=>{
@@ -59,22 +57,19 @@ export default function Login(){
             window.location="/admin/"+EId;
 
           }
-        }else{
-          alert("invalid credentials")
-        }
- 
-        console.log("posted",res.data)})
-      .catch((err)=>console.log(err));
+
+          console.log("posted", res.data);
+        }})
+        .catch((err) => console.log(err));
       // console.log(response.data)
-     
     } catch (error) {
+      // If the API call fails, set an error message based on the HTTP response status
       if (error.response && error.response.status === 401) {
         setErrorMessage("Invalid credentials");
         console.log(error.response);
       } else {
         setErrorMessage("An error occurred during login");
         console.log(error.response);
-
       }
     }
   };

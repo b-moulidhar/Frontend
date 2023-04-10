@@ -30,17 +30,17 @@ export default function Forget(){
     return(
         <>
         <form onSubmit={handleSubmit}>
-        <div className="main">
+        <div className="forget-container">
               <div>
                 <div>
                   <h1>Reset Password</h1>
-                  <div className="second-input">
+                  <div className="forget-input">
                   
                     <input type="email" placeholder="Email"  style={{width: "370px"}} className="name" pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"  name="email"
                      onChange={(e)=>{setEmail({...email, email:e.target.value})}} required/>
                   </div>
-                 <div className="login-button">
-                 <button  type="submit" className="login">submit</button>
+                 <div className="forget-button">
+                 <button  type="submit">Submit</button>
                  <br></br>
                  </div>
                 </div>

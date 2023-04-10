@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './profile.css';
-import { useParams } from 'react-router-dom';
-import Navbar from '../Navbar/navbar';
-
 function Profile() {
 
   const [id,setid] = useState(window.localStorage.getItem("EId"))
@@ -35,10 +32,6 @@ function Profile() {
         }
       }
 
-  function seatBook(){
-  window.location="/bookseat/"+id;
-  }
-
   const [userData, setUserData] = useState({});
   // const eId = useParams();
   useEffect(() => {
@@ -58,30 +51,15 @@ function Profile() {
       });
   }, []);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const response = await axios.get(`http://10.191.80.102:7001/employee/profileDetailsEmployee/${eId}`);
-  //       setUserData(response.data);
-  //       console.log(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  //   fetchData();
-  // }, [eId]);
 
   return (
     <div>
-      {/* <Navbar/> */}
-
+      
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
               <a className="navbar-brand" href="#">SMS</a>
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon" />
-                {/* {console.log(id)} */}
               </button>
-              
               <div className="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul className="navbar-nav mr-auto">
                   <li className="nav-item active">
@@ -104,11 +82,11 @@ function Profile() {
                 </ul>
               </div>
             </nav>
-
-      <section className="vh-100" style={{backgroundColor: '#f4f5f7'}}>
+    <div>
+      <section className="userprofile" style={{backgroundColor: '#f4f5f7'}}>
         <div className="container py-5 h-100">
-          <div className="row d-flex justify-content-center align-items-center h-100">
-            <div className="col col-lg-6 mb-4 mb-lg-0">
+            <div className="row d-flex justify-content-center align-items-center h-100">
+              <div className="col col-lg-6 mb-4 mb-lg-0">
               <div className="card mb-3" style={{borderRadius: '.5rem'}}>
                 <div className="row g-0">
                   <div className="col-md-4 text-center gradient-custom text-white" style={{borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem'}}>
@@ -157,6 +135,7 @@ function Profile() {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }

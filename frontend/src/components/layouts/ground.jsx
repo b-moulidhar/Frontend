@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import "./ground.css";
+import "./floors.css";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -14,10 +14,38 @@ function GroundFloor() {
   const [token, setToken] = useState(window.localStorage.getItem("token"));
   const gfloorPat = /^[0-9]?[0-9]?[0-9]$/
   const [newSeats,setNewSeats] = useState([])
-  const {id} = useParams()
+  // const {id} = useParams()
+  const [id,setid] = useState(window.localStorage.getItem("EId"))
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const storedData = localStorage.getItem('from date');
+  let seatTemp = []
 
-   const storedData = localStorage.getItem('from date');
-let seatTemp = []
+  async function handleLogout() {
+    setIsLoggingOut(true);
+  
+    try {
+      const response = await fetch('http://10.191.80.102:7001/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+  
+      if (response.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('EId');
+        localStorage.removeItem('role');
+        window.location = '/';
+      } else {
+        throw new Error('Logout failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoggingOut(false);
+    }
+  }
+
 
 // Use the useEffect hook to fetch data from the server 
    useEffect(() => {
@@ -28,22 +56,11 @@ let seatTemp = []
         "Content-Type": "application/json",
       },
     })
-      // .then((response) => {
-      //   if (!response.ok) {
-      //     throw new Error(`HTTP error: ${response.status}`);
-      //   }
-
-      //   return response.text();
-      // })
       .then((res) => {
         // console.log(res.data)
         setData(res.data);
         // setSeatBooked(JSON.parse(text))
-        
-       
-        
-      });
-      
+      });      
   },[]);
   useEffect(()=>{
     axios.get("http://20.253.3.209:7001/seats/booked/2023-04-10",{
@@ -185,6 +202,14 @@ let seatTemp = []
   return (
    
     <div className="seat-booking-app">
+       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
+          <div className="navbar-left">
+            <a href="#">SMS</a>
+          </div>
+          <div className="navbar-right">
+            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+          </div>
+        </nav>
       <div>
         <h1>Ground Floor</h1>
       </div>
@@ -243,9 +268,11 @@ let seatTemp = []
         </div>
        
       </div>
-      <button onClick={sendData} className="btn btn-warning Nextbtn">
-        submit
+      
+      <button onClick={sendData} className="btn btn-warning select_Nextbtn">
+        Submit
       </button>
+     
       
     </div>
   );

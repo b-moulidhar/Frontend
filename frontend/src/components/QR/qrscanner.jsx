@@ -40,30 +40,28 @@ function QrCodeScan(props) {
   
 
   return (
-    <div className="card col-sm-3 m-2">
-      <div className="card-header m-1 rounded">
-        <h3 className="badges bg-secondary rounded text-center">
-          Scan QR
-        </h3>
-      </div>
-      <div className="card-body text-center">
-        <QrReader
-          onResult={(result, error) => {
-            if (!!result) {
-              setwebcamResult(result?.text);
-            }
+    <div>
+       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
+          <div className="navbar-left">
+            <a href="#">SMS</a>
+          </div>
+          <div className="navbar-right">
+            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+          </div>
+        </nav>
+      <QrReader
+        onResult={(result, error) => {
+          if (!!result) {
+            setData(result?.text);
+          }
 
-            if (!!error) {
-              console.info(error);
-            }
-          }}
-          style={{ width: "100%" }}
-        />
-      </div>
-        {/* <div className="card-footer rounded mb-1">
-          <h6>Webcam Result : {webcamResult} </h6>
-        </div> */}
-       
+          if (!!error) {
+            console.info(error);
+          }
+        }}
+        style={{ width: '100%' }}
+      />
+      <p>{data}</p>
     </div>
   );
 }
