@@ -1,10 +1,43 @@
-import React from 'react';
-import Sidebar from '../Sidebar/sidebar';
+import React, { useState } from 'react';
 import './floorList.css';
+
 import { useParams } from 'react-router-dom';
 
 function FloorList(){
-    const {id} = useParams()
+
+    // We are using useState hook to set and get the value of id.
+    // It is initially set to the value of EId from local storage.
+    const [id,setid] = useState(window.localStorage.getItem("EId"))
+
+    // isLoggingOut state is used to disable logout button while the user logs out.
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    // handleLogout function is used to logout the user and remove the tokens and user information from local storage.
+    async function handleLogout() {
+        setIsLoggingOut(true);
+        try {
+          const response = await fetch('http://20.253.3.209:7001/api/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+          if (response.ok) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('EId');
+            localStorage.removeItem('role');
+            window.location = '/';
+          } else {
+            throw new Error('Logout failed.');
+          }
+        } catch (error) {
+          console.error(error);
+          setIsLoggingOut(false);
+        }
+    }
+
+    // Four functions are used to redirect the user to different floors based on their selection.
     const gfloorFunc=()=>{
         window.location=`/gfloor/${id}`
     }
@@ -17,12 +50,19 @@ function FloorList(){
     const tfloorFunc=()=>{
         window.location=`/tfloor/${id}`
     }
+
     return(
        
         <div className='FloorList_container'> 
-            <div>
-                
-            </div>   
+         <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
+          <div className="navbar-left">
+            <a href="#">SMS</a>
+          </div>
+          <div className="navbar-right">
+            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+          </div>
+        </nav>
+            
         <div className='fList'>
             <h3>Select Floor</h3>
             <div className="floor0">

@@ -1,4 +1,3 @@
-import { Bounce, toast, ToastContainer, Zoom } from 'react-toastify';
 import './notify.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -6,6 +5,8 @@ import axios from 'axios';
 function Notify(){
   const [id,setid] = useState(window.localStorage.getItem("EId"));
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [message, setMessage] = useState('');
+
 
     async function handleLogout() {
         setIsLoggingOut(true);
@@ -49,11 +50,23 @@ function Notify(){
       const toastTrigger = document.getElementById('liveToastBtn')
       setTimeout(() => {
         toastTrigger.click()
-      }, 100);
+      }, 500);
       start()
       
 
 
+    },[])
+    useEffect(()=>{
+      axios.get(`http://20.253.3.209:7001/seats/notificationAboutSeat/${id}`,{
+        headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "X-Role":localStorage.getItem("role"),
+            "X-Eid":localStorage.getItem("eid")
+        }
+    }).then(function (response) {
+        setMessage(response.data)
+         console.log(response.data);
+    })
     },[])
     return(
             <div>
@@ -61,7 +74,6 @@ function Notify(){
               <a className="navbar-brand" href="#">SMS</a>
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon" />
-                {/* {console.log(id)} */}
               </button>
               
               <div className="collapse navbar-collapse" id="navbarNavDropdown">
@@ -88,16 +100,16 @@ function Notify(){
             </nav>
                 <div>
                   <button  type="button" className="btn btn-primary" id="liveToastBtn" style={{display:"none"}}>Show live toast</button>
-                  <div className="toast-container position-fixed bottom-0 end-0 p-3">
+                  <div className="toast-container position-fixed center-0 end-0 p-3">
                     <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
                       <div className="toast-header">
                         <img src="..." className="rounded me-2" alt="..." />
-                        <strong className="me-auto">Bootstrap</strong>
+                        <strong className="me-auto">Notification</strong>
                         <small>11 mins ago</small>
                         <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close" />
                       </div>
                       <div className="toast-body">
-                        Hello, world! This is a toast message.
+                        {message}
                       </div>
                     </div>
                   </div>

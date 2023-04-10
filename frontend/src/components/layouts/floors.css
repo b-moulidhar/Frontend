@@ -1,11 +1,12 @@
 .seat-booking-app {
   max-width: 800px;
-
-  margin: 0 auto;
+  margin: auto;
   background-color: #032B43;
   padding: 20px;
   color: beige;
-  align-items: center;
+  margin-top: 5rem;
+  position: relative;
+
 }
 
 .seat-map {
@@ -24,27 +25,16 @@
 
 .seat {
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   font-size: 24px;
-
   font-weight: bold;
-
   width: 100px;
-
   height: 100px;
-
   border: 2px solid #ccc;
-
   border-radius: 5px;
-
   background: #f1f1f1;
-
   cursor: pointer;
-
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -71,9 +61,7 @@
 
 #legend {
   display: grid;
-
   grid-template-columns: repeat(4, 1fr);
-
   grid-gap: 80px;
   margin-top: 50px;
 
@@ -96,9 +84,10 @@
 }
 input[type=radio]{
     /* width: -9999px; */
-  width: 100px;
+    width: 100px;
+
   height: 100px;
--webkit-appearance: none;
+    -webkit-appearance: none;
 -moz-appearance: none;
 -ms-appearance: none;
 -o-appearance: none;
@@ -108,7 +97,9 @@ input[type=radio]:checked{
   background-color: #87ff96;
    
 }
-button{
-  margin: 50px auto;
-  align-self: center;
+
+.select_Nextbtn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
