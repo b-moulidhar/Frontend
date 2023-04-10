@@ -59,7 +59,7 @@ export default function Login() {
           }
 
           console.log("posted", res.data);
-        })
+        }})
         .catch((err) => console.log(err));
       // console.log(response.data)
     } catch (error) {
