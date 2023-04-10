@@ -2,42 +2,48 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+// This is a functional component that receives a prop called "employees"
 const EmployeeList = ({ employees }) => {
+
+  // This is a state variable called "data" initialized with an array with an empty object
   const [data, setData] = useState([{}]);
+
+  // This is a state variable called "id" initialized with the value of the "EId" key from local storage
   const [id,setid] = useState(window.localStorage.getItem("EId"))
+
+  // This is a state variable called "isLoggingOut" initialized with the value of "false"
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  // This is an async function called "handleLogout" that performs a logout request to the server
   async function handleLogout() {
-      setIsLoggingOut(true);
-    
-      try {
-        const response = await fetch('http://20.253.3.209:7001/api/logout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-    
-        if (response.ok) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('EId');
-          localStorage.removeItem('role');
-          window.location = '/';
-        } else {
-          throw new Error('Logout failed.');
-        }
-      } catch (error) {
-        console.error(error);
-        setIsLoggingOut(false);
-      }
-    }
-  
-  
-  useEffect(() => {
-    
+    setIsLoggingOut(true);
     try {
-      //axios.get('https://jsonplaceholder.typicode.com/users');
+      const response = await fetch('http://20.253.3.209:7001/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('EId');
+        localStorage.removeItem('role');
+        window.location = '/';
+      } else {
+        throw new Error('Logout failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoggingOut(false);
+    }
+  }
+
+  // This is a useEffect hook that is called when the component is mounted
+  useEffect(() => {
+    try {
+      // This is a GET request to retrieve all the employees that are under the manager with the ID stored in the "id" state variable
       axios
         .get(
           `http://20.253.3.209:7001/employee/getAllEmployeesUnderTheManager/${id}`,
@@ -50,19 +56,18 @@ const EmployeeList = ({ employees }) => {
           }
         )
         .then((text) => {
-          // setData(JSON.parse(text));
+          // This sets the "data" state variable with the data returned by the server
           setData(text.data)
-        });
-     
+        }); 
     } catch (err) {
       console.log(err);
     }
-   
+    // This empty array as the second argument means that the useEffect hook will only be called when the component is mounted, and not on subsequent renders
   }, []);
+
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-   
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
    <a className="navbar-brand" href="#">SMS</a>
    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
      <span className="navbar-toggler-icon" />
@@ -87,9 +92,9 @@ const EmployeeList = ({ employees }) => {
    </div>
  </nav>
  
-      <h2>Employee Table</h2>
+      <h2 style={{textAlign:"center"}}>Employee Table</h2>
      
-      <table className="table">
+      <table className="table table-light table-striped">
         <thead>
           <tr>
             <th>ID</th>

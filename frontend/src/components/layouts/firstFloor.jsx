@@ -1,25 +1,53 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import "./ground.css";
+import "./floors.css";
 import axios from 'axios';
 
 function FirstFloor() {
-  
+  const [id,setid] = useState(window.localStorage.getItem("EId"))
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
  // Define state variables using the useState hook
   const [seats, setSeats] = useState([]);
   const [data, setData] = useState([]);
   const [seatBooked,setSeatBooked] = useState([{}])
   const [token, setToken] = useState(window.localStorage.getItem("token"));
   const gfloorPat = /^1[0-9]{3}$/
-  const [newSeats,setNewSeats] = useState([])
+  const [newSeats,setNewSeats] = useState([]);
+  const storedData = localStorage.getItem('from date');
+  let seatTemp = [];
 
-   const storedData = localStorage.getItem('from date');
-let seatTemp = []
+  async function handleLogout() {
+    setIsLoggingOut(true);
+  
+    try {
+      const response = await fetch('http://10.191.80.102:7001/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+  
+      if (response.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('EId');
+        localStorage.removeItem('role');
+        window.location = '/';
+      } else {
+        throw new Error('Logout failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoggingOut(false);
+    }
+  }
+
 
 // Use the useEffect hook to fetch data from the server 
    useEffect(() => {
-     axios.get("http://10.191.80.73:7001/seats/total", {
+     axios.get("http://10.191.80.102:7001/seats/total", {
 
       headers: {
         Authorization: "Bearer " + token,
@@ -44,7 +72,7 @@ let seatTemp = []
       
   },[]);
   useEffect(()=>{
-    axios.get(`http://10.191.80.73:7001/seats/booked/2023-04-07`,{
+    axios.get(`http://10.191.80.102:7001/seats/booked/2023-04-07`,{
 
     headers: {
       Authorization: "Bearer " + token,
@@ -139,8 +167,16 @@ let seatTemp = []
   return (
    
     <div className="seat-booking-app">
+       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
+          <div className="navbar-left">
+            <a href="#">SMS</a>
+          </div>
+          <div className="navbar-right">
+            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+          </div>
+        </nav>
       <div>
-        <h1>Ground Floor</h1>
+        <h1>First Floor</h1>
       </div>
        {/* Map over the seats array and render the seats */}
       <div className="seat-map">

@@ -5,9 +5,7 @@ import Login from './components/Login/login';
 import Forget from './components/Forget/forget';
 import Reset from './components/Reset/reset';
 import Dashboard from './components/Dashboard/dashboard';
-import Navbar from './components/Navbar/navbar';
 import Profile from './components/Profile/profile';
-// import Sidebar from './components/Sidebar/sidebar';
 import Notify from './components/Notify/notify';
 import FloorList from './components/FloorList/floorList';
 import BookSeat from './components/BookSeat/bookSeat';
@@ -58,12 +56,8 @@ function App() {
     <Route path="/forget/reset/:email" element={<Reset/>}/>    
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
     <Route path="/admin/:id" element={<AdminDashboard/>}/> 
-  
     <Route path="/dashboard/:id" element={<Dashboard/>}/>    
- 
-    <Route path="/navbar" element={<Navbar/>}/>    
     <Route path="/profile/:id" element={<Profile/>}/>    
-    {/* <Route path="/sidebar" element={<Sidebar/>}/>     */}
     <Route path="/notify/:id" element={<Notify/>}/>    
     <Route path="/manager/:id" element={<Manager/>}/>    
     <Route path="/floorlist/:id" element={<FloorList/>}/>    
@@ -80,7 +74,6 @@ function App() {
     <Route path="/manager/approval" element={<Manager_Approval/>}/>    
     <Route path="/atten_regularize/:id" element={<Atten_Regularize/>}/>    
     <Route path="/manager/employeeList/:id" element={<EmployeeList/>}/>    
-
     </Routes>
      {/* <Routes>
         <Route path="/"  element={<Login />} isLoggedIn={isLoggedIn} />

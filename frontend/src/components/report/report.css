@@ -1,0 +1,118 @@
+.form_report {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 100px auto;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form_report .details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form_report .details label {
+  color: black;
+}
+
+.form_report .details input {
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.report {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 100px auto;
+  border: 1px solid grey;
+  -webkit-box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  width: 50%;
+  padding: 12px;
+}
+
+.shift select {
+  width: 100%;
+  border: none;
+  height: 50px;
+  border-radius: 5px;
+  -webkit-box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  margin-bottom: 12px;
+}
+
+.shiftId select {
+  width: 100%;
+  border: none;
+  height: 50px;
+  border-radius: 5px;
+  -webkit-box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: -1px 3px 14px 0px rgba(0, 0, 0, 0.75);
+  margin-bottom: 12px;
+}
+
+
+.employeedetails{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    line-height: 50%;
+}
+
+.employeedetails input{
+    border-radius: 10px;
+    padding: 12px;
+    background-color: rgb(0, 0, 0);
+    box-shadow: none;
+}
+
+.report button{
+    width: 30%;
+    border-radius: 12px;
+    background-color: blue;
+    color: white;
+    font-size: 18px;
+}
+
+@media only screen and (max-width: 800px){
+    .report{
+        width: 60%;
+        padding: 12px;
+    }
+    .report button{
+        font-size: 14px;
+    }
+}
+@media only screen and (max-width: 628px){
+    .report{
+        width: 70%;
+        padding: 12px;
+    }
+}
+@media only screen and (max-width: 532px){
+    .report{
+        width: 80%;
+        padding: 12px;
+    }
+}
+@media only screen and (max-width: 464px){
+    .report{
+        width: 90%;
+        padding: 12px;
+    }
+    .form_report .details{
+        width: 70%;
+    }
+    .report button{
+        font-size: 12px;
+    }
+}

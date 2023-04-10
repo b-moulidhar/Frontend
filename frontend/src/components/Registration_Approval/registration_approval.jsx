@@ -4,7 +4,37 @@ import "./registration_approval.css"
 
 function Registration_Approval(){
 
-    const [users,setUser] = useState([])
+    const [id,setid] = useState(window.localStorage.getItem("EId"))
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    const [users,setUser] = useState([]);
+
+    async function handleLogout() {
+        setIsLoggingOut(true);
+      
+        try {
+          const response = await fetch('http://20.253.3.209:7001/api/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+      
+          if (response.ok) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('EId');
+            localStorage.removeItem('role');
+            window.location = '/';
+          } else {
+            throw new Error('Logout failed.');
+          }
+        } catch (error) {
+          console.error(error);
+          setIsLoggingOut(false);
+        }
+      }
+
 
     useEffect(()=>{
         axios.get("http://20.253.3.209:7001/registrationApprovalList",{
@@ -58,11 +88,17 @@ function disapprove(empid){
      
     return(
         
-        <div className='manager'>
+        <div className='reges_approval'>
+             <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
+          <div className="navbar-left">
+            <a href="#">SMS</a>
+          </div>
+          <div className="navbar-right">
+            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
+          </div>
+        </nav>
             <div>
-            </div>
-            <div>
-                <h2>Employee Approval for SMS</h2>
+                <h2 style={{marginTop:"4rem"}}>Employee Approval for SMS</h2>
                 <table className="table1">
                     <thead>
                         <tr>
@@ -86,9 +122,9 @@ function disapprove(empid){
                                         <button onClick={()=>approve(user.emp_id)} className="btn btn-success manager_approve">Approve </button>
                                     </td>
                                     <td>
-  <button type="button" onClick={() => disapprove(user.emp_id)} className="btn btn-danger manager_approve">
-    Disapprove
-  </button>
+                        <button type="button" onClick={() => disapprove(user.emp_id)} className="btn btn-danger manager_approve">
+                            Disapprove
+                        </button>
 </td>
 
                                 </tr>

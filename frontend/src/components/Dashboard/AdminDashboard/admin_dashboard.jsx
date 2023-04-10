@@ -1,71 +1,103 @@
+// Importing necessary files and libraries
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import './admin_dashboard.css';
 
 function AdminDashboard(){
-    const [count,setCount] = useState(0)
-    const [foodCount,setFoodCount] = useState(0)
- // const currentDate = new Date().toLocaleDateString();
- const dateObj = new Date();
- const year = dateObj.getFullYear();
- const month = dateObj.getMonth() + 1;
- const day = dateObj.getDate();
- const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    // useEffect(() => {
-    //   axios.get("http://10.191.80.104:7001/seats/total").then((response) => {
-    //     setCount(response.data);alert(typeof response.url);
-    //   }); 
-    // }, []);
-    useEffect(() => {
 
-      axios.get(`http://10.191.80.73:7001/seatCount/${currentDate}`,{
-        headers:{
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "X-Role":localStorage.getItem("role"),
-            "X-Eid":localStorage.getItem("eid")
-        }
-    }).then((response)=>{  
-        setCount(response.data);
+  // state variables
+  const [id,setid] = useState(window.localStorage.getItem("EId"))
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [count,setCount] = useState(0)
+  const [foodCount,setFoodCount] = useState(0)
 
-        // responseType: "json",
-      })
-      }, []);
-      useEffect(() => {
- 
-        axios.get(`http://10.191.80.73:7001/foodCount/${currentDate}`,{
-          headers:{
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "X-Role":localStorage.getItem("role"),
-              "X-Eid":localStorage.getItem("eid")
-          }
-      }).then((response) => {
-          setFoodCount(response.data);
-  
-          console.log();
-          // alert(typeof response.url);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }, []);
-    
+  // get the current date in the format 'YYYY-MM-DD'
+  const dateObj = new Date();
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1;
+  const day = dateObj.getDate();
+  const currentDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-    function reportGen(evt){
-        if(evt=="weekly"){
-          console.log(evt);
+  // logout function
+  async function handleLogout() {
+    setIsLoggingOut(true);
+
+    try {
+      // make a POST request to the logout endpoint
+      const response = await fetch('http://20.253.3.209:7001/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-        else if(evt=="monthly"){
-          console.log(evt);
-        }
+      });
+
+      if (response.ok) {
+        // remove user information from local storage and redirect to login page
+        localStorage.removeItem('token');
+        localStorage.removeItem('EId');
+        localStorage.removeItem('role');
+        window.location = '/';
+      } else {
+        throw new Error('Logout failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoggingOut(false);
     }
+  }
+
+  // fetch the count of seats and update the state variable 'count' using useEffect
+  useEffect(() => {
+    axios.get(`http://20.253.3.209:7001/seatCount/${currentDate}`,{
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "X-Role":localStorage.getItem("role"),
+        "X-Eid":localStorage.getItem("eid")
+      }
+    }).then((response) => {  
+      setCount(response.data);
+    })
+  }, []);
+
+  // fetch the count of food and update the state variable 'foodCount' using useEffect
+  useEffect(() => {
+    axios.get(`http://20.253.3.209:7001/foodCount/${currentDate}`,{
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "X-Role":localStorage.getItem("role"),
+        "X-Eid":localStorage.getItem("eid")
+      }
+    }).then((response) => {
+      setFoodCount(response.data);
+    }).catch(error => {
+      console.log(error);
+    });
+  }, []);
+
+  // function to handle button click for generating weekly or monthly reports
+  function reportGen(evt){
+    if(evt=="weekly"){
+      console.log(evt);
+    }
+    else if(evt=="monthly"){
+      console.log(evt);
+    }
+  }
+
+  // function to redirect to the report page
+  const reportDirect = () => {
+    window.location='/report';
+  }
+
     return (
       <div className="dashboard_container">
-        <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
+         <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
           <div className="navbar-left">
             <a href="#">SMS</a>
           </div>
           <div className="navbar-right">
-            <a href="#">Logout</a>
+            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
           </div>
         </nav>
 
@@ -103,7 +135,7 @@ function AdminDashboard(){
           </div>
 
           <div className="admin_dashboard">
-                <button onClick={window.location='/report'}>Generate Report</button>
+                <button className="btn btn-primary" onClick={reportDirect}>Generate Report</button>
             <a href="/admin/approval">
               <button type="button" className="btn btn-primary a_approval">
                 Registration approval

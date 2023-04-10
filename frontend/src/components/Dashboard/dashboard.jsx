@@ -1,50 +1,97 @@
+// Importing necessary files and libraries
 import "./dashboard.css";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import Navbar from "../Navbar/navbar";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function Dashboard() {
-
+  
+  // Setting up state variables using useState hook
   const [id,setid] = useState(window.localStorage.getItem("EId"))
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [seatMsg, setSeatMsg] = useState("");
+  const [eName, setEName] = useState("")
 
-    async function handleLogout() {
-        setIsLoggingOut(true);
-      
-        try {
-          const response = await fetch('http://10.191.80.73:7001/api/logout', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-      
-          if (response.ok) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('EId');
-            localStorage.removeItem('role');
-            window.location = '/';
-          } else {
-            throw new Error('Logout failed.');
-          }
-        } catch (error) {
-          console.error(error);
-          setIsLoggingOut(false);
+  // Function to handle logout
+  async function handleLogout() {
+    setIsLoggingOut(true);
+  
+    try {
+      // Making a POST request to logout API with required headers
+      const response = await fetch('http://20.253.3.209:7001/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-      }
+      });
 
-  function seatBook(){
-  window.location="/bookseat/"+id;
+      // If response is OK, removing user data from local storage and redirecting to login page
+      if (response.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('EId');
+        localStorage.removeItem('role');
+        window.location = '/';
+      } else {
+        throw new Error('Logout failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoggingOut(false);
+    }
   }
+
+  // Making API call to get seat notification using useEffect hook
+  useEffect(()=>{
+    axios.get(`http://20.253.3.209:7001/seats/notificationAboutSeat/${id}`,{
+      headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "X-Role":localStorage.getItem("role"),
+          "X-Eid":localStorage.getItem("eid")
+      }
+  }).then(function (response) {
+        // Setting the notification message in state variable
+        setSeatMsg(response.data)
+       console.log(response.data);
+  })
+  },[])  
+
+  // Making API call to get employee profile details using useEffect hook
+  useEffect(() => {
+    axios.get(`http://20.253.3.209:7001/employee/profileDetailsEmployee/${id}`,{
+      headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "X-Role":localStorage.getItem("role"),
+          "X-Eid":localStorage.getItem("eid")
+      }
+  })
+  .then(response => {
+        // Setting the employee name in state variable
+        setEName(response.data);
+        console.log(response.data);
+      })
+  .catch(error => {
+        console.log(error);
+      });
+  }, []);    
+
+  // Function to redirect to seat booking page
+  function seatBook(){
+    window.location="/bookseat/"+id;
+  }
+
+  // Function to redirect to view booking page
+  function viewPass(){
+    window.location="/viewpass/"+id;
+  }
+
+  // Rendering the dashboard 
+
   return (
     <div className="dashboard_container">
-      {/* <Navbar/> */}
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
               <a className="navbar-brand" href="#">SMS</a>
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon" />
-                {/* {console.log(id)} */}
               </button>
               <div className="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul className="navbar-nav mr-auto">
@@ -68,68 +115,22 @@ function Dashboard() {
                 </ul>
               </div>
             </nav>
-      {/* <div className="mainpage">
-              
-                <Sidebar/>
-      </div>       */}
-     
-
         
-        <div className="container">
-       
-                <div className="dashboard_head">
-                  <h3>your name</h3>
-                  <p>your seat for today is 1 at ground floor</p>
+        <div className="homepage">
+                <div className="dashboard_top">
+                  <h3>Hi <span style={{color:'Blue', fontSize:'18px'}}>{eName.empName}</span> </h3>
+                  <p>{seatMsg}</p>
                 </div>
                 
-                <div class="middle-row col-lg-12 text-center ">
-                  <div class="box5 shadow">
-                    <span class="numb">0</span>
-                    <span class="char">Approved</span>
-                  </div>
-                  <div class="box6 shadow">
-                    <span class="numb">0</span>
-                    <span class="char">Pending</span>
-                  </div>
-                  <div class="box7 shadow">
-                    <span class="numb">0</span>
-                    <span class="char">Rejected</span>
-                  </div>
-                </div>
                 <div className="dashboard">
-                  <a href="/bookseat/2">
-                    <button type="button" onChange={seatBook} className="btn btn-primary seat">
+                    <button type="button" onClick={seatBook} className="btn btn-success seat">
                       Book Seat
                     </button>
-                  </a>
-                  <a href="/viewpass">
-                    <button type="button" className="btn btn-success seat">
+                 
+                    <button type="button" onClick={viewPass} className="btn btn-success seat">
                       View Booking
                     </button>
-                  </a>
                 </div>
-
-                {/* <div className="dashboard_bottom">
-                  <div>
-                    <img
-                      style={{ margin: "" }}
-                      src="https://png.pngtree.com/png-clipart/20210309/original/pngtree-3d-furniture-modern-office-chair-png-image_5892659.jpg"
-                      width="50"
-                      height="50"
-                      alt=""
-                    />
-                  </div>
-                  <div>
-                    <p>date:29-03-2022</p>
-                    <p>seat number:1005</p>
-                    <p>shift time:09:00-18:00</p>
-                  </div>
-                  <div>
-                    <a href="">
-                      <button className="btn btn-danger">Cancel</button>
-                    </a>
-                  </div>
-                </div> */}
         </div>
       
     </div>
