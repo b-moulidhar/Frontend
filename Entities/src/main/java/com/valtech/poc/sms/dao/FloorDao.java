@@ -1,27 +1,20 @@
 package com.valtech.poc.sms.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.valtech.poc.sms.entities.Floors;
 
 public interface FloorDao {
 
-//	public void addFloorSeats(Floors floor);
-//
-//	public void updateFloorSeats(Floors floor);
-//
-//	public void deleteFloorSeats(int floorId);
+	public List<Floors> getAllFloors() throws SQLException;
 
-//	---------------------------------------------------------------------------------------------------------
+	public Floors getFloorById(int f_id) throws SQLException;
 
-	public List<Floors> getAllFloors();
+	public void updateFloor(Floors floor) throws SQLException;
 
-	public Floors getFloorById(int f_id);
+	void addFloor(Floors floor) throws SQLException;
 
-	public void updateFloor(Floors floor);
-
-	void addFloor(Floors floor);
-
-	void deleteFloor(int fId);
+	void deleteFloor(int fId) throws SQLException;
 
 }

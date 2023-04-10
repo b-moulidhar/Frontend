@@ -18,7 +18,7 @@ function AdminDashboard(){
     // }, []);
     useEffect(() => {
 
-      axios.get(`http://20.253.3.209:7001/seatCount/${currentDate}`,{
+      axios.get(`http://10.191.80.73:7001/seatCount/${currentDate}`,{
         headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "X-Role":localStorage.getItem("role"),
@@ -32,7 +32,7 @@ function AdminDashboard(){
       }, []);
       useEffect(() => {
  
-        axios.get(`http://20.253.3.209:7001/foodCount/${currentDate}`,{
+        axios.get(`http://10.191.80.73:7001/foodCount/${currentDate}`,{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),
@@ -50,14 +50,17 @@ function AdminDashboard(){
     }, []);
     
 
-    function reportGen(evt){
-        if(evt=="weekly"){
-          console.log(evt);
-        }
-        else if(evt=="monthly"){
-          console.log(evt);
-        }
-    }
+    // function reportGen(evt){
+    //     if(evt=="weekly"){
+    //       console.log(evt);
+    //     }
+    //     else if(evt=="monthly"){
+    //       console.log(evt);
+    //     }
+    // }
+   const reportDirect = ()=>{
+    window.location='/report'
+   }
     return (
       <div className="dashboard_container">
         <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
@@ -103,13 +106,7 @@ function AdminDashboard(){
           </div>
 
           <div className="admin_dashboard">
-                <select onChange={(event)=>reportGen(event.target.value)}>
-                 <option value selected>
-                   generate report
-                 </option>
-                 <option value="weekly">weekly</option>
-                 <option value="monthly">montly</option>
-               </select>
+                <button onClick={reportDirect}>Generate Report</button>
             <a href="/admin/approval">
               <button type="button" className="btn btn-primary a_approval">
                 Registration approval

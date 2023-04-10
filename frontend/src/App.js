@@ -7,7 +7,7 @@ import Reset from './components/Reset/reset';
 import Dashboard from './components/Dashboard/dashboard';
 import Navbar from './components/Navbar/navbar';
 import Profile from './components/Profile/profile';
-import Sidebar from './components/Sidebar/sidebar';
+// import Sidebar from './components/Sidebar/sidebar';
 import Notify from './components/Notify/notify';
 import FloorList from './components/FloorList/floorList';
 import BookSeat from './components/BookSeat/bookSeat';
@@ -18,13 +18,13 @@ import QrCodeGen from './components/QR/qrgenerator';
 import ViewPass from './components/ViewPass/viewPass';
 import Manager from './components/Manager/manager'
 import Registration_Approval from './components/Registration_Approval/registration_approval';
-import { useEffect, useState } from 'react';
 import FirstFloor from './components/layouts/firstFloor';
 import SecondFloor from './components/layouts/secondFloor';
 import ThirdFloor from './components/layouts/thirdFloor';
-import Atten_Regularize from './components/Atten_Regularize/atten_regularize';
 import Manager_Approval from './components/Manager/Manager_Approval/manager_approval';
 import EmployeeList from './components/Manager/EmployeeList/EmployeeList';
+import Report from './components/report/report';
+import Atten_Regularize from './components/Atten_Regularize/atten_regularize';
 
 
 
@@ -63,8 +63,8 @@ function App() {
  
     <Route path="/navbar" element={<Navbar/>}/>    
     <Route path="/profile/:id" element={<Profile/>}/>    
-     {/* <Route path="/sidebar" element={<Sidebar/>}/>      */}
-    <Route path="/notify" element={<Notify/>}/>    
+    {/* <Route path="/sidebar" element={<Sidebar/>}/>     */}
+    <Route path="/notify/:id" element={<Notify/>}/>    
     <Route path="/manager/:id" element={<Manager/>}/>    
     <Route path="/floorlist/:id" element={<FloorList/>}/>    
     <Route path="/viewpass/:id" element={<ViewPass/>}/>    
@@ -75,6 +75,7 @@ function App() {
     <Route path="/ffloor" element={<FirstFloor/>}/>    
     <Route path="/sfloor" element={<SecondFloor/>}/>    
     <Route path="/tfloor" element={<ThirdFloor/>}/>    
+    <Route path="/report" element={<Report/>}/>    
     <Route path="/admin/approval" element={<Registration_Approval/>}/>    
     <Route path="/manager/approval" element={<Manager_Approval/>}/>    
     <Route path="/atten_regularize/:id" element={<Atten_Regularize/>}/>    

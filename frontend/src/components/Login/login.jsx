@@ -9,6 +9,9 @@ export default function Login(){
   const [empId, setEmpId] = useState("");
   const [pass, setPass] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [quote,setQuote] = useState([])
+
+  var randomNum = Math.floor(Math.random()*100)
 
   // const setAuthToken = token => {
   //   if (token) {
@@ -25,6 +28,13 @@ export default function Login(){
   //     delete axios.defaults.headers.common['Authorization'];
   //   }
   // };
+
+  useEffect(()=>{
+    axios.get("https://type.fit/api/quotes").then((res)=>{
+      setQuote(res.data[randomNum])
+      console.log(quote)
+    })
+  },[])
 
   const handleLogin = (e) => {
     e.preventDefault()
@@ -114,7 +124,7 @@ export default function Login(){
               <div className="card-body p-md-5 mx-md-4">
                 <div className="text-center">
                   <img src="https://left-hand-corner.000webhostapp.com/images/smslogo.png" style={{width: 80}} alt="logo" />
-                  <h4 className="mt-1 mb-5 pb-1">We are The Lotus Team</h4>
+                  <h4 className="mt-1 mb-5 pb-1">We are The Sequre Team</h4>
                 </div>
                 <form>
                   <p>Please login to your account</p>
@@ -140,7 +150,7 @@ export default function Login(){
                     </a>
                   </div>
                   <div className="d-flex align-items-center justify-content-center pb-4">
-                    <p className="mb-0 me-2">Don't have an account?</p>
+                    {/* <p className="mb-0 me-2">Don't have an account?</p> */}
                     <button onClick={registerPage} type="button" className="btn btn-outline-danger">
                       Create new
                     </button>
@@ -150,13 +160,10 @@ export default function Login(){
             </div>
             <div className="col-lg-6 d-flex align-items-center gradient-custom-2">
               <div className="text-white px-3 py-4 p-md-5 mx-md-4">
-                <h4 className="mb-4">We are more than just a company</h4>
-                <p className="small mb-0">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing
-                  elit, sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua. Ut enim ad minim veniam, quis
-                  nostrud exercitation ullamco laboris nisi ut aliquip
-                  ex ea commodo consequat.
+                <h4 className="mb-4">Hey, Valtechie!!!</h4>
+                <p className="small mb-0 quote">
+                  {quote.text}
+                <p>-{quote.author}</p>
                 </p>
               </div>
             </div>

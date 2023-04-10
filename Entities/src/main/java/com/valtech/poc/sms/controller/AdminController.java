@@ -163,7 +163,7 @@ public class AdminController {
 	}
 
 	@GetMapping("/{eId}")
-	public Employee getEmployeeById(@PathVariable int eId) {
+	public Employee getEmployeeById(@PathVariable int eId) throws Exception {
 		return employeeService.getEmployeeByeId(eId);
 	}
 
@@ -196,7 +196,8 @@ public class AdminController {
 
 	@ResponseBody
 	@GetMapping("/profileDetailsAdmin/{admnId}")
-	public Employee getAdminById(@PathVariable int eId) {
+
+	public Employee getAdminById(@PathVariable int eId) throws Exception {
 		return employeeService.getEmployeeByeId(eId);
 	}
 

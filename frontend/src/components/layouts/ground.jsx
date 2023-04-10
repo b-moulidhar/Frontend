@@ -45,6 +45,18 @@ let seatTemp = []
       });
       
   },[]);
+  useEffect(()=>{
+    axios.get("http://20.253.3.209:7001/seats/booked/2023-04-07",{
+
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+  }).then((res)=>{
+      console.log(res.data)
+      // setSeatBooked(res.data)
+  })
+  },[]);
   
   useEffect(()=>{
     
@@ -52,8 +64,8 @@ let seatTemp = []
       if(gfloorPat.test(seats)){
         // console.log(seats)
         const seatName = `${seats}`;
-      
           const isBooked = seatBooked.some((seat) =>seat === seatName);
+          console.log(isBooked);
           seatTemp.push({
             id: idx,
             name: seatName,
@@ -68,6 +80,8 @@ let seatTemp = []
  
     })
   },[data])
+
+  
 
   // useEffect(()=>{
   //   if(localStorage.getItem("from_date")==localStorage.getItem("to_date")){
@@ -108,16 +122,16 @@ let seatTemp = []
   const handleSeatClick = (name) => {
     // console.log(name);
     //logic for deselection
-    setSelected({
-      seatId: name,
-      // floorId: "GF",
-    });
+    // setSelected({
+    //   seatId: name,
+    //   // floorId: "GF",
+    // });
   };
 
   const sendData = () => {
     if (selected.seatId != null) {
       localStorage.setItem("seat_name", selected.seatId);
-      axios.post(`http://10.191.80.73:7001/seats/create/${localStorage.getItem("EId")}?sname=00${localStorage.getItem("seat_name")}&sttime=${localStorage.getItem("shift_timing")}&from=${localStorage.getItem("from_date")}&to=${localStorage.getItem("to_date")}`,{},{
+      axios.post(`http://20.253.3.209:7001/seats/create/${localStorage.getItem("EId")}?sname=0${localStorage.getItem("seat_name")}&sttime=${localStorage.getItem("shift_timing")}&from=${localStorage.getItem("from_date")}&to=${localStorage.getItem("to_date")}`,{},{
           headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "X-Role":localStorage.getItem("role"),
@@ -151,7 +165,7 @@ let seatTemp = []
                 {seat.name}
                 <input id={seat.id} className="seat booked" disabled>
                 </input>
-              </p>{" "}
+              </p>
             </div>
           ) : (
             <div>

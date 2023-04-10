@@ -260,12 +260,13 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 				return "Seats booked created successfully with ID: " + savedSeatsBooked.getSbId();
 				// }
 			}
-			return "Seat Booked Succesfully";
+			return "test";
 
 		}
 
 	}
 	
+	/*Saving the booked seats details for custom dates*/
 	@Override
 	public String createSeatsBookedWeekly(int eId, int sId, int stId, String from, String to) {
 	    Employee emp = employeeRepo.findById(eId).get();

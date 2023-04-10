@@ -106,7 +106,18 @@ let seatTemp = []
   const sendData = () => {
     if (selected.seatId != null) {
       localStorage.setItem("seat_name", selected.seatId);
-      window.location = "/";
+      axios.post(`http://20.253.3.209:7001/seats/create/${localStorage.getItem("EId")}?sname=${localStorage.getItem("seat_name")}&sttime=${localStorage.getItem("shift_timing")}&from=${localStorage.getItem("from_date")}&to=${localStorage.getItem("to_date")}`,{},{
+          headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "X-Role":localStorage.getItem("role"),
+              "X-Eid":localStorage.getItem("eid")
+          }
+        }).then((res)=>{
+          console.log(res.data)
+        }).catch((err)=>{
+          console.log(err)
+        })
+      // window.location = "/viewpass/3";
     } else {
       alert("please select a seat");
     }
