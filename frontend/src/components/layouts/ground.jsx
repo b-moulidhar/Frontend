@@ -4,6 +4,7 @@ import { useState } from 'react';
 import "./floors.css";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Navbar_Admin from '../navbar/navbar_admin';
 
 function GroundFloor() {
   
@@ -63,7 +64,7 @@ function GroundFloor() {
       });      
   },[]);
   useEffect(()=>{
-    axios.get("http://20.253.3.209:7001/seats/booked/2023-04-07",{
+    axios.get("http://20.253.3.209:7001/seats/booked/2023-04-10",{
 
     headers: {
       Authorization: "Bearer " + token,
@@ -71,7 +72,7 @@ function GroundFloor() {
     },
   }).then((res)=>{
       console.log(res.data)
-      // setSeatBooked(res.data)
+      setSeatBooked(res.data)
   })
   },[]);
   
@@ -79,7 +80,7 @@ function GroundFloor() {
     
     data.map((seats,idx)=>{
       if(gfloorPat.test(seats)){
-        // console.log(seats)
+        console.log(seats)
         const seatName = `${seats}`;
           const isBooked = seatBooked.some((seat) =>seat === seatName);
           console.log(isBooked);
@@ -97,6 +98,76 @@ function GroundFloor() {
  
     })
   },[data])
+
+  
+
+  // useEffect(()=>{
+  //   if(localStorage.getItem("from_date")==localStorage.getItem("to_date")){
+  //       axios.get(`http://10.191.80.73:7001/seats/booked/${localStorage.getItem("from_date")}`)
+  //       .then((res)=>{
+  //         console.log(res.data)
+  //       })
+  //   }
+  // })
+  useEffect(() => {
+    const numSeats = data.length;
+    const newSeats = [];
+    for (let i = 0; i < numSeats; i++) {
+      if (gfloorPat.test(data[i])) {
+        const seatName = `${data[i]}`;
+        const isBooked = seatBooked.some((seat) => seat.sName === seatName);
+        newSeats.push({
+          id: i,
+          name: seatName,
+          booked: isBooked,
+          selected: false,
+        }); 
+      }
+    }
+    
+    setNewSeats(newSeats);
+  }, [data]);
+
+  useEffect(() => {
+    axios
+      .get(`http://20.253.3.209:7001/seats/booked/2023-04-10`, {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setSeatBooked(res.data);
+        // console.log(seatBooked[0])
+      });
+  }, []);
+// Use another useEffect hook to create an array of seat objects
+  // useEffect(()=>{
+  //   const numSeats = data.length; 
+  //   const newSeats = [];
+  //   for (let i = 0; i < numSeats; i++) {
+  //     const seatName = `${data[i]}`;
+      
+  //     const isBooked = seatBooked.some((seat) =>seat === seatName);
+  //     newSeats.push({
+  //       id: i,
+  //       name: seatName,
+  //       booked: isBooked,
+  //       selected: false,
+  //     });
+  //   }
+  //   data.map((seats,idx)=>{
+  //     if(data[idx]===gfloorPat){
+  //         console.log(seats)
+  //     }
+
+  //   })
+  //   setSeats(newSeats);
+  // },[seatBooked])
+ 
+ 
+
   const [selected, setSelected] = useState({});
 // Define a function to handle the click event on a seat
   const handleSeatClick = (name) => {
@@ -118,7 +189,8 @@ function GroundFloor() {
               "X-Eid":localStorage.getItem("eid")
           }
         }).then((res)=>{
-          console.log(res.data)
+          alert(res.data)
+          window.location("/viewpass")
         }).catch((err)=>{
           console.log(err)
         })
@@ -131,14 +203,7 @@ function GroundFloor() {
   return (
    
     <div className="seat-booking-app">
-       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+       <Navbar_Admin/>
       <div>
         <h1>Ground Floor</h1>
       </div>

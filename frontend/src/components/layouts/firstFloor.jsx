@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import "./floors.css";
 import axios from 'axios';
+import Navbar_Admin from '../navbar/navbar_admin';
 
 function FirstFloor() {
   const [id,setid] = useState(window.localStorage.getItem("EId"))
@@ -11,7 +12,7 @@ function FirstFloor() {
  // Define state variables using the useState hook
   const [seats, setSeats] = useState([]);
   const [data, setData] = useState([]);
-  const [seatBooked,setSeatBooked] = useState([{}])
+  const [seatBooked, setSeatBooked] = useState([{}]);
   const [token, setToken] = useState(window.localStorage.getItem("token"));
   const gfloorPat = /^1[0-9]{3}$/
   const [newSeats,setNewSeats] = useState([]);
@@ -45,15 +46,15 @@ function FirstFloor() {
   }
 
 
-// Use the useEffect hook to fetch data from the server 
-   useEffect(() => {
-     axios.get("http://20.253.3.209:7001/seats/total", {
-
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-    })
+  // Use the useEffect hook to fetch data from the server
+  useEffect(() => {
+    axios
+      .get("http://20.253.3.209:7001/seats/total", {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+      })
       // .then((response) => {
       //   if (!response.ok) {
       //     throw new Error(`HTTP error: ${response.status}`);
@@ -65,76 +66,74 @@ function FirstFloor() {
         // console.log(res.data)
         setData(res.data);
         // setSeatBooked(JSON.parse(text))
-        
-       
-        
       });
-      
-  },[]);
-  useEffect(()=>{
-    axios.get(`http://20.253.3.209:7001/seats/booked/2023-04-07`,{
+  }, []);
+  useEffect(() => {
+    axios
+      .get(`http://20.253.3.209:7001/seats/booked/${localStorage.getItem("from_date")}`, {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setSeatBooked(res.data);
+        // console.log(seatBooked[0])
+      });
+  }, []);
 
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-  }).then((res)=>{
-      console.log(res.data)
-      setSeatBooked(res.data)
-      // console.log(seatBooked[0])
-  })
-  },[]);
-  
-  useEffect(()=>{
-    
-    data.map((seats,idx)=>{
-      if(gfloorPat.test(seats)){
-        // console.log(seats)
-        const seatName = `${seats}`;
-       
-          const isBooked = seatBooked.some((seat) =>seat.name === seatName);
-          seatTemp.push({
-            id: idx,
-            name: seatName,
-            booked: isBooked,
-            selected: false,
-          });
-
-          setNewSeats(seatTemp)
-
-      }
-    //  return console.log(seats);
- 
-    })
-  },[data])
-// Use another useEffect hook to create an array of seat objects
   // useEffect(()=>{
-  //   const numSeats = data.length; 
-  //   const newSeats = [];
-  //   // for (let i = 0; i < numSeats; i++) {
-  //   //   const seatName = `${data[i]}`;
-      
-  //   //   const isBooked = seatBooked.some((seat) =>seat === seatName);
-  //   //   newSeats.push({
-  //   //     id: i,
-  //   //     name: seatName,
-  //   //     booked: isBooked,
-  //   //     selected: false,
-  //   //   });
-  //   // }
-  //   // data.map((seats,idx)=>{
-  //   //   if(data[idx]===gfloorPat){
-  //   //       console.log(seats)
-  //   //   }
 
-  //   // })
-  //   setSeats(newSeats);
-  // },[seatBooked])
- 
- 
+  //   data.map((seats,idx)=>{
+  //     if(gfloorPat.test(seats)){
+  //       // console.log(seats)
+  //       const seatName = `${seats}`;
+
+  //         const isBooked = seatBooked.some((seat) =>{
+  //           console.log(seat.sName)
+  //             if(seat.sName === seatName){
+  //               return true;
+  //             }else{
+  //               return false;
+  //             };
+  //         });
+  //         seatTemp.push({
+  //           id: idx,
+  //           name: seatName,
+  //           booked: isBooked,
+  //           selected: false,
+  //         });
+
+  //         setNewSeats(seatTemp)
+
+  //     }
+  //   //  return console.log(seats);
+
+  //   })
+  // },[data])
+  // Use another useEffect hook to create an array of seat objects
+  useEffect(() => {
+    const numSeats = data.length;
+    const newSeats = [];
+    for (let i = 0; i < numSeats; i++) {
+      if (gfloorPat.test(data[i])) {
+        const seatName = `${data[i]}`;
+        const isBooked = seatBooked.some((seat) => seat.sName === seatName);
+        newSeats.push({
+          id: i,
+          name: seatName,
+          booked: isBooked,
+          selected: false,
+        }); 
+      }
+    }
+    
+    setNewSeats(newSeats);
+  }, [data]);
 
   const [selected, setSelected] = useState({});
-// Define a function to handle the click event on a seat
+  // Define a function to handle the click event on a seat
   const handleSeatClick = (name) => {
     // console.log(name);
     //logic for deselection
@@ -147,17 +146,33 @@ function FirstFloor() {
   const sendData = () => {
     if (selected.seatId != null) {
       localStorage.setItem("seat_name", selected.seatId);
-      axios.post(`http://20.253.3.209:7001/seats/create/${localStorage.getItem("EId")}?sname=${localStorage.getItem("seat_name")}&sttime=${localStorage.getItem("shift_timing")}&from=${localStorage.getItem("from_date")}&to=${localStorage.getItem("to_date")}`,{},{
-          headers:{
+      axios
+        .post(
+          `http://20.253.3.209:7001/seats/create/${localStorage.getItem(
+            "EId"
+          )}?sname=${localStorage.getItem(
+            "seat_name"
+          )}&sttime=${localStorage.getItem(
+            "shift_timing"
+          )}&from=${localStorage.getItem(
+            "from_date"
+          )}&to=${localStorage.getItem("to_date")}`,
+          {},
+          {
+            headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "X-Role":localStorage.getItem("role"),
-              "X-Eid":localStorage.getItem("eid")
+              "X-Role": localStorage.getItem("role"),
+              "X-Eid": localStorage.getItem("eid"),
+            },
           }
-        }).then((res)=>{
-          console.log(res.data)
-        }).catch((err)=>{
-          console.log(err)
+        )
+        .then((res) => {
+          console.log(res.data);
+          window.location=`/viewpass/${localStorage.getItem("EId")}`
         })
+        .catch((err) => {
+          console.log(err);
+        });
       // window.location = "/viewpass/3";
     } else {
       alert("please select a seat");
@@ -165,31 +180,27 @@ function FirstFloor() {
   };
 
   return (
-   
     <div className="seat-booking-app">
-       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+       <Navbar_Admin/>
       <div>
         <h1>First Floor</h1>
       </div>
-       {/* Map over the seats array and render the seats */}
+      {/* Map over the seats array and render the seats */}
       <div className="seat-map">
-      
         {newSeats.map((seat) =>
-       
           seat.booked ? (
-           <div>
-              <p>
+            <div>
+              <label>
                 {seat.name}
-                <input id={seat.id} className="seat booked" disabled>
-                </input>
-              </p>{" "}
+                <input
+                  className="seat booked"
+                  name="test"
+                  // checked={}
+                  value={seat.name}
+                  
+                  // type="radio"
+                />
+              </label>
             </div>
           ) : (
             <div>
@@ -205,8 +216,8 @@ function FirstFloor() {
                 />
               </label>
             </div>
-          )         
-         ) }
+          )
+        )}
       </div>
       <br />
       <div id="legend">
@@ -231,16 +242,12 @@ function FirstFloor() {
           Your Chosen Seats
           {!seats.booked && <div>{selected.seatId}</div>}
         </div>
-       
       </div>
       <button onClick={sendData} className="btn btn-warning Nextbtn">
         submit
       </button>
-      
     </div>
   );
 }
-
-
 
 export default FirstFloor;

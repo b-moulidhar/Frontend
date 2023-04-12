@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './profile.css';
+import Navbar from '../navbar/navbar';
 function Profile() {
 
   const [id,setid] = useState(window.localStorage.getItem("EId"))
@@ -55,33 +56,7 @@ function Profile() {
   return (
     <div>
       
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-              <a className="navbar-brand" href="#">SMS</a>
-              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon" />
-              </button>
-              <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul className="navbar-nav mr-auto">
-                  <li className="nav-item active">
-                    <a className="nav-link" href={`/dashboard/${id}`}>DashBoard <span className="sr-only"></span></a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#">Profile</a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href={`/atten_regularize/${id}`}>Regularization</a>
-                  </li>
-                </ul>
-                <ul className="navbar-nav ml-auto">
-                  <li className="nav-item" >
-                    <a className="nav-link ml-auto" href={`/notify/${id}`}>Notification</a>
-                  </li>
-                  <li className="nav-item" >
-                    <a className="nav-link ml-auto" href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-                  </li>
-                </ul>
-              </div>
-            </nav>
+      <Navbar/>
     <div>
       <section className="userprofile" style={{backgroundColor: '#f4f5f7'}}>
         <div className="container py-5 h-100">

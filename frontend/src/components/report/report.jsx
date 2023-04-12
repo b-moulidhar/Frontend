@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./report.css";
+import Navbar_Admin from "../navbar/navbar_admin";
 // import "./App.css";
 
 function Report() {
@@ -156,16 +157,7 @@ function Report() {
 
   return (
     <div>
-      <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-        <div className="navbar-left">
-          <a href="#">SMS</a>
-        </div>
-        <div className="navbar-right">
-          <a href="#" onClick={handleLogout} disabled={isLoggingOut}>
-            Logout
-          </a>
-        </div>
-      </nav>
+      <Navbar_Admin/>
 
       <div className="report">
         <h3>Generate Report</h3>

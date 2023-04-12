@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import './admin_dashboard.css';
+import Navbar_Admin from '../../navbar/navbar_admin';
 
 function AdminDashboard(){
 
@@ -56,7 +57,12 @@ function AdminDashboard(){
         "X-Eid":localStorage.getItem("eid")
       }
     }).then((response) => {  
-      setCount(response.data);
+      console.log(response.status)
+      if(response.status==302){
+        setCount(0)
+      }else{
+        setCount(response.data);
+      }
     })
   }, []);
 
@@ -70,6 +76,11 @@ function AdminDashboard(){
       }
     }).then((response) => {
       setFoodCount(response.data);
+      if(response.status==302){
+        setFoodCount(0)
+      }else{
+        setFoodCount(response.data);
+      }
     }).catch(error => {
       console.log(error);
     });
@@ -92,14 +103,7 @@ function AdminDashboard(){
 
     return (
       <div className="dashboard_container">
-         <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+         <Navbar_Admin/>
 
       <div className="admin_mainpage">
         

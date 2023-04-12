@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./atten_regularize.css";
+import Navbar from "../navbar/navbar";
 
 function Atten_Regularize() {
   const [id, setid] = useState(window.localStorage.getItem("EId"));
@@ -39,7 +40,7 @@ function Atten_Regularize() {
   const [Start, setStart] = useState();
   const [End, setEnd] = useState();
   // var shift_End;
-  var sttime = Start + "-" + End;
+  var sttime = Start+"-"+End;
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
@@ -80,7 +81,7 @@ function Atten_Regularize() {
               "X-Eid":localStorage.getItem("eid")
           }
         }).then((res) => {
-          console.log(res.data);
+          alert(res.data);
           // console.log("hello")
           setSuccessMessage("Regularization request submitted successfully.");
         });
@@ -95,33 +96,8 @@ function Atten_Regularize() {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-              <a className="navbar-brand" href="#">SMS</a>
-              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon" />
-              </button>
-              <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul className="navbar-nav mr-auto">
-                  <li className="nav-item active">
-                    <a className="nav-link" href="#">DashBoard <span className="sr-only"></span></a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href={`/profile/${id}`}>Profile</a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href={`/atten_regularize/${id}`}>Regularization</a>
-                  </li>
-                </ul>
-                <ul className="navbar-nav ml-auto">
-                  <li className="nav-item" >
-                    <a className="nav-link ml-auto" href={`/notify/${id}`}>Notification</a>
-                  </li>
-                  <li className="nav-item" >
-                    <a className="nav-link ml-auto" href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-                  </li>
-                </ul>
-              </div>
-            </nav>
+
+        <Navbar/>
 
       <div className="formdiv">
         <form className="form-regularize" onSubmit={handleSubmit}>

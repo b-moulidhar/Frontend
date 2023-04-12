@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import "./registration_approval.css"
+import Navbar_Admin from "../navbar/navbar_admin";
 
 function Registration_Approval(){
 
@@ -46,7 +47,7 @@ function Registration_Approval(){
         })
         .then((res)=>{
             setUser(res.data)
-            // console.log(role)
+            console.log(res.data)
         }).catch((err)=>{
             console.log(err)
         })
@@ -89,14 +90,7 @@ function disapprove(empid){
     return(
         
         <div className='reges_approval'>
-             <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+             <Navbar_Admin/>
             <div>
                 <h2 style={{marginTop:"4rem"}}>Employee Approval for SMS</h2>
                 <table className="table1">
