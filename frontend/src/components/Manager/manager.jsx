@@ -119,7 +119,7 @@ function Manager(){
                   <td>{emp.shift_start}</td>
                   <td>{emp.shift_end}</td>
                   <td>
-                    {!emp.approved && (
+                     
                       <button
                         type="button"
                         className="btn btn-success manager_approve"
@@ -127,10 +127,10 @@ function Manager(){
                       >
                         Approve
                       </button>
-                    )}
+                    
                   </td>
                   <td>
-                    {!emp.approved && (
+                    
                       <button
                         type="button"
                         className="btn btn-danger manager_approve"
@@ -138,7 +138,7 @@ function Manager(){
                       >
                         Decline
                       </button>
-                    )}
+                    
                   </td>
                 </tr>
               ))}
