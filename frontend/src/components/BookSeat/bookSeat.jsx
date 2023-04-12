@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./bookSeat.css";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Navbar_Admin from "../navbar/navbar_admin";
 
 
 
@@ -128,14 +129,7 @@ function BookSeat() {
 
   return (
     <div>
-       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+       <Navbar_Admin />
     <form onSubmit={handleSubmit} className="seat-booking-form">
       <label htmlFor="branch-name-input" className="form-label">Branch Name:</label>
       <select

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import "./floors.css";
 import axios from 'axios';
+import Navbar_Admin from '../navbar/navbar_admin';
 
 function ThirdFloor() {
   const [id,setid] = useState(window.localStorage.getItem("EId"))
@@ -166,14 +167,7 @@ function ThirdFloor() {
   return (
    
     <div className="seat-booking-app">
-       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+       <Navbar_Admin/>
       <div>
         <h1>Third Floor</h1>
       </div>

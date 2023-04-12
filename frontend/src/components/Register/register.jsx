@@ -109,45 +109,60 @@ function Register(){
          }
 
     }
+     const confirmPass=()=>{
+
+      if(user.password===user.confirmpassword){
+        alert("passwords match");
+      }else{
+        alert("passwords did not match");
+      }
+
+     }
 
     
-    return(
-      
-        <>
-            {/* <form className="row g-3 needs-validation" onSubmit={validateSubmit} noValidate> */}
-            <form className="row g-3 needs-validation" method="post">
-            
-    <div className="container">
-  <div className="col-8 col-md-10 col-sm-8 col-xl-12 col-lg-12 row">
-    <div className="col-lg-3 col-md-2" />
-    <div className="col-lg-6 col-md-8 login-box">
-      <div className="col-lg-12 login-key">
-        <i className="fa fa-key" aria-hidden="true" />
-      </div>
-      <div className="col-lg-12 login-title">
-        Register
-      </div>
-      <div className="col-xl-12 col-lg-12 col-8 col-md-10 col-sm-8 login-form">
-        <div className="col-8 col-md-10 col-sm-8 col-xl-12 col-lg-12 login-form">
-          <form>
-            <div className="form-group">
-              <label className="form-control-label">Name</label>
-              <input type="text" className="form-control" name="name" value={user.name} onChange={(e)=>setUser({...user,name:e.target.value})} required />
-            </div>
-            <div className="form-group">
-              <label className="form-control-label">Email</label>
-              <input type="email" className="form-control" value={user.email}  pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$" name="email" onChange={(e)=>setUser({...user,email:e.target.value})} required/>
-            </div>
-            <div className="form-group">
-              <label className="form-control-label">Employee Id</label>
-              <input type="number" placeholder="Phone number" className="form-control"  name="emp_id" pattern="(0/91)?[6-9][0-9]{9}" value={user.emp_id}  onChange={(e)=>setUser({...user,emp_id:e.target.value})} required/> 
-            </div>
-            <div className="form-group">
-              <label className="form-control-label">Phone number</label>
-              <input type="number" placeholder="Phone number" className="form-control"  name="pnumber" pattern="(0/91)?[6-9][0-9]{9}" value={user.pnumber}  onChange={(e)=>setUser({...user,pnumber:e.target.value})} required/> 
-            </div>
-            <div className="form-group">
-            <select  className="selects form-control-label" name="role"  value={user.role} onChange={(e)=>setUser({...user,role:e.target.value})} required >
+    return (
+      <>
+        {/* <form className="row g-3 needs-validation" onSubmit={validateSubmit} noValidate> */}
+        <section className="vh-100 bg-image" style={{backgroundImage: 'url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp")'}}>
+  <div className="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div className="container h-100">
+      <div className="row d-flex justify-content-center align-items-center h-100">
+        <div className="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div className="card" style={{borderRadius: 15}}>
+            <div className="card-body p-5">
+              <h2 className="text-uppercase text-center mb-5">
+                Create an account
+              </h2>
+              <form>
+                <div className="form-outline mb-4">
+                <input type="text" className="form-control form-control-lg" placeholder="Name" name="name" id="name" value={user.name} onChange={(e)=>setUser({...user,name:e.target.value})} required />
+                  <label className="form-label" htmlFor="name">
+                    Your Name
+                  </label>
+                </div>
+                <div className="form-outline mb-4">
+                <input type="email" className="form-control form-control-lg" placeholder="Email" id="email" value={user.email}  pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$" name="email" onChange={(e)=>setUser({...user,email:e.target.value})} required/>  
+                <label className="form-label" htmlFor="email">
+                    Your Email
+                  </label>
+                </div>
+                <div className="form-outline mb-4">
+                <input type="number" placeholder="Employee Id" id="emp_id" className="form-control form-control-lg"  name="emp_id" pattern="(0/91)?[6-9][0-9]{9}" value={user.emp_id}  onChange={(e)=>setUser({...user,emp_id:e.target.value})} required/>
+                <label className="form-label" htmlFor="empid">
+                    Employee Id
+                  </label>
+                </div>
+                <div className="form-outline mb-4">
+                <input type="number" placeholder="Phone number" id="phnum" className="form-control"  name="pnumber" pattern="(0/91)?[6-9][0-9]{9}" value={user.pnumber}  onChange={(e)=>setUser({...user,pnumber:e.target.value})} required/>
+                  <label className="form-label" htmlFor="phnum">
+                    Phone Number
+                  </label>
+                </div>
+                <div className="form-outline mb-4">
+                  <label className="form-label" htmlFor="role">
+                    Select your role
+                  </label><br />
+                  <select id="role" className="selects form-control-label" name="role"  value={user.role} onChange={(e)=>setUser({...user,role:e.target.value})} required >
                 <option className="form-control-label" value="" disabled selected>Select Your Role</option>
                     {
                       //  console.log( role)
@@ -157,10 +172,13 @@ function Register(){
 
                     } 
                   </select>
-            </div>
-            <div className="form-group">
-            <select  className="selects form-control-label" name="manager"  value={user.manager} onChange={(e)=>setUser({...user,manager:e.target.value})} required >
-                <option className="form-control-label" value="" disabled selected>Select Your Manager</option>
+                </div>
+                <div className="form-outline mb-4">
+                  <label className="form-label" htmlFor="mngr">
+                    Select your Manager
+                  </label><br />
+                  <select id="mngr" className="selects form-control-label" name="manager"  value={user.manager} onChange={(e)=>setUser({...user,manager:e.target.value})} required >
+                  <option className="form-control-label" value="" disabled selected>Select Your Manager</option>
                     {
                         // console.log( manager)
                       manager.map((managers,idx)=>{
@@ -169,32 +187,49 @@ function Register(){
 
                     } 
                   </select>
+                </div>
+                <div className="form-outline mb-4">
+                <input type="password"  className="form-control" name="password" pattern="[A-Za-z0-9#@$&]{3,10}"  value={user.password} onInput={(e)=>setUser({...user,password:e.target.value})} onBlur={handleChange} required/>
+                 <label className="form-label" htmlFor="pswd">
+                    Password
+                  </label>
+                </div>
+                <div className="form-outline mb-4">
+                <input type="password" id="cnfpswd" className="form-control" name="confirmpassword" pattern="[A-Za-z0-9#@$&]{3,10}" value={user.confirmpassword} onChange={(e)=>setUser({...user,confirmpassword:e.target.value})} onBlur={confirmPass}  required/>                  
+                <label className="form-label" htmlFor="cnfpswd">
+                    Confirm Password
+                  </label>
+                </div>
+                {/* <div className="form-check d-flex justify-content-center mb-5">
+                  <input className="form-check-input me-2" type="checkbox" defaultValue id="form2Example3cg" />
+                  <label className="form-check-label" htmlFor="form2Example3g">
+                    I agree all statements in{'{'}" "{'}'}
+                    <a href="#!" className="text-body">
+                      <u>Terms of service</u>
+                    </a>
+                  </label>
+                </div> */}
+                <div className="d-flex justify-content-center">
+                  <button type="button" onClick={handleSubmit} className="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+                    Register
+                  </button>
+                </div>
+                <p className="text-center text-muted mt-5 mb-0">
+                  Have already an account?
+                  <a href="/" className="fw-bold text-body">
+                    <u>Login here</u>
+                  </a>
+                </p>
+              </form>
             </div>
-            <div className="form-group">
-              <label className="form-control-label">Password</label>
-              <input type="password" className="form-control" name="password" pattern="[A-Za-z0-9#@$&]{3,10}"  value={user.password} onInput={(e)=>setUser({...user,password:e.target.value})} onChange={handleChange} required/>
-            </div>
-            <div className="form-group">
-              <label className="form-control-label">Confirm Password</label>
-              <input type="password" className="form-control" name="confirmpassword" pattern="[A-Za-z0-9#@$&]{3,10}" value={user.confirmpassword} onChange={(e)=>setUser({...user,confirmpassword:e.target.value})}  required/>
-            </div>
-            <div className="col-lg-12 loginbttm">
-              <div className="col-lg-6 login-btm login-text">
-                {/* Error Message */}
-              </div>
-              <div className="col-lg-6 login-btm login-button">
-                <button type="submit" onClick={handleSubmit} className="btn btn-outline-primary">Sign Up</button>
-              </div>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
-      <div className="col-lg-3 col-md-2" />
     </div>
   </div>
-  </div>
-</form>
-</>
-    )
+</section>
+
+      </>
+    );
 }
 export default Register;

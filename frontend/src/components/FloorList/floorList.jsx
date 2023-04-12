@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './floorList.css';
 
 import { useParams } from 'react-router-dom';
+import Navbar_Admin from '../navbar/navbar_admin';
 
 function FloorList(){
 
@@ -54,14 +55,7 @@ function FloorList(){
     return(
        
         <div className='FloorList_container'> 
-         <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+         <Navbar_Admin/>
             
         <div className='fList'>
             <h3>Select Floor</h3>

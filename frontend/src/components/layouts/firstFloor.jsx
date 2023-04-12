@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import "./floors.css";
 import axios from 'axios';
+import Navbar_Admin from '../navbar/navbar_admin';
 
 function FirstFloor() {
   const [id,setid] = useState(window.localStorage.getItem("EId"))
@@ -69,7 +70,7 @@ function FirstFloor() {
   }, []);
   useEffect(() => {
     axios
-      .get(`http://20.253.3.209:7001/seats/booked/2023-04-10`, {
+      .get(`http://20.253.3.209:7001/seats/booked/${localStorage.getItem("from_date")}`, {
         headers: {
           Authorization: "Bearer " + token,
           "Content-Type": "application/json",
@@ -167,6 +168,7 @@ function FirstFloor() {
         )
         .then((res) => {
           console.log(res.data);
+          window.location=`/viewpass/${localStorage.getItem("EId")}`
         })
         .catch((err) => {
           console.log(err);
@@ -179,14 +181,7 @@ function FirstFloor() {
 
   return (
     <div className="seat-booking-app">
-       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+       <Navbar_Admin/>
       <div>
         <h1>First Floor</h1>
       </div>
@@ -203,7 +198,7 @@ function FirstFloor() {
                   // checked={}
                   value={seat.name}
                   
-                  type="radio"
+                  // type="radio"
                 />
               </label>
             </div>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import "./floors.css";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Navbar_Admin from '../navbar/navbar_admin';
 
 function GroundFloor() {
   
@@ -202,14 +203,7 @@ function GroundFloor() {
   return (
    
     <div className="seat-booking-app">
-       <nav className="navbar fixed-top navbar-light bg-light justify-content-between">
-          <div className="navbar-left">
-            <a href="#">SMS</a>
-          </div>
-          <div className="navbar-right">
-            <a href="#" onClick={handleLogout} disabled={isLoggingOut}>Logout</a>
-          </div>
-        </nav>
+       <Navbar_Admin/>
       <div>
         <h1>Ground Floor</h1>
       </div>
